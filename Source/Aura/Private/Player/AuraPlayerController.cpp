@@ -5,11 +5,19 @@
 
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Interfaces/EnemyInterface.h"
 
 AAuraPlayerController::AAuraPlayerController() :
 ControlledPawn(nullptr)
 {
 	bReplicates = true;
+}
+
+void AAuraPlayerController::PlayerTick(float DeltaTime)
+{
+	CursorTrace();
+
+	Super::PlayerTick(DeltaTime);
 }
 
 void AAuraPlayerController::BeginPlay()
@@ -58,5 +66,45 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 	{
 		ControlledPawn->AddMovementInput(ForwardDirection * InputAxisVector.Y);
 		ControlledPawn->AddMovementInput(RightDirection * InputAxisVector.X);
+	}
+}
+
+void AAuraPlayerController::CursorTrace()
+{
+	FHitResult HitResult;
+	GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
+	if(HitResult.bBlockingHit == false) return;
+
+	LastActor = CurrentActor;
+	CurrentActor = Cast<IEnemyInterface>(HitResult.GetActor());
+
+	//	Not hovering over highlightable actors
+	if(LastActor == nullptr && CurrentActor == nullptr) return; 
+
+	// If no actor was previously highlighted but currently hovered actor is highlightable
+	if(LastActor == nullptr && CurrentActor != nullptr)
+	{
+		CurrentActor->HighlightActor();
+		return;
+	}
+
+	// If current actor is not highlightable but previous was.
+	if(LastActor != nullptr && CurrentActor == nullptr)
+	{
+		LastActor->UnHighlightActor();
+		return;
+	}
+
+	// If both actors are highlightable
+	if(LastActor != nullptr && CurrentActor != nullptr)
+	{
+		// If actors are not equal
+		if(LastActor != CurrentActor)
+		{
+			LastActor->UnHighlightActor();
+			CurrentActor->HighlightActor();
+		}
+
+		// If same, do nothing
 	}
 }
