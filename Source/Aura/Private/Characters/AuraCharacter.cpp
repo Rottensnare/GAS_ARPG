@@ -16,6 +16,7 @@ AAuraCharacter::AAuraCharacter()
 	CameraBoom->bInheritPitch = false;
 	CameraBoom->bInheritYaw = false;
 	CameraBoom->bInheritRoll = false;
+	CameraBoom->bDoCollisionTest = false;
 	
 	MainCamera = CreateDefaultSubobject<UCameraComponent>("MainCamera");
 	MainCamera->SetupAttachment(CameraBoom, USpringArmComponent::SocketName);
