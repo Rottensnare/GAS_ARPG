@@ -17,6 +17,7 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 public:
 
 	AAuraCharacter();
+	void InitAbilityActorInfo();
 
 protected:
 
@@ -26,4 +27,6 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Camera")
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
+	virtual void PossessedBy(AController* NewController) override;
+	virtual void OnRep_PlayerState() override;
 };
