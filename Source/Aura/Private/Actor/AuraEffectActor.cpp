@@ -38,7 +38,8 @@ void AAuraEffectActor::OnOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		const UAuraAttributeSetBase* AuraAttributeSet = Cast<UAuraAttributeSetBase>(AbilitySystemInterface->GetAbilitySystemComponent()->GetAttributeSet(UAuraAttributeSetBase::StaticClass()));
 		UAuraAttributeSetBase* MutableAttributeSet = const_cast<UAuraAttributeSetBase*>(AuraAttributeSet);
-		MutableAttributeSet->SetHealth(AuraAttributeSet->GetHealth() + 25.f);
+		MutableAttributeSet->SetMana(AuraAttributeSet->GetMana() + 25.f);
+		Blueprint_OnOverlap(OverlappedComponent, OtherActor); //NOTE: Custom stuff, not implemented currently
 		Destroy();
 	}
 	

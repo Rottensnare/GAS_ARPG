@@ -24,6 +24,10 @@ protected:
 
 	UFUNCTION()
 	virtual void EndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void Blueprint_OnOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor);
+	
 private:
 
 	UPROPERTY(EditAnywhere)

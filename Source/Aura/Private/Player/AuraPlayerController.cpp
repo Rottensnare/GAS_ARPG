@@ -28,11 +28,10 @@ void AAuraPlayerController::BeginPlay()
 
 	
 	UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer());
-
-	checkf(Subsystem, TEXT("EnhancedInputLocalPlayerSubsystem was nullptr"))
-
+	
 	if(IsLocalController())
 	{
+		checkf(Subsystem, TEXT("EnhancedInputLocalPlayerSubsystem was nullptr"))
 		Subsystem->AddMappingContext(AuraContext, 0);
 	}
 	
