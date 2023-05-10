@@ -8,11 +8,9 @@ void UAuraAbilitySystemComponentBase::EffectApplied(UAbilitySystemComponent* Abi
 {
 	FGameplayTagContainer GPTagContainer;
 	EffectSpec.GetAllAssetTags(GPTagContainer);
-	for(const auto& Tag : GPTagContainer)
-	{
-		check(GEngine)
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, FString::Printf(TEXT("GE Tag: %s"), *Tag.ToString()));
-	}
+	
+
+	EffectAssetTags.Broadcast(GPTagContainer);
 }
 
 void UAuraAbilitySystemComponentBase::AbilityActorInfoSet()
