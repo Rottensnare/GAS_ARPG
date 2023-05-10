@@ -17,7 +17,7 @@ class AURA_API AAuraCharacter : public AAuraCharacterBase
 public:
 
 	AAuraCharacter();
-	void InitAbilityActorInfo();
+	virtual void InitAbilityActorInfo() override;
 
 protected:
 
