@@ -52,9 +52,16 @@ void AAuraCharacter::InitAbilityActorInfo()
 	if(IsLocallyControlled())
 	{
 		AAuraPlayerController* AuraPlayerController = Cast<AAuraPlayerController>(GetController());
-		AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
-		AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+		if(AuraPlayerController)
+		{
+			AAuraHUD* AuraHUD = Cast<AAuraHUD>(AuraPlayerController->GetHUD());
+			if(AuraHUD) AuraHUD->InitOverlay(AuraPlayerController, AuraPlayerState, AbilitySystemComponent, AttributeSet);
+			else UE_LOG(LogTemp, Error, TEXT("AuraHUD was nullptr in InitAbilityActorInfo of %s"), *GetName())
+		}
+		else UE_LOG(LogTemp, Error, TEXT("AuraPlayerController was nullptr in InitAbilityActorInfo of %s"), *GetName())
 	}
+
+	InitPrimaryAttributes();
 	
 }
 

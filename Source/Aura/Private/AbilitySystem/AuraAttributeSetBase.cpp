@@ -62,6 +62,8 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 	
 }
 
+
+
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
 	Props.EffectContextHandle = Data.EffectSpec.GetContext();
@@ -116,4 +118,22 @@ void UAuraAttributeSetBase::OnRep_MaxMana(const FGameplayAttributeData& OldMaxMa
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, MaxMana, OldMaxMana);
 }
 
+void UAuraAttributeSetBase::OnRep_Strength(const FGameplayAttributeData& OldStrength) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, Strength, OldStrength);
+}
 
+void UAuraAttributeSetBase::OnRep_Intelligence(const FGameplayAttributeData& OldIntelligence) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, Intelligence, OldIntelligence);
+}
+
+void UAuraAttributeSetBase::OnRep_Resilience(const FGameplayAttributeData& OldResilience) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, Resilience, OldResilience);
+}
+
+void UAuraAttributeSetBase::OnRep_Vigor(const FGameplayAttributeData& OldVigor) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, Vigor, OldVigor);
+}
