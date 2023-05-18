@@ -29,4 +29,11 @@ protected:
 
 	virtual void PossessedBy(AController* NewController) override;
 	virtual void OnRep_PlayerState() override;
+
+public:
+	
+	/**	Category Virtual Overrides */
+
+	virtual int32 GetCharacterLevel() override;
+	
 };

@@ -61,7 +61,7 @@ void AAuraCharacter::InitAbilityActorInfo()
 		else UE_LOG(LogTemp, Error, TEXT("AuraPlayerController was nullptr in InitAbilityActorInfo of %s"), *GetName())
 	}
 
-	InitPrimaryAttributes();
+	InitDefaultAttributes();
 	
 }
 
@@ -77,4 +77,12 @@ void AAuraCharacter::OnRep_PlayerState()
 	Super::OnRep_PlayerState();
 
 	InitAbilityActorInfo();
+}
+
+int32 AAuraCharacter::GetCharacterLevel()
+{
+	const AAuraPlayerState* const AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState)
+
+	return AuraPlayerState->GetCharacterLevel();
 }

@@ -12,19 +12,38 @@
 UAuraAttributeSetBase::UAuraAttributeSetBase()
 {
 	InitHealth(25.f);
-	InitMaxHealth(100.f);
 	InitMana(75.f);
-	InitMaxMana(100.f);
 }
 
 void UAuraAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
+	//*		Vital Attributes	*/
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, Health, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, MaxHealth, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, Mana, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, MaxMana, COND_None, REPNOTIFY_Always);
+
+	//*		Primary Attributes	*/
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, Vigor, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, Intelligence, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, Resilience, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, Strength, COND_None, REPNOTIFY_Always);
+	
+	//*		Secondary Attributes	*/
+	
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, Armor, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, ArmorPen, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, BlockChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, CritChance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, CritDamage, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, CritResist, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, HealthRegen, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, ManaRegen, COND_None, REPNOTIFY_Always);
+
+	
 }
 
 void UAuraAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribute, float& NewValue)
@@ -61,8 +80,6 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 
 	
 }
-
-
 
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
 {
@@ -136,4 +153,44 @@ void UAuraAttributeSetBase::OnRep_Resilience(const FGameplayAttributeData& OldRe
 void UAuraAttributeSetBase::OnRep_Vigor(const FGameplayAttributeData& OldVigor) const
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, Vigor, OldVigor);
+}
+
+void UAuraAttributeSetBase::OnRep_Armor(const FGameplayAttributeData& OldArmor) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, Armor, OldArmor);
+}
+
+void UAuraAttributeSetBase::OnRep_ArmorPen(const FGameplayAttributeData& OldArmorPen) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, ArmorPen, OldArmorPen);
+}
+
+void UAuraAttributeSetBase::OnRep_BlockChance(const FGameplayAttributeData& OldBlockChance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, BlockChance, OldBlockChance);
+}
+
+void UAuraAttributeSetBase::OnRep_CritChance(const FGameplayAttributeData& OldCritChance) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, CritChance, OldCritChance);
+}
+
+void UAuraAttributeSetBase::OnRep_CritDamage(const FGameplayAttributeData& OldCritDamage) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, CritDamage, OldCritDamage);
+}
+
+void UAuraAttributeSetBase::OnRep_CritResist(const FGameplayAttributeData& OldCritResist) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, CritResist, OldCritResist);
+}
+
+void UAuraAttributeSetBase::OnRep_HealthRegen(const FGameplayAttributeData& OldHealthRegen) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, HealthRegen, OldHealthRegen);
+}
+
+void UAuraAttributeSetBase::OnRep_ManaRegen(const FGameplayAttributeData& OldManaRegen) const
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, ManaRegen, OldManaRegen);
 }
