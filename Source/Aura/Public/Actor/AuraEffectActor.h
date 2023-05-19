@@ -38,13 +38,16 @@ protected:
 	virtual void BeginPlay() override;
 
 	UFUNCTION(BlueprintCallable)
-	void OnOverlap(AActor* TargetActor);
+	void OnOverlap(AActor* TargetActor, FActiveGameplayEffectHandle& OutHandle);
 
 	UFUNCTION(BlueprintCallable)
-	void OnEndOverlap(AActor* TargetActor);
+	void OnEndOverlap(AActor* TargetActor, FActiveGameplayEffectHandle& OutHandle);
+
+	UFUNCTION(BlueprintCallable)
+	void RemoveSpecificEffectFromTarget(AActor* TargetActor, const FActiveGameplayEffectHandle& ActiveHandle);
 	
 	UFUNCTION(BlueprintCallable)
-	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass);
+	void ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGameplayEffect> GameplayEffectClass, FActiveGameplayEffectHandle& OutActiveHandle);
 
 	UFUNCTION(BlueprintCallable)
 	void RemoveEffectFromTarget(AActor* TargetActor);
