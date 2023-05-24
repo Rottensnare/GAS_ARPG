@@ -7,6 +7,9 @@
 #include "Interfaces/EnemyInterface.h"
 #include "AuraPlayerController.generated.h"
 
+class UAuraAbilitySystemComponentBase;
+struct FGameplayTag;
+class UAuraInputConfig;
 class IEnemyInterface;
 struct FInputActionValue;
 class UInputAction;
@@ -31,6 +34,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void SetupInputComponent() override;
 
+	void AbilityInputTagPressed(FGameplayTag InputTag);
+	void AbilityInputTagReleased(FGameplayTag InputTag);
+	void AbilityInputTagHeld(FGameplayTag InputTag);
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
@@ -47,4 +54,12 @@ private:
 
 	UPROPERTY()
 	APawn* ControlledPawn;
+
+	UPROPERTY(EditDefaultsOnly, Category = "Input")
+	TObjectPtr<UAuraInputConfig> InputConfig;
+
+	UPROPERTY()
+	TObjectPtr<UAuraAbilitySystemComponentBase> AuraAbilitySystemComponent;
+
+	UAuraAbilitySystemComponentBase* GetASC();
 };
