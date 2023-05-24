@@ -7,6 +7,7 @@
 #include "Interfaces/EnemyInterface.h"
 #include "AuraPlayerController.generated.h"
 
+class USplineComponent;
 class UAuraAbilitySystemComponentBase;
 struct FGameplayTag;
 class UAuraInputConfig;
@@ -27,6 +28,7 @@ class AURA_API AAuraPlayerController : public APlayerController
 public:
 
 	AAuraPlayerController();
+	void AutoRun();
 	virtual void PlayerTick(float DeltaTime) override;
 
 protected:
@@ -62,4 +64,23 @@ private:
 	TObjectPtr<UAuraAbilitySystemComponentBase> AuraAbilitySystemComponent;
 
 	UAuraAbilitySystemComponentBase* GetASC();
+
+	/** Category Click to Move */
+	
+	FVector CachedDestination{FVector::ZeroVector};
+	float FollowTime{0.f};
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float ShortPressThreshold{0.2f};
+	
+	bool bAutoRunning = false;
+	bool bTargeting = false;
+	
+	UPROPERTY(EditDefaultsOnly, Category = "Movement")
+	float AutoRunAcceptanceRadius = 50.f;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USplineComponent> SplineComponent;
+
+	
 };
