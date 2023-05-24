@@ -9,6 +9,7 @@
 #include "AuraCharacterBase.generated.h"
 
 
+class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
 class UCameraComponent;
@@ -47,8 +48,14 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 	
-
 	void InitDefaultAttributes() const;
+
+	void AddCharacterAbilities();
+
+private:
+
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 	
 public:	
 

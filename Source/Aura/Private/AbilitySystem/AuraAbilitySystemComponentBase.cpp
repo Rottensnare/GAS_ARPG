@@ -5,6 +5,17 @@
 
 #include "AuraGameplayTags.h"
 
+void UAuraAbilitySystemComponentBase::AddCharacterAbilities(
+	const TArray<TSubclassOf<UGameplayAbility>>& DefaultAbilities)
+{
+	for(auto AbilityClass : DefaultAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		//GiveAbility(AbilitySpec);
+		GiveAbilityAndActivateOnce(AbilitySpec);
+	}
+}
+
 void UAuraAbilitySystemComponentBase::EffectApplied(UAbilitySystemComponent* AbilitySystemComponent,
                                                     const FGameplayEffectSpec& EffectSpec, FActiveGameplayEffectHandle ActiveGameplayEffectHandle)
 {
