@@ -140,10 +140,10 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 			return;
 		}
 		FollowTime += GetWorld()->GetDeltaSeconds();
-		FHitResult HitResult;
-		if(GetHitResultUnderCursor(ECC_Visibility, false, HitResult))
+
+		if(CursorHitResult.bBlockingHit)
 		{
-			CachedDestination = HitResult.ImpactPoint;
+			CachedDestination = CursorHitResult.ImpactPoint;
 		}
 		if(APawn* CurrentPawn = GetPawn())
 		{
@@ -176,12 +176,12 @@ void AAuraPlayerController::Move(const FInputActionValue& InputActionValue)
 
 void AAuraPlayerController::CursorTrace()
 {
-	FHitResult HitResult;
-	GetHitResultUnderCursor(ECC_Visibility, false, HitResult);
-	if(HitResult.bBlockingHit == false) return;
+	
+	GetHitResultUnderCursor(ECC_Visibility, false, CursorHitResult);
+	if(CursorHitResult.bBlockingHit == false) return;
 
 	LastActor = CurrentActor;
-	CurrentActor = Cast<IEnemyInterface>(HitResult.GetActor());
+	CurrentActor = Cast<IEnemyInterface>(CursorHitResult.GetActor());
 
 	//	Not hovering over highlightable actors
 	if(LastActor == nullptr && CurrentActor == nullptr) return; 

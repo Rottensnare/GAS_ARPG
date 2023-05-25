@@ -50,9 +50,11 @@ private:
 
 	void Move(const FInputActionValue& InputActionValue);
 
+	FHitResult CursorHitResult;
 	void CursorTrace();
 	IEnemyInterface* LastActor;
 	IEnemyInterface* CurrentActor;
+	
 
 	UPROPERTY()
 	APawn* ControlledPawn;
