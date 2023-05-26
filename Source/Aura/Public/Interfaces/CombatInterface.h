@@ -24,4 +24,5 @@ class AURA_API ICombatInterface
 public:
 
 	virtual int32 GetCharacterLevel();
+	virtual FVector GetCombatSocketLocation();
 };
