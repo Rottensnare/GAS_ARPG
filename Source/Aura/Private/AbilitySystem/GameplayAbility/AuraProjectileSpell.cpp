@@ -13,7 +13,13 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 {
 	Super::ActivateAbility(Handle, ActorInfo, ActivationInfo, TriggerEventData);
 
-	if(HasAuthority(&ActivationInfo))
+	
+	
+}
+
+void UAuraProjectileSpell::SpawnProjectile() const
+{
+	if(GetAvatarActorFromActorInfo()->HasAuthority())
 	{
 		ICombatInterface* CombatInterface = Cast<ICombatInterface>(GetAvatarActorFromActorInfo());
 		if(CombatInterface)
@@ -25,7 +31,8 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 			
 			AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
 				ProjectileClass,
-				SpawnTransform, GetOwningActorFromActorInfo(),
+				SpawnTransform,
+				GetOwningActorFromActorInfo(),
 				Cast<APawn>(GetOwningActorFromActorInfo()),
 				ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
 
@@ -35,5 +42,4 @@ void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Hand
 		}
 		
 	}
-	
 }

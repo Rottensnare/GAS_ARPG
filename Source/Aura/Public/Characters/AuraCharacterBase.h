@@ -27,7 +27,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, Category = "Combat")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
@@ -63,7 +63,6 @@ private:
 public:	
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-	virtual FVector GetCombatSocketLocation() override;
 
 	
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}

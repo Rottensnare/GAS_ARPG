@@ -87,3 +87,9 @@ int32 AAuraCharacter::GetCharacterLevel()
 
 	return AuraPlayerState->GetCharacterLevel();
 }
+
+FVector AAuraCharacter::GetCombatSocketLocation()
+{
+	check(Weapon)
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
+}
