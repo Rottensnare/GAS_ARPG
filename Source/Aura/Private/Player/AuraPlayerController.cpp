@@ -80,6 +80,8 @@ void AAuraPlayerController::SetupInputComponent()
 
 	EnhancedInputComponent->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ThisClass::Move);
 	EnhancedInputComponent->BindAbilityActions(InputConfig, this, &ThisClass::AbilityInputTagPressed, &ThisClass::AbilityInputTagReleased, &ThisClass::AbilityInputTagHeld);
+	EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Started, this, &ThisClass::ShiftPressed);
+	EnhancedInputComponent->BindAction(ShiftAction, ETriggerEvent::Completed, this, &ThisClass::ShiftReleased);
 }
 
 void AAuraPlayerController::AbilityInputTagPressed(FGameplayTag InputTag)
@@ -100,12 +102,10 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		GetASC()->AbilityInputTagReleased(InputTag);
 		return;
 	}
+	
+	GetASC()->AbilityInputTagReleased(InputTag);
 
-	if(bTargeting)
-	{
-		GetASC()->AbilityInputTagReleased(InputTag);
-	}
-	else
+	if(!bTargeting && !bShiftKeyDown)
 	{
 		if(FollowTime < ShortPressThreshold)
 		{
@@ -125,7 +125,6 @@ void AAuraPlayerController::AbilityInputTagReleased(FGameplayTag InputTag)
 		FollowTime = 0.f;
 		bTargeting = false;
 	}
-	
 }
 
 void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
@@ -134,7 +133,7 @@ void AAuraPlayerController::AbilityInputTagHeld(FGameplayTag InputTag)
 	
 	if(InputTag.MatchesTagExact(FAuraGameplayTags::Get().InputTag_LMB))
 	{
-		if(bTargeting)
+		if(bTargeting || bShiftKeyDown)
 		{
 			GetASC()->AbilityInputTagHeld(InputTag);
 			return;
