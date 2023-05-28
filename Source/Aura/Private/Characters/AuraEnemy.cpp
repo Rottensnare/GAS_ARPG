@@ -52,4 +52,6 @@ void AAuraEnemy::InitAbilityActorInfo()
 	check(AbilitySystemComponent)
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UAuraAbilitySystemComponentBase>(AbilitySystemComponent)->AbilityActorInfoSet();
+
+	InitDefaultAttributes();
 }

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "GameplayEffectTypes.h"
 #include "GameFramework/Actor.h"
 #include "AuraProjectile.generated.h"
 
@@ -18,6 +19,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UProjectileMovementComponent> ProjectileMovement;
+
+	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
+	FGameplayEffectSpecHandle DamageEffectSpecHandle;
 	
 protected:
 
@@ -26,7 +30,14 @@ protected:
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent)
 	void OnProjectileOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+	
+	UPROPERTY(EditAnywhere)
+	float ProjectileLifeSpan = 10.f;
 
+	
+
+	/**	Effects */
+	
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNiagaraSystem> ImpactEffect;
 
@@ -45,8 +56,6 @@ protected:
 	UPROPERTY(EditAnywhere)
 	float VolumeMultiplier = 1.f;
 
-	UPROPERTY(EditAnywhere)
-	float ProjectileLifeSpan = 10.f;
 
 private:
 

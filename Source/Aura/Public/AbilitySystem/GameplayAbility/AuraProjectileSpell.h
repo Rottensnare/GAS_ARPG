@@ -26,4 +26,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectile(const FVector& TargetLocation);
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	TSubclassOf<UGameplayEffect> DamageEffectClass;
 };
