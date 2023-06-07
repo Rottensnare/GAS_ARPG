@@ -107,3 +107,10 @@ void AAuraEnemy::InitDefaultAttributes() const
 {
 	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(CharacterClass, Level, this, AbilitySystemComponent);
 }
+
+void AAuraEnemy::Die()
+{
+	SetLifeSpan(LifeTime);
+	
+	Super::Die();
+}

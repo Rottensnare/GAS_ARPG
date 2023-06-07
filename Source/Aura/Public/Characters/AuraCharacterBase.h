@@ -58,6 +58,29 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
+
+	/**	Detaches weapon and calls Multicast_HandleDeath_Implementation */
+	void Dissolve();
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+	
+	UFUNCTION(BlueprintImplementableEvent)
+	void StartWeaponDissolveTimeline(UMaterialInstanceDynamic* DynamicMaterialInstance);
+
+	/**	Time before dissolve effect is started after death. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float DissolveDelay = 2.f;
+
+	/**	Time before character is deleted after death. */
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float LifeTime = 5.f;
+	
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
@@ -67,6 +90,11 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	
+	virtual void Die() override;
+	
+	UFUNCTION(NetMulticast, Reliable)
+	virtual void Multicast_HandleDeath();
 	
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 };

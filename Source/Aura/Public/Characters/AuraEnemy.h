@@ -70,4 +70,5 @@ public:
 	/**	Category Virtual Overrides */
 
 	virtual int32 GetCharacterLevel() override {return Level;};
+	virtual void Die() override;
 };
