@@ -8,6 +8,9 @@ FAuraGameplayTags FAuraGameplayTags::GameplayTags;
 
 void FAuraGameplayTags::InitializeNativeGameplayTags()
 {
+
+	/**	Category Primary */
+	
 	GameplayTags.Attribute_Primary_Strength = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Primary.Strength"), FString("Increases physical damage."));
 	GameplayTags.Attribute_Primary_Intelligence = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -16,6 +19,8 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	FName("Attributes.Primary.Resilience"), FString("Increases Armor and Armor Penetration."));
 	GameplayTags.Attribute_Primary_Vigor = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Primary.Vigor"), FString("Increases Health."));
+
+	/**	Category Secondary */
 	
 	GameplayTags.Attribute_Secondary_Armor = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.Armor"), FString("Reduces damage taken & improves Block Chance."));
@@ -38,7 +43,18 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Attribute_Secondary_MaxMana = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Attributes.Secondary.MaxMana"), FString("Maximum amount of Mana."));
 
+	/**	Category Caller */
+	
+	GameplayTags.Damage = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Damage"), FString("Damaaj"));
 
+	/**	Category Animation */
+	
+	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Effects.HitReact"), FString("Hit Reaction"));
+	
+	/**	Category Input */
+	
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("InputTag.LMB"), FString("Input Tag for Left Mouse Button."));
 	GameplayTags.InputTag_RMB = UGameplayTagsManager::Get().AddNativeGameplayTag(

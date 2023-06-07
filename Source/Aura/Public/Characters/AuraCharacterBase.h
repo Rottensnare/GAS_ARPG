@@ -24,6 +24,7 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 public:
 	AAuraCharacterBase();
 
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -52,8 +53,10 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 	
 	virtual void InitDefaultAttributes() const;
-
 	void AddCharacterAbilities();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<UAnimMontage> HitReactMontage;
 
 private:
 
@@ -63,7 +66,7 @@ private:
 public:	
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
-
+	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 };

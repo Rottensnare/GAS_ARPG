@@ -26,6 +26,9 @@ public:
 	virtual int32 GetCharacterLevel();
 	virtual FVector GetCombatSocketLocation();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetHitReactMontage();
+
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& Target);
 };

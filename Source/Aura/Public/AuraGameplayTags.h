@@ -36,6 +36,14 @@ public:
  FGameplayTag Attribute_Secondary_HealthRegeneration;
  FGameplayTag Attribute_Secondary_ManaRegeneration;
 
+ /** Category CallerTags */
+
+ FGameplayTag Damage;
+
+ /** Category Animation */
+
+ FGameplayTag Effects_HitReact;
+
  /** Category InputTags */
 
  FGameplayTag InputTag_LMB;

@@ -26,7 +26,7 @@ UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Unable to get UOverlayWidgetController."))
+	UE_LOG(LogTemp, Warning, TEXT("UAuraAbilitySystemLibrary:	Unable to get UOverlayWidgetController."))
 	
 	return nullptr;
 }
@@ -48,7 +48,7 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Unable to get UAttributeMenuWidgetController."))
+	UE_LOG(LogTemp, Warning, TEXT("UAuraAbilitySystemLibrary:	Unable to get UAttributeMenuWidgetController."))
 	
 	return nullptr;
 }
@@ -59,13 +59,13 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const ECharacterClas
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if(AuraGameMode == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AuraGameMode is not valid."))
+		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode is not valid."))
 		return;
 	}
 
 	if(AuraGameMode->CharacterClassInfo == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("AuraGameMode->CharacterClassInfo is not set."))
+		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode->CharacterClassInfo is not set."))
 		return;
 	}
 	
@@ -80,4 +80,33 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const ECharacterClas
 	ASC->ApplyGameplayEffectSpecToSelf(*PrimaryGESpec.Data.Get());
 	ASC->ApplyGameplayEffectSpecToSelf(*SecondaryGESpec.Data.Get());
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalGESpec.Data.Get());
+}
+
+void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+{
+	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	if(AuraGameMode == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode is not valid."))
+		return;
+	}
+
+	if(AuraGameMode->CharacterClassInfo == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode->CharacterClassInfo is not set."))
+		return;
+	}
+
+	if(ASC == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	ASC is not set."))
+		return;
+	}
+
+	UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
+	for(const auto& Ability : CharacterClassInfo->CommonAbilities)
+	{
+		FGameplayAbilitySpec GEAbilitySpec = FGameplayAbilitySpec(Ability);
+		ASC->GiveAbility(GEAbilitySpec);
+	}
 }

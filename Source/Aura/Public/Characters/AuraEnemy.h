@@ -37,6 +37,15 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Default_Max;
+	
+	UFUNCTION()
+	void HitReactTagChanged(const FGameplayTag Tag, int32 NewCount);
+
+	UPROPERTY(BlueprintReadOnly, Category = "Combat")
+	bool bHitReacting = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
+	float BaseWalkSpeed = 300.f;
 
 protected:
 
@@ -44,15 +53,17 @@ protected:
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitDefaultAttributes() const override;
 
+	/**	Enemy level */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	int32 Level = 1;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	TObjectPtr<UWidgetComponent> HealthBar;
 
+
 private:
 
-
+	
 
 public:
 
