@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "Interfaces/EnemyInterface.h"
+#include "UI/Widget/DamageTextComponent.h"
 #include "AuraPlayerController.generated.h"
 
 class USplineComponent;
@@ -30,7 +31,12 @@ public:
 	AAuraPlayerController();
 	void AutoRun();
 	virtual void PlayerTick(float DeltaTime) override;
-
+	
+	UFUNCTION(Client, Reliable)
+	void ShowDamageNumber(const float Damage, AActor* TargetActor);
+	UPROPERTY(EditDefaultsOnly, Category = "UI")
+	FVector FloatingTextOffset = FVector::ZeroVector;
+	
 protected:
 
 	virtual void BeginPlay() override;
@@ -92,5 +98,6 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USplineComponent> SplineComponent;
 
-	
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UDamageTextComponent> DamageTextCompClass;
 };

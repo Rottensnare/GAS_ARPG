@@ -9,7 +9,9 @@
 #include "GameplayEffectExtension.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
+#include "Player/AuraPlayerController.h"
 
 UAuraAttributeSetBase::UAuraAttributeSetBase()
 {
@@ -121,6 +123,8 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 					CombatInterface->Die();
 				}
 			}
+
+			ShowFloatingText(Props, LocalIncomingDamage);
 		}
 	}
 
@@ -159,6 +163,19 @@ void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallback
 	}
 
 	
+}
+
+void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, const float Damage) const
+{
+	//	Don't show damage numbers from damage done to self
+	if(Props.SourceCharacter != Props.TargetCharacter)
+	{
+		if(AAuraPlayerController* APC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+		{
+			APC->ShowDamageNumber(Damage, Props.TargetCharacter);
+		}
+				
+	}
 }
 
 void UAuraAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth) const
