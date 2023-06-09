@@ -51,7 +51,7 @@ void AAuraPlayerController::ShowDamageNumber_Implementation(const float Damage, 
 	if(IsValid(TargetActor) && DamageTextCompClass)
 	{
 		UDamageTextComponent* DmgTextComp = NewObject<UDamageTextComponent>(TargetActor, DamageTextCompClass);
-		if(DmgTextComp == nullptr)
+		if(DmgTextComp != nullptr)
 		{
 			DmgTextComp->RegisterComponent();
 			DmgTextComp->AttachToComponent(TargetActor->GetRootComponent(), FAttachmentTransformRules::KeepRelativeTransform);

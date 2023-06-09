@@ -38,22 +38,22 @@ protected:
 
 	/**	Effects */
 	
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<UNiagaraSystem> ImpactEffect;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<USoundBase> ImpactSound;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<USoundBase> LoopingSound;
 
 	UPROPERTY()
 	TObjectPtr<UAudioComponent> LoopSoundComponent;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Effects")
 	TObjectPtr<USoundAttenuation> ImpactSoundAttenuation;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Effects", meta = (AdvancedDisplay))
 	float VolumeMultiplier = 1.f;
 
 
