@@ -76,9 +76,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluateParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max<float>(TargetBlockChance, 0.f);
-	
-	const bool bBlocked = FMath::RandRange(1, 100) < TargetBlockChance;
-	if(bBlocked)
+
+	/**	Roll 0-100 for checking if target blocked the attack */
+	if( FMath::RandRange(0, 100) < TargetBlockChance)
 	{
 		Damage *= 0.5f;
 	}
@@ -107,8 +107,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		UE_LOG(LogTemp, Error, TEXT("ExecCalc_Damage:	ArmorPenCurve or EffectiveArmorCurve or CritResistCurve is nullptr"))
 		return;
 	}
-
-	const int32 EnemyLevelDEBUG = TargetCombatInterface->GetCharacterLevel();
 	
 	const float ArmorPenCoefficient = ArmorPenCurve->Eval(SourceCombatInterface->GetCharacterLevel());
 	const float EffectArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetCharacterLevel());
@@ -130,9 +128,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	TargetCritResist = FMath::Max<float>(0.f, TargetCritResist);
 
 	const float EffectCritChance = SourceCritChance - TargetCritResist * CritResistCoefficient;
-	const bool bCriticalHit = FMath::RandRange(0, 100) < EffectCritChance;
 
-	if(bCriticalHit)
+	/**	Roll 0-100 for checking if the target got critically hit */
+	if(FMath::RandRange(0, 100) < EffectCritChance)
 	{
 		Damage += SourceCritDamage;
 	}

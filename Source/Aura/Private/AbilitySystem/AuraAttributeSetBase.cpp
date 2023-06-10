@@ -89,6 +89,8 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 {
 	Super::PostGameplayEffectExecute(Data);
 
+	FGameplayEffectContextHandle CHandle_DEBUG = Data.EffectSpec.GetContext();
+	
 	FEffectProperties Props;
 	SetEffectProperties(Data, Props);
 
