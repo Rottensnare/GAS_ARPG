@@ -33,7 +33,7 @@ public:
 	virtual void PlayerTick(float DeltaTime) override;
 	
 	UFUNCTION(Client, Reliable)
-	void ShowDamageNumber(const float Damage, AActor* TargetActor);
+	void ShowDamageNumber(const float Damage, AActor* TargetActor, const bool bBlockedHit, const bool bCriticalHit);
 	UPROPERTY(EditDefaultsOnly, Category = "UI")
 	FVector FloatingTextOffset = FVector::ZeroVector;
 	

@@ -7,11 +7,15 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Net/UnrealNetwork.h"
 #include "Player/AuraPlayerController.h"
+
+DECLARE_STATS_GROUP(TEXT("AuraStatGroup"), STATGROUP_AuraStatGroup, STATCAT_Advanced);
+DECLARE_CYCLE_STAT(TEXT("SoftTargeting - Some Function"), STAT_SoftTargetSomeFunction, STATGROUP_AuraStatGroup);
 
 UAuraAttributeSetBase::UAuraAttributeSetBase()
 {
@@ -88,49 +92,55 @@ void UAuraAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribu
 void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-
-	FGameplayEffectContextHandle CHandle_DEBUG = Data.EffectSpec.GetContext();
+	double ThisTime = 0;
+	{
+		SCOPE_SECONDS_COUNTER(ThisTime)
+		FGameplayEffectContextHandle CHandle_DEBUG = Data.EffectSpec.GetContext();
 	
-	FEffectProperties Props;
-	SetEffectProperties(Data, Props);
+		FEffectProperties Props;
+		SetEffectProperties(Data, Props);
 
-	if(Data.EvaluatedData.Attribute == GetHealthAttribute())
-	{
-		SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
-	}
-	if(Data.EvaluatedData.Attribute == GetManaAttribute())
-	{
-		SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
-	}
-	if(Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
-	{
-		const float LocalIncomingDamage = GetIncomingDamage();
-		SetIncomingDamage(0.f);
-		if(LocalIncomingDamage > 0.f)
+		if(Data.EvaluatedData.Attribute == GetHealthAttribute())
 		{
-			const float NewHealth = GetHealth() - LocalIncomingDamage;
-			SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
+			SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
+		}
+		if(Data.EvaluatedData.Attribute == GetManaAttribute())
+		{
+			SetMana(FMath::Clamp(GetMana(), 0.f, GetMaxMana()));
+		}
+		if(Data.EvaluatedData.Attribute == GetIncomingDamageAttribute())
+		{
+			const float LocalIncomingDamage = GetIncomingDamage();
+			SetIncomingDamage(0.f);
+			if(LocalIncomingDamage > 0.f)
+			{
+				const float NewHealth = GetHealth() - LocalIncomingDamage;
+				SetHealth(FMath::Clamp(NewHealth, 0.f, GetMaxHealth()));
 
-			const bool bFatal = NewHealth <= 0.f;
-			if(bFatal == false)
-			{
-				FGameplayTagContainer TagContainer;
-				TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-				Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
-			}
-			else
-			{
-				if(ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor))
+				const bool bFatal = NewHealth <= 0.f;
+				if(bFatal == false)
 				{
-					CombatInterface->Die();
+					FGameplayTagContainer TagContainer;
+					TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+					Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
 				}
+				else
+				{
+					if(ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetAvatarActor))
+					{
+						CombatInterface->Die();
+					}
+				}
+				
+				ShowFloatingText(Props,
+					LocalIncomingDamage,
+					UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle),
+					UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle));
 			}
-
-			ShowFloatingText(Props, LocalIncomingDamage);
 		}
 	}
-
-	
+	const double Milliseconds = ThisTime * 1000;
+	UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f"), Milliseconds)
 }
 
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
@@ -167,14 +177,14 @@ void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallback
 	
 }
 
-void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, const float Damage) const
+void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, const float Damage, const bool bBlockedHit, const bool bCriticalHit) const
 {
 	//	Don't show damage numbers from damage done to self
 	if(Props.SourceCharacter != Props.TargetCharacter)
 	{
 		if(AAuraPlayerController* APC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
 		{
-			APC->ShowDamageNumber(Damage, Props.TargetCharacter);
+			APC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
 				
 	}

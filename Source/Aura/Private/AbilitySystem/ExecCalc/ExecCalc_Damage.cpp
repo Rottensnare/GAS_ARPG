@@ -4,6 +4,7 @@
 #include "AbilitySystem/ExecCalc/ExecCalc_Damage.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSetBase.h"
@@ -76,9 +77,9 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	float TargetBlockChance = 0.f;
 	ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(DamageStatics().BlockChanceDef, EvaluateParameters, TargetBlockChance);
 	TargetBlockChance = FMath::Max<float>(TargetBlockChance, 0.f);
-
+	const bool bBlocked = FMath::RandRange(0, 100) < TargetBlockChance;
 	/**	Roll 0-100 for checking if target blocked the attack */
-	if( FMath::RandRange(0, 100) < TargetBlockChance)
+	if(bBlocked)
 	{
 		Damage *= 0.5f;
 	}
@@ -129,11 +130,17 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 
 	const float EffectCritChance = SourceCritChance - TargetCritResist * CritResistCoefficient;
 
+	const bool bCriticalHit = FMath::RandRange(0, 100) < EffectCritChance;
+	
 	/**	Roll 0-100 for checking if the target got critically hit */
-	if(FMath::RandRange(0, 100) < EffectCritChance)
+	if(bCriticalHit)
 	{
 		Damage += SourceCritDamage;
 	}
+
+	FGameplayEffectContextHandle GEContextHandle = Spec.GetContext();
+	UAuraAbilitySystemLibrary::SetIsBlockedHit(GEContextHandle, bBlocked);
+	UAuraAbilitySystemLibrary::SetIsCriticalHit(GEContextHandle, bCriticalHit);
 	
 	const FGameplayModifierEvaluatedData EvaluatedData(UAuraAttributeSetBase::GetIncomingDamageAttribute(), EGameplayModOp::Additive, Damage);
 	OutExecutionOutput.AddOutputModifier(EvaluatedData);
