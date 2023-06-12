@@ -35,7 +35,7 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	if(CombatInterface)
 	{
 		const int32 CharacterLevel = CombatInterface->GetCharacterLevel();
-		return 80.f + 2.5f * Vigor + 10.f * CharacterLevel;
+		return 20.f + 2.5f * Vigor + 5.f * CharacterLevel;
 	}
 
 	UE_LOG(LogTemp, Error, TEXT("Spec source object does not implement the ICombatInterface"))

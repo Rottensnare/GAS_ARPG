@@ -40,6 +40,11 @@ UAuraAttributeSetBase::UAuraAttributeSetBase()
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_ManaRegeneration, GetManaRegenAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_MaxHealth, GetMaxHealthAttribute);
 	TagsToAttributes.Add(GameplayTags.Attribute_Secondary_MaxMana, GetMaxManaAttribute);
+
+	TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Arcane, GetArcaneResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Fire, GetFireResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Lightning, GetLightningResistanceAttribute);
+	TagsToAttributes.Add(GameplayTags.Attributes_Resistance_Physical, GetPhysicalResistanceAttribute);
 }
 
 void UAuraAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -70,6 +75,13 @@ void UAuraAttributeSetBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, HealthRegen, COND_None, REPNOTIFY_Always);
 	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, ManaRegen, COND_None, REPNOTIFY_Always);
 
+	//*		Resistance Attributes	*/
+
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, ArcaneResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, FireResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, LightningResistance, COND_None, REPNOTIFY_Always);
+	DOREPLIFETIME_CONDITION_NOTIFY(UAuraAttributeSetBase, PhysicalResistance, COND_None, REPNOTIFY_Always);
+
 	
 }
 
@@ -92,9 +104,9 @@ void UAuraAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribu
 void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-	double ThisTime = 0;
+	double ThisTime = 0; //NOTE: Delete this later. It is for testing.
 	{
-		SCOPE_SECONDS_COUNTER(ThisTime)
+		SCOPE_SECONDS_COUNTER(ThisTime) //NOTE: And This
 		FGameplayEffectContextHandle CHandle_DEBUG = Data.EffectSpec.GetContext();
 	
 		FEffectProperties Props;
@@ -139,8 +151,8 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 			}
 		}
 	}
-	const double Milliseconds = ThisTime * 1000;
-	UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f"), Milliseconds)
+	const double Milliseconds = ThisTime * 1000; //NOTE: And These
+	UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
 }
 
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
@@ -186,9 +198,10 @@ void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, con
 		{
 			APC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}
-				
 	}
 }
+
+#pragma region  Rep Notifies
 
 void UAuraAttributeSetBase::OnRep_Health(const FGameplayAttributeData& OldHealth) const
 {
@@ -269,3 +282,25 @@ void UAuraAttributeSetBase::OnRep_ManaRegen(const FGameplayAttributeData& OldMan
 {
 	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, ManaRegen, OldManaRegen);
 }
+
+void UAuraAttributeSetBase::OnRep_ArcaneResistance(const FGameplayAttributeData& OldArcaneResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, ArcaneResistance, OldArcaneResistance);
+}
+
+void UAuraAttributeSetBase::OnRep_FireResistance(const FGameplayAttributeData& OldFireResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, FireResistance, OldFireResistance);
+}
+
+void UAuraAttributeSetBase::OnRep_LightningResistance(const FGameplayAttributeData& OldLightningResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, LightningResistance, OldLightningResistance);
+}
+
+void UAuraAttributeSetBase::OnRep_PhysicalResistance(const FGameplayAttributeData& OldPhysicalResistance)
+{
+	GAMEPLAYATTRIBUTE_REPNOTIFY(UAuraAttributeSetBase, PhysicalResistance, OldPhysicalResistance);
+}
+
+#pragma endregion 

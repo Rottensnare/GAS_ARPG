@@ -35,10 +35,22 @@ public:
  FGameplayTag Attribute_Secondary_CriticalHitResistance;
  FGameplayTag Attribute_Secondary_HealthRegeneration;
  FGameplayTag Attribute_Secondary_ManaRegeneration;
+ 
 
- /** Category CallerTags */
-
+ /** Category Damage types */
+ 
  FGameplayTag Damage;
+ FGameplayTag Damage_Arcane;
+ FGameplayTag Damage_Fire;
+ FGameplayTag Damage_Lightning;
+ FGameplayTag Damage_Physical;
+
+ FGameplayTag Attributes_Resistance_Arcane;
+ FGameplayTag Attributes_Resistance_Fire;
+ FGameplayTag Attributes_Resistance_Lightning;
+ FGameplayTag Attributes_Resistance_Physical;
+
+ TMap<FGameplayTag, FGameplayTag> DamageTypesToResistances;
 
  /** Category Animation */
 
