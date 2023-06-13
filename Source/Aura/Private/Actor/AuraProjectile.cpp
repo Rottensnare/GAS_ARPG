@@ -54,7 +54,9 @@ void AAuraProjectile::Destroyed()
 void AAuraProjectile::OnProjectileOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	
 	check(ImpactSound && ImpactEffect && ImpactSoundAttenuation)
+	if(DamageEffectSpecHandle.Data.Get() == nullptr || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor) return;
 	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator, VolumeMultiplier, 1.f, 0.f, ImpactSoundAttenuation);
 	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
 
@@ -64,6 +66,7 @@ void AAuraProjectile::OnProjectileOverlap_Implementation(UPrimitiveComponent* Ov
 		{
 			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
 		}
+		
 		Destroy();
 	}
 	else

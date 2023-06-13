@@ -194,7 +194,7 @@ void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, con
 	//	Don't show damage numbers from damage done to self
 	if(Props.SourceCharacter != Props.TargetCharacter)
 	{
-		if(AAuraPlayerController* APC = Cast<AAuraPlayerController>(UGameplayStatics::GetPlayerController(Props.SourceCharacter, 0)))
+		if(AAuraPlayerController* APC = Cast<AAuraPlayerController>(Props.SourceController))
 		{
 			APC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
 		}

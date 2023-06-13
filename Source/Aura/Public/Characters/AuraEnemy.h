@@ -9,6 +9,8 @@
 #include "UI/Widget/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
+class AAuraAIController;
+class UBehaviorTree;
 enum class ECharacterClass : uint8;
 class UWidgetComponent;
 /**
@@ -52,6 +54,7 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitDefaultAttributes() const override;
+	virtual void PossessedBy(AController* NewController) override;
 
 	/**	Enemy level */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
@@ -60,6 +63,13 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Widgets")
 	TObjectPtr<UWidgetComponent> HealthBar;
 
+	/**	Category AI	*/
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "AI")
+	TObjectPtr<UBehaviorTree> BehaviorTree;
+
+	UPROPERTY(VisibleInstanceOnly, Category = "AI")
+	TObjectPtr<AAuraAIController> AuraAIController;
 
 private:
 

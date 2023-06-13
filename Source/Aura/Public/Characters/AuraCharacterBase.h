@@ -46,7 +46,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
 	TSubclassOf<UGameplayEffect> DefaultPrimaryAttributes;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")
+	/**	SET FROM THE DATA ASSET. SETTING THIS DOES NOTHING AT THE MOMENT */
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes", meta = (DeprecatedProperty))
 	TSubclassOf<UGameplayEffect> DefaultSecondaryAttributes;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Attributes")

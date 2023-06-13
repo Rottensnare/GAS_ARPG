@@ -7,6 +7,9 @@
 #include "AbilitySystem/AuraAbilitySystemComponentBase.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/AuraAttributeSetBase.h"
+#include "AI/Controller/AuraAIController.h"
+#include "BehaviorTree/BehaviorTree.h"
+#include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
@@ -32,7 +35,7 @@ void AAuraEnemy::BeginPlay()
 	GetCharacterMovement()->MaxWalkSpeed = BaseWalkSpeed;
 	InitAbilityActorInfo();
 
-	UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
+	if(HasAuthority()) UAuraAbilitySystemLibrary::GiveStartupAbilities(this, AbilitySystemComponent);
 
 	UAuraUserWidget* AuraUserWidget = Cast<UAuraUserWidget>(HealthBar->GetUserWidgetObject());
 	AuraUserWidget->SetWidgetController(this);
@@ -100,7 +103,7 @@ void AAuraEnemy::InitAbilityActorInfo()
 	AbilitySystemComponent->InitAbilityActorInfo(this, this);
 	Cast<UAuraAbilitySystemComponentBase>(AbilitySystemComponent)->AbilityActorInfoSet();
 	
-	InitDefaultAttributes();
+	if(HasAuthority()) InitDefaultAttributes();
 }
 
 void AAuraEnemy::InitDefaultAttributes() const
@@ -108,9 +111,21 @@ void AAuraEnemy::InitDefaultAttributes() const
 	UAuraAbilitySystemLibrary::InitializeDefaultAttributes(CharacterClass, Level, this, AbilitySystemComponent);
 }
 
+void AAuraEnemy::PossessedBy(AController* NewController)
+{
+	Super::PossessedBy(NewController);
+	
+	if(HasAuthority() == false) return;
+	AuraAIController = Cast<AAuraAIController>(NewController);
+	check(AuraAIController)
+	check(BehaviorTree)
+	
+	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
+	AuraAIController->RunBehaviorTree(BehaviorTree);
+}
+
 void AAuraEnemy::Die()
 {
-	SetLifeSpan(LifeTime);
-	
 	Super::Die();
+	SetLifeSpan(LifeTime);
 }
