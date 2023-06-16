@@ -107,8 +107,6 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 	double ThisTime = 0; //NOTE: Delete this later. It is for testing.
 	{
 		SCOPE_SECONDS_COUNTER(ThisTime) //NOTE: And This
-		FGameplayEffectContextHandle CHandle_DEBUG = Data.EffectSpec.GetContext();
-	
 		FEffectProperties Props;
 		SetEffectProperties(Data, Props);
 

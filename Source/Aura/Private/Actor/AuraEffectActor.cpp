@@ -81,6 +81,7 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 {
 	UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(TargetActor);
 	if(TargetASC == nullptr) return;
+	if(bApplyToEnemies == false && TargetActor->ActorHasTag(FName("Enemy"))) return;
 
 	check(GameplayEffectClass)
 	FGameplayEffectContextHandle EffectContextHandle = TargetASC->MakeEffectContext();
@@ -89,10 +90,18 @@ void AAuraEffectActor::ApplyEffectToTarget(AActor* TargetActor, TSubclassOf<UGam
 	FActiveGameplayEffectHandle ActiveEffectHandle = TargetASC->ApplyGameplayEffectSpecToSelf(*GameplayEffectSpecHandle.Data.Get());
 
 	const bool bIsInfiniteEffect = GameplayEffectSpecHandle.Data.Get()->Def.Get()->DurationPolicy == EGameplayEffectDurationType::Infinite;
-	if(!bIsInfiniteEffect || InfiniteEffectRemovalPolicy != EEffectRemovalPolicy::RemoveOnEndOverlap) return;
+	if(!bIsInfiniteEffect || InfiniteEffectRemovalPolicy != EEffectRemovalPolicy::RemoveOnEndOverlap)
+	{
+		if(bDestroyOnEffectApplication)
+		{
+			Destroy();
+		}
+		return;
+	}
 
 	ActiveEffectHandles.Emplace(ActiveEffectHandle, TargetASC);
 	OutActiveHandle = ActiveEffectHandle;
+	
 }
 
 void AAuraEffectActor::RemoveEffectFromTarget(AActor* TargetActor)

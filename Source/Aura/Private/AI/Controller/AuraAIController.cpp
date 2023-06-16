@@ -15,6 +15,5 @@ AAuraAIController::AAuraAIController()
 void AAuraAIController::BeginPlay()
 {
 	
-	
 	Super::BeginPlay();
 }

@@ -81,6 +81,12 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
 	float ActorLevel = 1.f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Applied Effects")
+	bool bApplyToEnemies = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Applied Effects")
+	bool bDestroyOnEffectApplication = false;
 	
 private:
 
