@@ -185,24 +185,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		TargetCritResist = FMath::Max<float>(0.f, TargetCritResist);
 
 		const float EffectCritChance = SourceCritChance - TargetCritResist * CritResistCoefficient;
-
 		const bool bCriticalHit = FMath::RandRange(0, 100) < EffectCritChance;
-
-		/*	NOTE THIS NEXT STUFF IS EXPERIMENTAL */
-
-		int32 DamageModBits = 0;
-		if(bCriticalHit)
-		{
-			DamageModBits |= 1 << 0;
-		}
-		if(bBlocked)
-		{
-			DamageModBits |= 1 << 1;
-		}
-		UE_LOG(LogTemp, Warning, TEXT("DamageModBits value: %d"), DamageModBits);
-
-		/*	NOTE END OF EXPERIMENTAL STUFF */
-		 
 		
 		/**	Roll 0-100 for checking if the target got critically hit */
 		if(bCriticalHit)
