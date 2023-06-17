@@ -31,19 +31,18 @@ public:
 
 	virtual bool NetSerialize(FArchive& Ar, UPackageMap* Map, bool& bOutSuccess) override;
 
-	bool IsCriticalHit() const {return bIsCriticalHit;}
-	bool IsBlockedHit() const {return bIsBlockedHit;}
+	bool IsCriticalHit() const {return EffectModifierBits & (1 << 0);}
+	bool IsBlockedHit() const {return EffectModifierBits & (1 << 1);}
+	int32 GetEffectModifierBits() const {return EffectModifierBits;}
 
-	void SetIsCriticalHit(const bool IN bCriticalHit) {bIsCriticalHit = bCriticalHit;}
-	void SetIsBlockedHit(const bool IN bBlockedHit) {bIsBlockedHit = bBlockedHit;}
+	void SetIsCriticalHit(const bool IN bCriticalHit) {EffectModifierBits |= bCriticalHit << 0;}
+	void SetIsBlockedHit(const bool IN bBlockedHit) {EffectModifierBits |= bBlockedHit << 1;}
+	void SetEffectModifierBits(const int32 IN InBits) {EffectModifierBits = InBits;}
 
 protected:
 	
 	UPROPERTY()
-	bool bIsBlockedHit = false;
-	
-	UPROPERTY()
-	bool bIsCriticalHit = false;
+	int32 EffectModifierBits = 0;
 
 };
 

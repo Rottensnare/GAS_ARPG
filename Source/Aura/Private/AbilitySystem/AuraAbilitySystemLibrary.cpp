@@ -142,6 +142,19 @@ bool UAuraAbilitySystemLibrary::IsCriticalHit(const FGameplayEffectContextHandle
 	return false;
 }
 
+int32 UAuraAbilitySystemLibrary::GetEffectModifierBits(const FGameplayEffectContextHandle& EffectContextHandle)
+{
+	const FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get());
+	if(AuraGameplayEffectContext)
+	{
+		int32 Test = AuraGameplayEffectContext->GetEffectModifierBits();
+		int32 Test2 = Test + 1;
+		return AuraGameplayEffectContext->GetEffectModifierBits();
+	}
+
+	return -1;
+}
+
 void UAuraAbilitySystemLibrary::SetIsBlockedHit(FGameplayEffectContextHandle& EffectContextHandle,
 	const bool bIsBlockedHit)
 {
@@ -161,3 +174,15 @@ void UAuraAbilitySystemLibrary::SetIsCriticalHit(FGameplayEffectContextHandle& E
 		AuraGameplayEffectContext->SetIsCriticalHit(bIsCriticalHit);
 	}
 }
+
+void UAuraAbilitySystemLibrary::SetEffectModifierBits(FGameplayEffectContextHandle& EffectContextHandle,
+	const int32 InEffectModifierBits)
+{
+	FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<FAuraGameplayEffectContext*>(EffectContextHandle.Get());
+	if(AuraGameplayEffectContext)
+	{
+		AuraGameplayEffectContext->SetEffectModifierBits(InEffectModifierBits);
+	}
+}
+
+

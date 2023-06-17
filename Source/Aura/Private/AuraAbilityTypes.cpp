@@ -36,11 +36,11 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		{
 			RepBits |= 1 << 6;
 		}
-		if(bIsBlockedHit)
+		if(EffectModifierBits & (1 << 0))
 		{
 			RepBits |= 1 << 7;
 		}
-		if(bIsCriticalHit)
+		if(EffectModifierBits & (1 << 1))
 		{
 			RepBits |= 1 << 8;
 		}
@@ -94,14 +94,11 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		AddInstigator(Instigator.Get(), EffectCauser.Get()); // Just to initialize InstigatorAbilitySystemComponent
 	}
 
-	if(RepBits & (1 << 7))
+	if(RepBits & (1 << 7) || RepBits & (1 << 8))
 	{
-		Ar << bIsBlockedHit;
+		Ar << EffectModifierBits;
 	}
-	if(RepBits & (1 << 8))
-	{
-		Ar << bIsCriticalHit;
-	}
+	
 	
 	bOutSuccess = true;
 	return true;

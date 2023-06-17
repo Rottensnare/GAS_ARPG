@@ -5,6 +5,7 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
+#include "AuraAbilityTypes.h"
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
@@ -144,8 +145,7 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 				
 				ShowFloatingText(Props,
 					LocalIncomingDamage,
-					UAuraAbilitySystemLibrary::IsBlockedHit(Props.EffectContextHandle),
-					UAuraAbilitySystemLibrary::IsCriticalHit(Props.EffectContextHandle));
+					UAuraAbilitySystemLibrary::GetEffectModifierBits(Props.EffectContextHandle));
 			}
 		}
 	}
@@ -187,14 +187,14 @@ void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallback
 	
 }
 
-void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, const float Damage, const bool bBlockedHit, const bool bCriticalHit) const
+void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, const float Damage, const int32 EffectModBits) const
 {
 	//	Don't show damage numbers from damage done to self
 	if(Props.SourceCharacter != Props.TargetCharacter)
 	{
 		if(AAuraPlayerController* APC = Cast<AAuraPlayerController>(Props.SourceController))
 		{
-			APC->ShowDamageNumber(Damage, Props.TargetCharacter, bBlockedHit, bCriticalHit);
+			APC->ShowDamageNumber(Damage, Props.TargetCharacter, EffectModBits);
 		}
 	}
 }
