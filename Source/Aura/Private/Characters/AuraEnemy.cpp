@@ -93,7 +93,8 @@ void AAuraEnemy::HitReactTagChanged(const FGameplayTag Tag, int32 NewCount)
 {
 	bHitReacting = NewCount > 0;
 	GetCharacterMovement()->MaxWalkSpeed = bHitReacting ? 0.f : BaseWalkSpeed;
-	UE_LOG(LogTemp, Warning, TEXT("HitReactChanged, Count: %d"), NewCount)
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), bHitReacting);
+	//UE_LOG(LogTemp, Warning, TEXT("HitReactChanged, Count: %d"), NewCount)
 }
 
 
@@ -122,6 +123,8 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	
 	AuraAIController->GetBlackboardComponent()->InitializeBlackboard(*BehaviorTree->BlackboardAsset);
 	AuraAIController->RunBehaviorTree(BehaviorTree);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
+	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Ranged"), ECharacterClass::Warrior != CharacterClass );
 }
 
 void AAuraEnemy::Die()

@@ -7,22 +7,22 @@
 #include "AbilitySystem/AuraAttributeSetBase.h"
 #include "Interfaces/CombatInterface.h"
 
-struct FAuraDamageStatics
+struct AuraDamageStatics_FireResist
 {
 	DECLARE_ATTRIBUTE_CAPTUREDEF(FireResistance)
 
 	TMap<FGameplayTag, FGameplayEffectAttributeCaptureDefinition> TagsToCaptureDefs;
 
-	FAuraDamageStatics()
+	AuraDamageStatics_FireResist()
 	{
 		DEFINE_ATTRIBUTE_CAPTUREDEF(UAuraAttributeSetBase, FireResistance, Target, false);
 		TagsToCaptureDefs.Emplace(FAuraGameplayTags::Get().Attributes_Resistance_Fire, FireResistanceDef);
 	}
 };
 
-static const FAuraDamageStatics& DamageStatics()
+static const AuraDamageStatics_FireResist& DamageStatics()
 {
-	static FAuraDamageStatics DamageStatics;
+	static AuraDamageStatics_FireResist DamageStatics;
 	return DamageStatics;
 }
 
@@ -60,7 +60,7 @@ void UExecCalc_FireArea::Execute_Implementation(const FGameplayEffectCustomExecu
 	float Damage = 0.f;
 	const FGameplayTag DamageType = FAuraGameplayTags::Get().Damage_Fire;
 	const FGameplayTag ResistanceType = FAuraGameplayTags::Get().Attributes_Resistance_Fire;
-	const FGameplayEffectAttributeCaptureDefinition CaptureDef = FAuraDamageStatics().TagsToCaptureDefs[ResistanceType];
+	const FGameplayEffectAttributeCaptureDefinition CaptureDef = AuraDamageStatics_FireResist().TagsToCaptureDefs[ResistanceType];
 	float DamageTypeValue = Spec.GetModifierMagnitude(0, false);
 	float Resistance = 0.f;
 	if(ExecutionParams.AttemptCalculateCapturedAttributeMagnitude(CaptureDef, EvaluateParameters, Resistance))

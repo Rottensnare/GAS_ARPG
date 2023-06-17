@@ -41,8 +41,8 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	{
 		//IsValid also checks if Pending kill
 		if(!IsValid(TempActor) || !IsValid(AIOwner->GetPawn())) continue;
-		
-		if(const float Distance = FVector::Distance(AIOwner->GetPawn()->GetActorLocation(), TempActor->GetActorLocation()) < ClosestDistance)
+		const float Distance = FVector::Distance(AIOwner->GetPawn()->GetActorLocation(), TempActor->GetActorLocation());
+		if(Distance < ClosestDistance)
 		{
 			ClosestDistance = Distance;
 			ClosestActor = TempActor;
