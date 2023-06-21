@@ -20,7 +20,7 @@ struct AuraDamageStatics_FireResist
 	}
 };
 
-static const AuraDamageStatics_FireResist& DamageStatics()
+static const AuraDamageStatics_FireResist& DamageStatics_FireArea()
 {
 	static AuraDamageStatics_FireResist DamageStatics;
 	return DamageStatics;
@@ -28,7 +28,7 @@ static const AuraDamageStatics_FireResist& DamageStatics()
 
 UExecCalc_FireArea::UExecCalc_FireArea()
 {
-	RelevantAttributesToCapture.Add(DamageStatics().FireResistanceDef);
+	RelevantAttributesToCapture.Add(DamageStatics_FireArea().FireResistanceDef);
 }
 
 void UExecCalc_FireArea::Execute_Implementation(const FGameplayEffectCustomExecutionParameters& ExecutionParams,

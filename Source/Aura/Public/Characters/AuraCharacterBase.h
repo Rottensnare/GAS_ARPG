@@ -59,6 +59,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<UAnimMontage> HitReactMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TObjectPtr<UAnimMontage> AttackMontage;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
 
@@ -91,6 +94,7 @@ public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
+	virtual UAnimMontage* GetAttackMontage_Implementation() override;
 	
 	virtual void Die() override;
 	

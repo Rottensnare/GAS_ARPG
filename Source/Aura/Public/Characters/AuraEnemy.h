@@ -49,6 +49,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float BaseWalkSpeed = 300.f;
 
+	UPROPERTY(BlueprintReadWrite, Category = "Combat")
+	TObjectPtr<AActor> CombatTarget;
+
 protected:
 
 	virtual void BeginPlay() override;
@@ -81,4 +84,7 @@ public:
 
 	virtual int32 GetCharacterLevel() override {return Level;};
 	virtual void Die() override;
+
+	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
+	virtual AActor* GetCombatTarget_Implementation() const override;
 };

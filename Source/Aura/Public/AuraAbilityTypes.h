@@ -40,7 +40,8 @@ public:
 	void SetEffectModifierBits(const int32 IN InBits) {EffectModifierBits = InBits;}
 
 protected:
-	
+
+	/**	Contains information as flags. 1st bit is for critical hits, 2nd bit is for blocked hits.	*/
 	UPROPERTY()
 	int32 EffectModifierBits = 0;
 

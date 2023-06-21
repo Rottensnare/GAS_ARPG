@@ -29,8 +29,17 @@ public:
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	UAnimMontage* GetHitReactMontage();
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	UAnimMontage* GetAttackMontage();
+
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void UpdateFacingTarget(const FVector& Target);
 	
 	virtual void Die() = 0;
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetCombatTarget(AActor* InCombatTarget);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	AActor* GetCombatTarget() const;
 };

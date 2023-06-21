@@ -99,7 +99,6 @@ bool FAuraGameplayEffectContext::NetSerialize(FArchive& Ar, UPackageMap* Map, bo
 		Ar << EffectModifierBits;
 	}
 	
-	
 	bOutSuccess = true;
 	return true;
 }

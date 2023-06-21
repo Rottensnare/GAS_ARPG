@@ -6,6 +6,7 @@
 #include "AuraAbilityTypes.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Game/AuraGameModeBase.h"
+#include "Interfaces/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
 #include "Player/AuraPlayerState.h"
 #include "UI/HUD/AuraHUD.h"
@@ -83,7 +84,7 @@ void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const ECharacterClas
 	ASC->ApplyGameplayEffectSpecToSelf(*VitalGESpec.Data.Get());
 }
 
-void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
+void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContextObject, UAbilitySystemComponent* ASC, ECharacterClass CharacterClass)
 {
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if(AuraGameMode == nullptr)
@@ -103,12 +104,26 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	ASC is not set."))
 		return;
 	}
-
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
+	if(CombatInterface == nullptr)
+	{
+		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	CombatInterface is not set."))
+		return;
+	}
 	UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
 	for(const auto& Ability : CharacterClassInfo->CommonAbilities)
 	{
 		FGameplayAbilitySpec GEAbilitySpec = FGameplayAbilitySpec(Ability);
 		ASC->GiveAbility(GEAbilitySpec);
+	}
+	const FCharacterClassDefaultInfo& ClassDefaultInfo = CharacterClassInfo->GetClassDefaultInfo(CharacterClass);
+	if(CharacterClassInfo)
+	{
+		for(auto& AbilityClass : ClassDefaultInfo.ClassAbilities)
+		{
+			FGameplayAbilitySpec GameplayAbilitySpec = FGameplayAbilitySpec(AbilityClass, CombatInterface->GetCharacterLevel());
+			ASC->GiveAbility(GameplayAbilitySpec);
+		}
 	}
 }
 
