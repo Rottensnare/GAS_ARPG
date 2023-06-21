@@ -35,6 +35,6 @@ public:
 	/**	Category Virtual Overrides */
 
 	virtual int32 GetCharacterLevel() override;
-	virtual FVector GetCombatSocketLocation() override;
+	virtual FVector GetCombatSocketLocation_Implementation() override;
 	
 };

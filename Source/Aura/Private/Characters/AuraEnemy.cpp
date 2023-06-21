@@ -11,6 +11,7 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Engine/SkeletalMeshSocket.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "UI/Widget/AuraUserWidget.h"
 
@@ -141,4 +142,10 @@ void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
 AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 {
 	return CombatTarget;
+}
+
+FVector AAuraEnemy::GetCombatSocketLocation_Implementation()
+{
+	check(Weapon)
+	return Weapon->GetSocketLocation(WeaponTipSocketName);
 }

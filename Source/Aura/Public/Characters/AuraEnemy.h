@@ -87,4 +87,6 @@ public:
 
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;
 	virtual AActor* GetCombatTarget_Implementation() const override;
+
+	virtual FVector GetCombatSocketLocation_Implementation() override;
 };
