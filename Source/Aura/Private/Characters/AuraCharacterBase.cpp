@@ -96,6 +96,11 @@ UAnimMontage* AAuraCharacterBase::GetAttackMontage_Implementation()
 	return AttackMontage;
 }
 
+TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
+{
+	return AttackMontages;
+}
+
 void AAuraCharacterBase::Die()
 {
 	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));

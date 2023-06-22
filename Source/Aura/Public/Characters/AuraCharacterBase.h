@@ -24,7 +24,9 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 public:
 	AAuraCharacterBase();
 
-
+	UPROPERTY(EditAnywhere, Category = "Combat")
+	TArray<FTaggedMontage> AttackMontages;
+	
 protected:
 	virtual void BeginPlay() override;
 
@@ -98,6 +100,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual UAnimMontage* GetAttackMontage_Implementation() override;
+	TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	
 	virtual void Die() override;
 	virtual bool IsDead_Implementation() const override;
@@ -107,6 +110,7 @@ public:
 	virtual void Multicast_HandleDeath();
 	
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
+	
 
 	
 };
