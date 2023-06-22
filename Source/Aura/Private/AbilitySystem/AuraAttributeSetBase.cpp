@@ -196,6 +196,10 @@ void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, con
 		{
 			APC->ShowDamageNumber(Damage, Props.TargetCharacter, EffectModBits);
 		}
+		else if(AAuraPlayerController* APC2 = Cast<AAuraPlayerController>(Props.TargetController))
+		{
+			APC2->ShowDamageNumber(Damage, Props.TargetCharacter, EffectModBits);
+		}
 	}
 }
 
