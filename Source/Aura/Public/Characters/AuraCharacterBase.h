@@ -89,6 +89,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character Status")
 	bool bDead = false;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
+	TMap<FGameplayTag, FName> TagsToSockets;
 	
 private:
 
@@ -100,7 +103,7 @@ public:
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual UAnimMontage* GetAttackMontage_Implementation() override;
-	TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
+	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
 	
 	virtual void Die() override;
 	virtual bool IsDead_Implementation() const override;

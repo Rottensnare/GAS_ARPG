@@ -147,8 +147,17 @@ AActor* AAuraEnemy::GetCombatTarget_Implementation() const
 	return CombatTarget;
 }
 
-FVector AAuraEnemy::GetCombatSocketLocation_Implementation()
+FVector AAuraEnemy::GetCombatSocketLocation_Implementation(const FGameplayTag& AssociatedTag)
 {
-	check(Weapon)
-	return Weapon->GetSocketLocation(WeaponTipSocketName);
+	if(!TagsToSockets.Contains(AssociatedTag))
+	{
+		UE_LOG(LogTemp, Error, TEXT("AAuraEnemy::GetCombatSocketLocation_Implementation: TagsToSockets does not contain Tag: [%s]"), *AssociatedTag.GetTagName().ToString())
+		return FVector::ZeroVector;
+	}
+	if(AssociatedTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_Attack_Weapon))
+	{
+		return Weapon->GetSocketLocation(TagsToSockets[AssociatedTag]);
+	}
+
+	return GetMesh()->GetSocketLocation(TagsToSockets[AssociatedTag]);
 }

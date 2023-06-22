@@ -4,6 +4,7 @@
 #include "Characters/AuraCharacter.h"
 
 #include "AbilitySystemComponent.h"
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponentBase.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
@@ -88,9 +89,18 @@ int32 AAuraCharacter::GetCharacterLevel()
 	return AuraPlayerState->GetCharacterLevel();
 }
 
-FVector AAuraCharacter::GetCombatSocketLocation_Implementation()
+FVector AAuraCharacter::GetCombatSocketLocation_Implementation(const FGameplayTag& AssociatedTag)
 {
-	check(Weapon)
-	return Weapon->GetSocketLocation(WeaponTipSocketName);
+	if(!TagsToSockets.Contains(AssociatedTag))
+	{
+		UE_LOG(LogTemp, Error, TEXT("AAuraEnemy::GetCombatSocketLocation_Implementation: TagsToSockets does not contain Tag: [%s]"), *AssociatedTag.GetTagName().ToString())
+		return FVector::ZeroVector;
+	}
+	if(AssociatedTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_Attack_Weapon))
+	{
+		return Weapon->GetSocketLocation(TagsToSockets[AssociatedTag]);
+	}
+
+	return GetMesh()->GetSocketLocation(TagsToSockets[AssociatedTag]);
 }
 
