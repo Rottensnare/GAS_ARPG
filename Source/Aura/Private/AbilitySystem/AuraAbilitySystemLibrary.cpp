@@ -162,8 +162,6 @@ int32 UAuraAbilitySystemLibrary::GetEffectModifierBits(const FGameplayEffectCont
 	const FAuraGameplayEffectContext* AuraGameplayEffectContext = static_cast<const FAuraGameplayEffectContext*>(EffectContextHandle.Get());
 	if(AuraGameplayEffectContext)
 	{
-		int32 Test = AuraGameplayEffectContext->GetEffectModifierBits();
-		int32 Test2 = Test + 1;
 		return AuraGameplayEffectContext->GetEffectModifierBits();
 	}
 
@@ -197,6 +195,27 @@ void UAuraAbilitySystemLibrary::SetEffectModifierBits(FGameplayEffectContextHand
 	if(AuraGameplayEffectContext)
 	{
 		AuraGameplayEffectContext->SetEffectModifierBits(InEffectModifierBits);
+	}
+}
+
+void UAuraAbilitySystemLibrary::GetLivePlayersWithinRadius(const UObject* WorldContextObject,
+	TArray<AActor*>& OutActors, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin)
+{
+	const UWorld* CurrentWorld = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::Assert);
+	TArray<FOverlapResult> Overlaps;
+	FCollisionQueryParams CollisionQueryParams;
+	CollisionQueryParams.AddIgnoredActors(ActorsToIgnore);
+	FCollisionObjectQueryParams CollisionObjectQueryParams;
+	CollisionObjectQueryParams.AddObjectTypesToQuery(ECollisionChannel::ECC_Pawn);
+	
+	CurrentWorld->OverlapMultiByObjectType(Overlaps, SphereOrigin, FQuat::Identity, CollisionObjectQueryParams, FCollisionShape::MakeSphere(Radius), CollisionQueryParams);
+	for(const FOverlapResult& OverlapResult : Overlaps)
+	{
+		check(OverlapResult.GetActor())
+		if(OverlapResult.GetActor()->Implements<UCombatInterface>() && !ICombatInterface::Execute_IsDead(OverlapResult.GetActor()))
+		{
+			OutActors.AddUnique(OverlapResult.GetActor());
+		}
 	}
 }
 

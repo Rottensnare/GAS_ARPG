@@ -102,8 +102,19 @@ void AAuraCharacterBase::Die()
 	Multicast_HandleDeath_Implementation();
 }
 
+bool AAuraCharacterBase::IsDead_Implementation() const
+{
+	return bDead;
+}
+
+AActor* AAuraCharacterBase::GetAvatar_Implementation()
+{
+	return this;
+}
+
 void AAuraCharacterBase::Multicast_HandleDeath_Implementation()
 {
+	check(Weapon && GetMesh())
 	Weapon->SetSimulatePhysics(true);
 	Weapon->SetEnableGravity(true);
 	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
@@ -116,6 +127,8 @@ void AAuraCharacterBase::Multicast_HandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Dissolve();
+
+	bDead = true;
 }
 
 

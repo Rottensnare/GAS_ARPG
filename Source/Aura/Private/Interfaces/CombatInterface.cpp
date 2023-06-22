@@ -8,4 +8,3 @@ int32 ICombatInterface::GetCharacterLevel()
 {
 	return 0;
 }
-

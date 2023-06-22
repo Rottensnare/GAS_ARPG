@@ -84,6 +84,9 @@ protected:
 	/**	Time before character is deleted after death. */
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat")
 	float LifeTime = 5.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character Status")
+	bool bDead = false;
 	
 private:
 
@@ -97,9 +100,13 @@ public:
 	virtual UAnimMontage* GetAttackMontage_Implementation() override;
 	
 	virtual void Die() override;
+	virtual bool IsDead_Implementation() const override;
+	virtual AActor* GetAvatar_Implementation() override;
 	
 	UFUNCTION(NetMulticast, Reliable)
 	virtual void Multicast_HandleDeath();
 	
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
+
+	
 };

@@ -56,4 +56,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayEffects")
 	static void SetEffectModifierBits(UPARAM(ref)FGameplayEffectContextHandle& EffectContextHandle, const int32 InEffectModifierBits);
+
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|Utility")
+	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, UPARAM(ref)TArray<AActor*>& OutActors, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
 };
