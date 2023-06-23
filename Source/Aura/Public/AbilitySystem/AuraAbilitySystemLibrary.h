@@ -62,4 +62,6 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|Utility")
 	static bool IsFriend(AActor* FirstActor, AActor* SecondActor);
+
+	
 };

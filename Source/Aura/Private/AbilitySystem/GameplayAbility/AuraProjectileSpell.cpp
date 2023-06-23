@@ -7,7 +7,9 @@
 #include "AbilitySystemComponent.h"
 #include "AuraGameplayTags.h"
 #include "Actor/AuraProjectile.h"
+#include "GameFramework/ProjectileMovementComponent.h"
 #include "Interfaces/CombatInterface.h"
+#include "Kismet/GameplayStatics.h"
 
 
 void UAuraProjectileSpell::ActivateAbility(const FGameplayAbilitySpecHandle Handle,
@@ -24,7 +26,6 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 {
 	if(GetAvatarActorFromActorInfo()->HasAuthority())
 	{
-
 		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Attack_Weapon);
 		FRotator Rotation = (TargetLocation - SocketLocation).Rotation();
 		Rotation.Pitch = 0.f;
@@ -54,4 +55,39 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 		Projectile->FinishSpawning(SpawnTransform);
 		
 	}
+}
+
+void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation, const float ArcModifier)
+{
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Attack_Weapon);
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(SocketLocation);
+		
+	AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+		ProjectileClass,
+		SpawnTransform,
+		GetOwningActorFromActorInfo(),
+		Cast<APawn>(GetOwningActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		
+	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+	EffectContextHandle.SetAbility(this);
+	EffectContextHandle.AddSourceObject(Projectile);
+	Projectile->DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+		
+	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	for(auto& Pair : DamageTypes)
+	{
+		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle, Pair.Key, ScaledDamage);
+	}
+	FVector ProjectileVelocity = FVector::ZeroVector;
+	UGameplayStatics::SuggestProjectileVelocity_CustomArc(Projectile, ProjectileVelocity,SocketLocation, TargetLocation, Projectile->ProjectileMovement->GetGravityZ(), ArcModifier);
+	
+	SpawnTransform.SetRotation(ProjectileVelocity.ToOrientationQuat());
+	Projectile->ProjectileMovement->InitialSpeed = ProjectileVelocity.Size();
+	Projectile->ProjectileMovement->MaxSpeed = ProjectileVelocity.Size();
+	
+	Projectile->FinishSpawning(SpawnTransform);
 }

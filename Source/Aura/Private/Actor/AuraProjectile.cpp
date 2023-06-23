@@ -6,6 +6,8 @@
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AbilitySystemComponent.h"
 #include "NiagaraFunctionLibrary.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/GameplayAbility/AuraProjectileSpell.h"
 #include "Components/AudioComponent.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -36,9 +38,8 @@ void AAuraProjectile::Destroyed()
 {
 	if(!bHit && !HasAuthority())
 	{
-		check(ImpactSound && ImpactEffect && ImpactSoundAttenuation)
-		UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator, VolumeMultiplier, 1.f, 0.f, ImpactSoundAttenuation);
-		UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+		if(ImpactSound && ImpactSoundAttenuation) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator, VolumeMultiplier, 1.f, 0.f, ImpactSoundAttenuation);
+		if(ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
 	}
 
 	if(LoopSoundComponent)
@@ -50,21 +51,32 @@ void AAuraProjectile::Destroyed()
 	Super::Destroyed();
 }
 
-
 void AAuraProjectile::OnProjectileOverlap_Implementation(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                                          UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	
-	check(ImpactSound && ImpactEffect && ImpactSoundAttenuation)
 	if(DamageEffectSpecHandle.Data.Get() == nullptr || DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser() == OtherActor) return;
-	UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator, VolumeMultiplier, 1.f, 0.f, ImpactSoundAttenuation);
-	UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
-
+	if(OtherActor == DamageEffectSpecHandle.Data.Get()->GetContext().GetInstigator() || OtherActor == this) return;
+	if(ImpactSound && ImpactSoundAttenuation) UGameplayStatics::PlaySoundAtLocation(this, ImpactSound, GetActorLocation(), FRotator::ZeroRotator, VolumeMultiplier, 1.f, 0.f, ImpactSoundAttenuation);
+	if(ImpactEffect) UNiagaraFunctionLibrary::SpawnSystemAtLocation(this, ImpactEffect, GetActorLocation());
+	
+	
 	if(HasAuthority())
 	{
 		if(UAbilitySystemComponent* TargetASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(OtherActor))
 		{
-			TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			const UAuraProjectileSpell* ProjectileSpell = Cast<UAuraProjectileSpell>(DamageEffectSpecHandle.Data.Get()->GetContext().GetAbility());
+			const bool bIsFriend = UAuraAbilitySystemLibrary::IsFriend(OtherActor, DamageEffectSpecHandle.Data.Get()->GetContext().GetEffectCauser());
+			if(ProjectileSpell)
+			{
+				if(!ProjectileSpell->GetFriendlyFire() && !bIsFriend || ProjectileSpell->GetFriendlyFire())
+				{
+					TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+				}
+			}
+			else
+			{
+				TargetASC->ApplyGameplayEffectSpecToSelf(*DamageEffectSpecHandle.Data.Get());
+			}
 		}
 		
 		Destroy();

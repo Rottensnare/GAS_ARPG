@@ -27,4 +27,10 @@ protected:
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectile(const FVector& TargetLocation);
 
+	/**	Uses SuggestProjectileVelocity_CustomArc
+	 *	@param TargetLocation Location of the target
+	 *	@param ArcModifier Controls the curve of the projectile arc, where 1.0f is straight towards and 0.f is straight upwards.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void SpawnProjectileWithArc(const FVector& TargetLocation, const float ArcModifier = 0.5f);
 };

@@ -19,6 +19,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void CauseDamage(AActor* TargetActor);
 
+	UFUNCTION(BlueprintCallable)
+	bool GetFriendlyFire() const {return bFriendlyFire;}
+
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
@@ -27,7 +30,11 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	TMap<FGameplayTag, FScalableFloat> DamageTypes;
 
-	/**	If true, will only do damage to actors with tag "Player" */
+	/**	If true, will only do damage to non-friendly actors
+	 *	Actor with "Player" tag will be friendly with other Actors with tag "Player"
+	 *	Actor with "Enemy" tag will be friendly with other Actors with tag "Enemy"
+	 */
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Damage")
 	bool bFriendlyFire = false;
+	
 };
