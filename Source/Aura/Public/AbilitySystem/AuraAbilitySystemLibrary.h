@@ -59,4 +59,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|Utility")
 	static void GetLivePlayersWithinRadius(const UObject* WorldContextObject, UPARAM(ref)TArray<AActor*>& OutActors, const TArray<AActor*>& ActorsToIgnore, const float Radius, const FVector& SphereOrigin);
+
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|Utility")
+	static bool IsFriend(AActor* FirstActor, AActor* SecondActor);
 };
