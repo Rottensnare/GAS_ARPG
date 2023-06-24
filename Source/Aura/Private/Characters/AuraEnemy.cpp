@@ -133,8 +133,10 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 
 void AAuraEnemy::Die()
 {
-	Super::Die();
 	SetLifeSpan(LifeTime);
+	if(AuraAIController && AuraAIController->GetBlackboardComponent()) AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
+	Super::Die();
+	
 }
 
 void AAuraEnemy::SetCombatTarget_Implementation(AActor* InCombatTarget)
