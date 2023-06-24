@@ -3,6 +3,7 @@
 
 #include "Characters/AuraCharacterBase.h"
 
+#include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponentBase.h"
 #include "AbilitySystem/AuraAttributeSetBase.h"
 #include "Aura/Aura.h"
@@ -103,8 +104,9 @@ TArray<FTaggedMontage> AAuraCharacterBase::GetAttackMontages_Implementation()
 
 void AAuraCharacterBase::Die()
 {
-	Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
-	Multicast_HandleDeath_Implementation();
+	AbilitySystemComponent->AddLooseGameplayTag(FAuraGameplayTags::Get().Status_Dead);
+	if(Weapon) Weapon->DetachFromComponent(FDetachmentTransformRules(EDetachmentRule::KeepWorld, true));
+	MulticastHandleDeath();
 }
 
 bool AAuraCharacterBase::IsDead_Implementation() const
@@ -117,17 +119,27 @@ AActor* AAuraCharacterBase::GetAvatar_Implementation()
 	return this;
 }
 
-void AAuraCharacterBase::Multicast_HandleDeath_Implementation()
+void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 {
-	check(Weapon && GetMesh())
-	Weapon->SetSimulatePhysics(true);
-	Weapon->SetEnableGravity(true);
-	Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	if(!HasAuthority())
+	{
+		if(AbilitySystemComponent) AbilitySystemComponent->AddLooseGameplayTag(FAuraGameplayTags::Get().Status_Dead);
+	}
 
-	GetMesh()->SetEnableGravity(true);
-	GetMesh()->SetSimulatePhysics(true);
-	GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
-	GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	if(Weapon)
+	{
+		Weapon->SetSimulatePhysics(true);
+		Weapon->SetEnableGravity(true);
+		Weapon->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+	}
+	
+	if(GetMesh())
+	{
+		GetMesh()->SetEnableGravity(true);
+		GetMesh()->SetSimulatePhysics(true);
+		GetMesh()->SetCollisionEnabled(ECollisionEnabled::PhysicsOnly);
+		GetMesh()->SetCollisionResponseToChannel(ECC_WorldStatic, ECR_Block);
+	}
 	
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 

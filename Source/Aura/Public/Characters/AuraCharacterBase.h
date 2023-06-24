@@ -69,8 +69,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
-
-	/**	Detaches weapon and calls Multicast_HandleDeath_Implementation */
+	
 	void Dissolve();
 
 	UFUNCTION(BlueprintImplementableEvent)
@@ -104,13 +103,14 @@ public:
 	virtual UAnimMontage* GetHitReactMontage_Implementation() override;
 	virtual UAnimMontage* GetAttackMontage_Implementation() override;
 	virtual TArray<FTaggedMontage> GetAttackMontages_Implementation() override;
-	
+
+	/**	Detaches weapon and calls Multicast_HandleDeath_Implementation */
 	virtual void Die() override;
 	virtual bool IsDead_Implementation() const override;
 	virtual AActor* GetAvatar_Implementation() override;
 	
 	UFUNCTION(NetMulticast, Reliable)
-	virtual void Multicast_HandleDeath();
+	void MulticastHandleDeath();
 	
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 	

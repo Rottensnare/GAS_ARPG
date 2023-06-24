@@ -86,6 +86,13 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	GameplayTags.Montage_Attack_RightHand = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Montage.Attack.RightHand"), FString("Right Hand Attack Montage"));
 	
+	/** Category Status */
+
+	GameplayTags.Status_CC_Stunned = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.CC.Stunned"), FString("Character is Stunned"));
+	GameplayTags.Status_Dead = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Status.Dead"), FString("Character is dead"));
+	
 	/** Category Abilities */
 
 	GameplayTags.Abilities_Attack = UGameplayTagsManager::Get().AddNativeGameplayTag(

@@ -3,3 +3,9 @@
 
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
 
+#include "AuraGameplayTags.h"
+
+UAuraGameplayAbility::UAuraGameplayAbility()
+{
+	ActivationBlockedTags.AddTag(FAuraGameplayTags::Get().Status_Dead);
+}

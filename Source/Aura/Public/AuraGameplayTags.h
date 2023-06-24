@@ -58,6 +58,11 @@ public:
  FGameplayTag Montage_Attack_Weapon;
  FGameplayTag Montage_Attack_RightHand;
  FGameplayTag Montage_Attack_LeftHand;
+
+ /** Category Status */
+
+ FGameplayTag Status_CC_Stunned;
+ FGameplayTag Status_Dead;
  
  /** Category Abilities */
 
