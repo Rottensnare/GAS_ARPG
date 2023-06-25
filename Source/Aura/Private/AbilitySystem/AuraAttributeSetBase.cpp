@@ -9,6 +9,7 @@
 #include "AuraGameplayTags.h"
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -105,12 +106,12 @@ void UAuraAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribu
 void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-	double ThisTime = 0; //NOTE: Delete this later. It is for testing.
+	//double ThisTime = 0; //NOTE: Delete this later. It is for testing.
 	{
-		SCOPE_SECONDS_COUNTER(ThisTime) //NOTE: And This
+		//SCOPE_SECONDS_COUNTER(ThisTime) //NOTE: And This
 		FEffectProperties Props;
 		SetEffectProperties(Data, Props);
-
+		
 		if(Data.EvaluatedData.Attribute == GetHealthAttribute())
 		{
 			SetHealth(FMath::Clamp(GetHealth(), 0.f, GetMaxHealth()));
@@ -131,9 +132,14 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 				const bool bFatal = NewHealth <= 0.f;
 				if(bFatal == false)
 				{
-					FGameplayTagContainer TagContainer;
-					TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
-					Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+					//TODO: need to rework it so that no cast is needed. Too expensive for something that can happen very rapidly.
+					const UAuraGameplayAbility* CurrentAbility = Cast<UAuraGameplayAbility>(Props.EffectContextHandle.GetAbility());
+					if(CurrentAbility && CurrentAbility->StunChance > FMath::FRand()) //Note: Pretty sure even if StunChance = 0.f, it can still enter, but very very rarely
+					{
+						FGameplayTagContainer TagContainer;
+						TagContainer.AddTag(FAuraGameplayTags::Get().Effects_HitReact);
+						Props.TargetASC->TryActivateAbilitiesByTag(TagContainer);
+					}
 				}
 				else
 				{
@@ -149,8 +155,8 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 			}
 		}
 	}
-	const double Milliseconds = ThisTime * 1000; //NOTE: And These
-	UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
+	//const double Milliseconds = ThisTime * 1000; //NOTE: And These
+	//UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
 }
 
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const

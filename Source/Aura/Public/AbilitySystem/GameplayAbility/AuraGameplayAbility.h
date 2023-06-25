@@ -21,5 +21,6 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Input")
 	FGameplayTag StartupInputTag;
 
-	
+	UPROPERTY(EditDefaultsOnly)
+	float StunChance = 0.5f;
 };
