@@ -86,6 +86,3 @@ void AAuraProjectile::OnProjectileOverlap_Implementation(UPrimitiveComponent* Ov
 		bHit = true;
 	}
 }
-
-
-

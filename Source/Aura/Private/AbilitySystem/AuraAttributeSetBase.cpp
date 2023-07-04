@@ -106,9 +106,9 @@ void UAuraAttributeSetBase::PreAttributeChange(const FGameplayAttribute& Attribu
 void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCallbackData& Data)
 {
 	Super::PostGameplayEffectExecute(Data);
-	//double ThisTime = 0; //NOTE: Delete this later. It is for testing.
+	double ThisTime = 0; //NOTE: Delete this later. It is for testing.
 	{
-		//SCOPE_SECONDS_COUNTER(ThisTime) //NOTE: And This
+		SCOPE_SECONDS_COUNTER(ThisTime) //NOTE: And This
 		FEffectProperties Props;
 		SetEffectProperties(Data, Props);
 		
@@ -155,8 +155,8 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 			}
 		}
 	}
-	//const double Milliseconds = ThisTime * 1000; //NOTE: And These
-	//UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
+	const double Milliseconds = ThisTime * 1000; //NOTE: And These
+	UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
 }
 
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const

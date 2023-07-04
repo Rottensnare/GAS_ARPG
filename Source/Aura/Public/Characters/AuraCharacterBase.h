@@ -9,6 +9,7 @@
 #include "AuraCharacterBase.generated.h"
 
 
+class UNiagaraSystem;
 class UGameplayAbility;
 class UAttributeSet;
 class UAbilitySystemComponent;
@@ -64,10 +65,10 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<UAnimMontage> AttackMontage;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
 	TObjectPtr<UMaterialInstance> DissolveMaterialInstance;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Effects")
 	TObjectPtr<UMaterialInstance> WeaponDissolveMaterialInstance;
 	
 	void Dissolve();
@@ -91,6 +92,9 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")
 	TMap<FGameplayTag, FName> TagsToSockets;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
+	UNiagaraSystem* BloodEffect;
 	
 private:
 
@@ -114,6 +118,6 @@ public:
 	
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 	
-
+	virtual UNiagaraSystem* GetBloodEffect_Implementation() override {return BloodEffect;};
 	
 };
