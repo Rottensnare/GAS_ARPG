@@ -3,7 +3,11 @@
 
 #include "AI/Services/BTService_FindNearestPlayer.h"
 
+#include "AbilitySystemBlueprintLibrary.h"
+#include "AbilitySystemComponent.h"
 #include "AIController.h"
+#include "AuraGameplayTags.h"
+#include "GameplayTagsManager.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/Blackboard/BlackboardKeyType_Object.h"
 #include "Characters/AuraCharacter.h"
@@ -36,6 +40,20 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 	//UGameplayStatics::GetAllActorsOfClass(AIOwner->GetCharacter(), AAuraCharacter::StaticClass(), OutActors);
 	UGameplayStatics::GetAllActorsWithTag(AIOwner->GetCharacter(), FName("Player"), OutActors);
 
+	//TODO: Use delegates to broadcast death and make AI react to it, instead of constantly checking every few milliseconds.
+	TArray<AActor*> ActorsToRemove;
+	for(AActor* OutActor : OutActors)
+	{
+		if(ICombatInterface::Execute_IsDead(OutActor))
+		{
+			ActorsToRemove.Add(OutActor);
+		}
+	}
+	for(AActor* ActorToRemove : ActorsToRemove)
+	{
+		OutActors.Remove(ActorToRemove);
+	}
+	
 	float ClosestDistance = TNumericLimits<float>::Max();
 	for(AActor* TempActor : OutActors)
 	{
