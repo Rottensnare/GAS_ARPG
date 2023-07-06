@@ -26,7 +26,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 {
 	if(GetAvatarActorFromActorInfo()->HasAuthority())
 	{
-		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Attack_Weapon);
+		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().CombatSocket_Weapon);
 		FRotator Rotation = (TargetLocation - SocketLocation).Rotation();
 		Rotation.Pitch = 0.f;
 		FTransform SpawnTransform;
@@ -39,6 +39,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 			GetOwningActorFromActorInfo(),
 			Cast<APawn>(GetOwningActorFromActorInfo()),
 			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+			
 		
 		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
 		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
@@ -59,7 +60,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 
 void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation, const float ArcModifier)
 {
-	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().Montage_Attack_Weapon);
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().CombatSocket_Weapon);
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(SocketLocation);
 		

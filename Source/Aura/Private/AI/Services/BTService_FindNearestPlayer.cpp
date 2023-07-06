@@ -37,7 +37,6 @@ void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, u
 
 	AActor* ClosestActor = nullptr;
 	TArray<AActor*> OutActors;
-	//UGameplayStatics::GetAllActorsOfClass(AIOwner->GetCharacter(), AAuraCharacter::StaticClass(), OutActors);
 	UGameplayStatics::GetAllActorsWithTag(AIOwner->GetCharacter(), FName("Player"), OutActors);
 
 	//TODO: Use delegates to broadcast death and make AI react to it, instead of constantly checking every few milliseconds.

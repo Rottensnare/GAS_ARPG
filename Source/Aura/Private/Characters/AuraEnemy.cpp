@@ -155,7 +155,7 @@ FVector AAuraEnemy::GetCombatSocketLocation_Implementation(const FGameplayTag& A
 		UE_LOG(LogTemp, Error, TEXT("AAuraEnemy::GetCombatSocketLocation_Implementation: TagsToSockets does not contain Tag: [%s]"), *AssociatedTag.GetTagName().ToString())
 		return FVector::ZeroVector;
 	}
-	if(AssociatedTag.MatchesTagExact(FAuraGameplayTags::Get().Montage_Attack_Weapon))
+	if(AssociatedTag.MatchesTagExact(FAuraGameplayTags::Get().CombatSocket_Weapon))
 	{
 		return Weapon->GetSocketLocation(TagsToSockets[AssociatedTag]);
 	}
