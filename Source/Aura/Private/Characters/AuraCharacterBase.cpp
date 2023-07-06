@@ -8,6 +8,7 @@
 #include "AbilitySystem/AuraAttributeSetBase.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 
 AAuraCharacterBase::AAuraCharacterBase()
@@ -144,6 +145,20 @@ void AAuraCharacterBase::MulticastHandleDeath_Implementation()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 
 	Dissolve();
+
+	if(DeathSound && BaseSoundAttenuation)
+	{
+		UGameplayStatics::PlaySoundAtLocation(
+		this,
+		DeathSound,
+		GetActorLocation(),
+		FRotator::ZeroRotator,
+		0.25f,
+		1.f,
+		0.f,
+		BaseSoundAttenuation);
+	}
+	
 
 	bDead = true;
 }
