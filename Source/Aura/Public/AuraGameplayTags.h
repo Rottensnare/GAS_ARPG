@@ -75,6 +75,10 @@ public:
 
  FGameplayTag Abilities_Attack;
 
+ /** Category Cooldowns */
+
+ 
+
  /** Category InputTags */
 
  FGameplayTag InputTag_LMB;
