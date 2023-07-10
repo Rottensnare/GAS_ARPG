@@ -57,6 +57,7 @@ protected:
 	TSubclassOf<UGameplayEffect> DefaultVitalAttributes;
 	
 	virtual void InitDefaultAttributes() const;
+	//*	Will grant DefaultAbilities to the character */
 	void AddCharacterAbilities();
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Combat")

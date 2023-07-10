@@ -58,9 +58,9 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 	}
 }
 
-void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation, const float ArcModifier)
+void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation, const FGameplayTag SocketTag, const float ArcModifier)
 {
-	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), FAuraGameplayTags::Get().CombatSocket_Weapon);
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
 	FTransform SpawnTransform;
 	SpawnTransform.SetLocation(SocketLocation);
 		

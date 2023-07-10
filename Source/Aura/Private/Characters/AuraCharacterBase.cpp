@@ -116,7 +116,7 @@ bool AAuraCharacterBase::IsDead_Implementation() const
 }
 
 AActor* AAuraCharacterBase::GetAvatar_Implementation()
-{
+{ 
 	return this;
 }
 

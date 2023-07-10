@@ -74,6 +74,8 @@ void AAuraEnemy::HighlightActor()
 	bHighlighted = true;
 	GetMesh()->SetRenderCustomDepth(true);
 	Weapon->SetRenderCustomDepth(true);
+
+	
 }
 
 void AAuraEnemy::UnHighlightActor()
@@ -128,6 +130,8 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	AuraAIController->RunBehaviorTree(BehaviorTree);
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("HitReacting"), false);
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Ranged"), ECharacterClass::Warrior != CharacterClass);
+
+	AddCharacterAbilities();
 }
 
 void AAuraEnemy::Die()

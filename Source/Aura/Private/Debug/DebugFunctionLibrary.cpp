@@ -22,6 +22,5 @@ float UDebugFunctionLibrary::DebugWaveFunction_TimeReset(float& Time, const floa
 	{
 		Time -= Frequency;
 	}
-	UE_LOG(LogTemp, Display, TEXT("Time: %f"), Time)
 	return WaveValue;
 }
