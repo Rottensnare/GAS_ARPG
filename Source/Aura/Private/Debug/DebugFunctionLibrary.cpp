@@ -11,6 +11,7 @@ float UDebugFunctionLibrary::DebugWaveFunction(const float Time, const float Amp
 	return WaveValue;
 }
 
+//NOTE: Maybe use memoization for some object if this is actually ever used.
 float UDebugFunctionLibrary::DebugWaveFunction_TimeReset(float& Time, const float Amplitude, const float Frequency,
 	const float Phase, const float Offset)
 {

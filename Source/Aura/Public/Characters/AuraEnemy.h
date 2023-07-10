@@ -9,6 +9,8 @@
 #include "UI/Widget/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeathSignature);
+
 class AAuraAIController;
 class UBehaviorTree;
 enum class ECharacterClass : uint8;
@@ -52,12 +54,17 @@ public:
 	UPROPERTY(BlueprintReadWrite, Category = "Combat")
 	TObjectPtr<AActor> CombatTarget;
 
+	UPROPERTY(BlueprintAssignable)
+	FOnDeathSignature OnDeathDelegate;
+
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitDefaultAttributes() const override;
 	virtual void PossessedBy(AController* NewController) override;
+	
+	void OnDeath();
 
 	/**	Enemy level */
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")

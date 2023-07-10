@@ -134,6 +134,15 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	AddCharacterAbilities();
 }
 
+void AAuraEnemy::OnDeath()
+{
+	if(HasAuthority())
+	{
+		MinionCount--;
+	}
+	
+}
+
 void AAuraEnemy::Die()
 {
 	SetLifeSpan(LifeTime);

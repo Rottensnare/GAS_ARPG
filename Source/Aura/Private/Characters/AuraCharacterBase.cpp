@@ -9,6 +9,7 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Net/UnrealNetwork.h"
 
 
 AAuraCharacterBase::AAuraCharacterBase()
@@ -25,6 +26,13 @@ AAuraCharacterBase::AAuraCharacterBase()
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
 	
+}
+
+void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+{
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+
+	DOREPLIFETIME(AAuraCharacterBase, MinionCount);
 }
 
 void AAuraCharacterBase::BeginPlay()
@@ -80,6 +88,11 @@ void AAuraCharacterBase::Dissolve()
 		Weapon->SetMaterial(0, DynamicMaterialInst);
 		StartWeaponDissolveTimeline(DynamicMaterialInst);
 	}
+	
+}
+
+void AAuraCharacterBase::OnRep_MinionCount()
+{
 	
 }
 

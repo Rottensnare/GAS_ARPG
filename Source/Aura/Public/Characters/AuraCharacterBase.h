@@ -24,9 +24,12 @@ class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInte
 
 public:
 	AAuraCharacterBase();
+	
 
 	UPROPERTY(EditAnywhere, Category = "Combat")
 	TArray<FTaggedMontage> AttackMontages;
+
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -102,6 +105,12 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Effects")
 	USoundAttenuation* BaseSoundAttenuation;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_MinionCount)
+	int32 MinionCount = 0;
+
+	UFUNCTION()
+	void OnRep_MinionCount();
 	
 private:
 
@@ -126,5 +135,6 @@ public:
 	UAttributeSet* GetAttributeSet() const {return AttributeSet;}
 	
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override {return BloodEffect;};
-	
+	virtual int32 GetMinionCount_Implementation() override {return MinionCount;}
+	virtual void SetMinionCount_Implementation(const int32 NewCount) override {MinionCount = NewCount;}
 };
