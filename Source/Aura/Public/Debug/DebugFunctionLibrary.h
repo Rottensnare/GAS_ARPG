@@ -80,6 +80,11 @@ public:
 	static FVector PredictProjectileDirection(const FVector& TargetPosition, FVector& OutDirection,
 	const FVector& TargetVelocity, const FVector& ProjectileStartLocation, const float ProjectileSpeed, const float FineTuneValue = 0.75f);
 
+
+
+
+
+
 	
 	// NOTE Ballistic functions too advanced for me to understand why they are not working properly.
 	// NOTE Would need maybe few days to understand and fix the problems, not currently worth my time since current version works well enough and is much faster to execute.

@@ -26,10 +26,7 @@ protected:
 
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectile(const FVector& TargetLocation);
-
-	//UFUNCTION(BlueprintCallable, Category = "Projectile")
-	//void SpawnProjectile_Hand(const FVector& TargetLocation);
-
+	
 	/**	Uses SuggestProjectileVelocity_CustomArc
 	 *	@param TargetLocation Location of the target
 	 *	@param SocketTag Tag for the socket from where the projectile is spawned from.
@@ -37,14 +34,11 @@ protected:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectileWithArc(const FVector& TargetLocation, const FGameplayTag SocketTag, const float ArcModifier = 0.5f);
-
-	//UFUNCTION(BlueprintCallable, Category = "Projectile")
-	//void SpawnProjectileWithArc_Hand(const FVector& TargetLocation, const float ArcModifier = 0.5f);
-
+	
 	/**	Uses pre-calculated LaunchVelocity to spawn a projectile with the said LaunchVelocity.
 	 *	NOTE: Should use UDebugFunctionLibrary::PredictProjectileDirection for projectile direction prediction.
-	 *	
-	 *
+	 *	@param SocketTag Tag for the socket where the projectile is spawned from.
+	 *	@param LaunchVelocity Precalculated velocity for the projectile.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
 	void SpawnProjectileWithArc_Predicted(const FGameplayTag SocketTag, const FVector& LaunchVelocity);

@@ -60,38 +60,50 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 
 void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation, const FGameplayTag SocketTag, const float ArcModifier)
 {
-	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
-	FTransform SpawnTransform;
-	SpawnTransform.SetLocation(SocketLocation);
-		
-	AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
-		ProjectileClass,
-		SpawnTransform,
-		GetOwningActorFromActorInfo(),
-		Cast<APawn>(GetOwningActorFromActorInfo()),
-		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
-		
-	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
-	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
-	EffectContextHandle.SetAbility(this);
-	EffectContextHandle.AddSourceObject(Projectile);
-	Projectile->DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
-		
-	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
-	for(auto& Pair : DamageTypes)
+	if(GetAvatarActorFromActorInfo()->HasAuthority())
 	{
-		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
-		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle, Pair.Key, ScaledDamage);
+		// Get correct socket location from where projectile is spawned from
+		const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
+		FTransform SpawnTransform;
+		SpawnTransform.SetLocation(SocketLocation);
+
+		// Spawn Deferred, meaning that we finish the spawn later, after doing a few necessary steps
+		AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+			ProjectileClass,
+			SpawnTransform,
+			GetOwningActorFromActorInfo(),
+			Cast<APawn>(GetOwningActorFromActorInfo()),
+			ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+
+		// Setting the gameplay effect spec handle for the projectile so that the effect can be passed on when the projectile hits the target
+		const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+		FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+		EffectContextHandle.SetAbility(this);
+		EffectContextHandle.AddSourceObject(Projectile);
+		Projectile->DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+
+		//Set damage for each damage type
+		const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+		for(auto& Pair : DamageTypes)
+		{
+			const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+			UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle, Pair.Key, ScaledDamage);
+		}
+
+		// Calculate the trajectory for the projectile based on given parameters
+		FVector ProjectileVelocity = FVector::ZeroVector;
+		UGameplayStatics::SuggestProjectileVelocity_CustomArc(Projectile, ProjectileVelocity,SocketLocation, TargetLocation, Projectile->ProjectileMovement->GetGravityZ(), ArcModifier);
+
+		// Set the calculated values for the projectile
+		SpawnTransform.SetRotation(ProjectileVelocity.ToOrientationQuat());
+		Projectile->ProjectileMovement->InitialSpeed = ProjectileVelocity.Size();
+		Projectile->ProjectileMovement->MaxSpeed = ProjectileVelocity.Size();
+
+		// Finish the spawning process
+		Projectile->FinishSpawning(SpawnTransform);
 	}
-	FVector ProjectileVelocity = FVector::ZeroVector;
-	UGameplayStatics::SuggestProjectileVelocity_CustomArc(Projectile, ProjectileVelocity,SocketLocation, TargetLocation, Projectile->ProjectileMovement->GetGravityZ(), ArcModifier);
-	
-	SpawnTransform.SetRotation(ProjectileVelocity.ToOrientationQuat());
-	Projectile->ProjectileMovement->InitialSpeed = ProjectileVelocity.Size();
-	Projectile->ProjectileMovement->MaxSpeed = ProjectileVelocity.Size();
-	
-	Projectile->FinishSpawning(SpawnTransform);
 }
+
 
 void UAuraProjectileSpell::SpawnProjectileWithArc_Predicted(const FGameplayTag SocketTag,
 	const FVector& LaunchVelocity)
