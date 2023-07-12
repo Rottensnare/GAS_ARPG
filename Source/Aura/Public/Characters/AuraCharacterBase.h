@@ -111,6 +111,9 @@ protected:
 
 	UFUNCTION()
 	void OnRep_MinionCount();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
+	FVector PredictedPosition = FVector::ZeroVector;
 	
 private:
 
@@ -137,4 +140,5 @@ public:
 	virtual UNiagaraSystem* GetBloodEffect_Implementation() override {return BloodEffect;};
 	virtual int32 GetMinionCount_Implementation() override {return MinionCount;}
 	virtual void SetMinionCount_Implementation(const int32 NewCount) override {MinionCount = NewCount;}
+	virtual FVector GetPredictedPosition_Implementation() override {return PredictedPosition;}
 };

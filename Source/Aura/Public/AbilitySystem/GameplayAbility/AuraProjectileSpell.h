@@ -40,4 +40,12 @@ protected:
 
 	//UFUNCTION(BlueprintCallable, Category = "Projectile")
 	//void SpawnProjectileWithArc_Hand(const FVector& TargetLocation, const float ArcModifier = 0.5f);
+
+	/**	Uses pre-calculated LaunchVelocity to spawn a projectile with the said LaunchVelocity.
+	 *	NOTE: Should use UDebugFunctionLibrary::PredictProjectileDirection for projectile direction prediction.
+	 *	
+	 *
+	 */
+	UFUNCTION(BlueprintCallable, Category = "Projectile")
+	void SpawnProjectileWithArc_Predicted(const FGameplayTag SocketTag, const FVector& LaunchVelocity);
 };

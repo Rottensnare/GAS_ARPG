@@ -45,4 +45,51 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
 	static float DebugWaveFunction_TimeReset(UPARAM(ref)float& Time, const float Amplitude, const float Frequency, const float Phase, const float Offset);
+
+	/**
+	 *	Predicts a position in the future at Current time + PredictionTime.
+	 *	@param CurrentPosition Current position of the actor.
+	 *	@param OutPosition Gets filled with the predicted position.
+	 *	@param CurrentVelocity Velocity of the actor.
+	 *	@param CurrentAcceleration Acceleration of the actor.
+	 *	@param PredictionTime Time in the future we want to predict the position for. (Current time + PredictionTime)
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static void PredictActorPosition(const FVector& CurrentPosition, FVector& OutPosition, const FVector& CurrentVelocity, const FVector& CurrentAcceleration, const float PredictionTime);
+
+
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static float CalculateFineTuneValue(float DistanceToTarget, const UCurveFloat* ValueFromDistance);
+
+
+	/**	Predicts the direction for the projectile that it needs in order to hit the target. It also returns the predicted location where the collision will happen.
+	 *	@param WorldContextObject World Context Object.
+	 *	@param GravityZ Gravity override of the projectile.
+	 *	@param TargetPosition Current position of the target.
+	 *	@param OutDirection Normalized direction vector that gets filled by the function.
+	 *	@param TargetVelocity Current velocity of the target.
+	 *	@param ProjectileStartLocation Location where the projectile is spawned from.
+	 *	@param ProjectileSpeed Initial Speed of the projectile.
+	 *	@param FineTuneValue Value that is used to fix the overshoot problem for this function. As distance to the target increases, the value needs to decrease accordingly.
+	 *	@returns FVector that corresponds to the predicted target location.
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static FVector PredictProjectileDirection(const UObject* WorldContextObject, const float GravityZ, const FVector& TargetPosition, FVector& OutDirection,
+	const FVector& TargetVelocity, const FVector& ProjectileStartLocation, const float ProjectileSpeed, float FineTuneValue = 0.75f);
+
+	
+	// NOTE Ballistic functions too advanced for me to understand why they are not working properly.
+	// NOTE Would need maybe few days to understand and fix the problems, not currently worth my time since current version works well enough and is much faster to execute.
+	
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static int SolveBallisticArc(const FVector& ProjectilePosition, const float ProjectileSpeed, const FVector& TargetPosition, const FVector& TargetVelocity, const float GravityZ, FVector& FiringSolution, FVector& SecondSolution);
+
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static bool SolveBallisticArcLateral(const FVector& ProjectilePosition, float LateralSpeed, const FVector& TargetPosition,
+	                              float MaxHeight, FVector& FireVelocity, float& Gravity);
+	
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static bool SolveBallisticArcLateral_Plus(const FVector& ProjectilePosition, float LateralSpeed, const FVector& Target,
+	                              const FVector& TargetVelocity, float MaxHeightOffset, FVector& FireVelocity,
+	                              float& Gravity, FVector& ImpactPoint);
 };

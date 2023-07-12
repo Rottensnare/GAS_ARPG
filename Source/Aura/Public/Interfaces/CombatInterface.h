@@ -83,4 +83,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void SetMinionCount(const int32 NewCount);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FVector GetPredictedPosition();
 };

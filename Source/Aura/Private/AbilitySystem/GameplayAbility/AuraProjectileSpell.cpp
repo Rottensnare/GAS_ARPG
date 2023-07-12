@@ -92,3 +92,37 @@ void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation,
 	
 	Projectile->FinishSpawning(SpawnTransform);
 }
+
+void UAuraProjectileSpell::SpawnProjectileWithArc_Predicted(const FGameplayTag SocketTag,
+	const FVector& LaunchVelocity)
+{
+	const FVector SocketLocation = ICombatInterface::Execute_GetCombatSocketLocation(GetAvatarActorFromActorInfo(), SocketTag);
+	FTransform SpawnTransform;
+	SpawnTransform.SetLocation(SocketLocation);
+		
+	AAuraProjectile* Projectile = GetWorld()->SpawnActorDeferred<AAuraProjectile>(
+		ProjectileClass,
+		SpawnTransform,
+		GetOwningActorFromActorInfo(),
+		Cast<APawn>(GetOwningActorFromActorInfo()),
+		ESpawnActorCollisionHandlingMethod::AlwaysSpawn);
+		
+	const UAbilitySystemComponent* SourceASC = UAbilitySystemBlueprintLibrary::GetAbilitySystemComponent(GetAvatarActorFromActorInfo());
+	FGameplayEffectContextHandle EffectContextHandle = SourceASC->MakeEffectContext();
+	EffectContextHandle.SetAbility(this);
+	EffectContextHandle.AddSourceObject(Projectile);
+	Projectile->DamageEffectSpecHandle = SourceASC->MakeOutgoingSpec(DamageEffectClass, GetAbilityLevel(), EffectContextHandle);
+		
+	const FAuraGameplayTags GameplayTags = FAuraGameplayTags::Get();
+	for(auto& Pair : DamageTypes)
+	{
+		const float ScaledDamage = Pair.Value.GetValueAtLevel(GetAbilityLevel());
+		UAbilitySystemBlueprintLibrary::AssignTagSetByCallerMagnitude(Projectile->DamageEffectSpecHandle, Pair.Key, ScaledDamage);
+	}
+	
+	SpawnTransform.SetRotation(LaunchVelocity.ToOrientationQuat());
+	Projectile->ProjectileMovement->InitialSpeed = LaunchVelocity.Size();
+	Projectile->ProjectileMovement->MaxSpeed = LaunchVelocity.Size();
+	
+	Projectile->FinishSpawning(SpawnTransform);
+}
