@@ -40,17 +40,19 @@ void UDebugFunctionLibrary::PredictActorPosition(const FVector& CurrentPosition,
 float UDebugFunctionLibrary::CalculateFineTuneValue(float DistanceToTarget, const UCurveFloat* ValueFromDistance)
 {
 	if(ValueFromDistance == nullptr) return 0.75f;
-	//NOTE: MaxDistance is currently hardcoded to 2000.f. Probably want to change that based on the projectile
+	//NOTE: MaxDistance is currently hardcoded to 2000.f. Probably want to change that based on the projectile/ability
 	constexpr float MaxDistance = 2000.f;
 	const float NormalizedDistance = FMath::Clamp(DistanceToTarget / MaxDistance, 0.f, 1.f);
 	return ValueFromDistance->FloatCurve.Eval(NormalizedDistance);
 }
 
-FVector UDebugFunctionLibrary::PredictProjectileDirection(const UObject* WorldContextObject, const float GravityZ, const FVector& TargetPosition, FVector& OutDirection,
-	const FVector& TargetVelocity, const FVector& ProjectileStartLocation, const float ProjectileSpeed, float FineTuneValue)
+FVector UDebugFunctionLibrary::PredictProjectileDirection(const FVector& TargetPosition, FVector& OutDirection,
+	const FVector& TargetVelocity, const FVector& ProjectileStartLocation, const float ProjectileSpeed, const float FineTuneValue)
 {
-	// NOTE CURRENTLY SOMEWHAT WORKING SOLUTION. OVERSHOOTS THE TARGET BY A FEW PERCENT AND THE FURTHER AWAY THE TARGET IS, THE LARGER THE OVERSHOOT
-	// NOTE: SOMEWHAT FIXED WITH FineTuneValue BUT IT NEEDS TO TAKE DISTANCE INTO CONSIDERATION
+	// NOTE: CURRENTLY SOMEWHAT WORKING SOLUTION. OVERSHOOTS THE TARGET BY A FEW PERCENT AND THE FURTHER AWAY THE TARGET IS, THE LARGER THE OVERSHOOT
+	
+	// NOTE: CalculateFineTuneValue to get a somewhat accurate value based on distance to target.
+	// NOTE: Should be used in a blueprint and passing the return value as the FineTuneValue for this function
 	
 	// Calculate the direction vector from the projectile's start location to the target's current position
 	const FVector Direction = TargetPosition - ProjectileStartLocation;
@@ -67,7 +69,7 @@ FVector UDebugFunctionLibrary::PredictProjectileDirection(const UObject* WorldCo
 	// Calculate the direction vector for the projectile to intercept the target
 	OutDirection = (PredictedTargetPosition - ProjectileStartLocation).GetSafeNormal();
 	
-	UKismetSystemLibrary::DrawDebugBox(WorldContextObject, PredictedTargetPosition, FVector(10.f), FLinearColor::Red, FRotator::ZeroRotator, 2.f);
+	//UKismetSystemLibrary::DrawDebugBox(WorldContextObject, PredictedTargetPosition, FVector(10.f), FLinearColor::Red, FRotator::ZeroRotator, 2.f);
 
 	return PredictedTargetPosition;
 }
