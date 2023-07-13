@@ -422,3 +422,44 @@ bool UDebugFunctionLibrary::SolveBallisticArcLateral_Plus(const FVector& Project
     return true;
 }
 
+float UDebugFunctionLibrary::GetStandardDeviation(const TArray<float>& Data)
+{
+	float Sum = 0.f;
+	float Mean = 0.f;
+	float StandardDeviation = 0.f;
+
+	for(const float Value : Data)
+	{
+		Sum += Value;
+	}
+
+	Mean = Sum / Data.Num();
+
+	for(const float Value : Data)
+	{
+		StandardDeviation += FMath::Pow(Value - Mean, 2);
+	}
+
+	return FMath::Sqrt(StandardDeviation / Data.Num());
+}
+
+float UDebugFunctionLibrary::GetLeanDotProduct(const FVector& CurrentForwardVector, const FVector& PreviousForwardVector)
+{
+	return FVector::DotProduct(FVector::CrossProduct(CurrentForwardVector, FVector::UpVector), PreviousForwardVector);
+}
+
+FVector UDebugFunctionLibrary::GetVectorIntersectionPoint(const FVector& V1StartPoint, const FVector& V1EndPoint,
+	const FVector& V2StartPoint, const FVector& V2EndPoint)
+{
+	const FVector V1 = V1EndPoint - V1StartPoint;
+	const FVector V2 = V2EndPoint - V2StartPoint;
+	const FVector V1_X_V2 = V1.Cross(V2);
+	
+	if(V1_X_V2.IsNearlyZero()) return FVector();
+
+	const FVector V3 = V2StartPoint - V1StartPoint;
+	const FVector T1 = V3.Cross(V2) / V1_X_V2;
+	return V1StartPoint + V1 * T1;
+}
+
+

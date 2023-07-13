@@ -100,4 +100,23 @@ public:
 	static bool SolveBallisticArcLateral_Plus(const FVector& ProjectilePosition, float LateralSpeed, const FVector& Target,
 	                              const FVector& TargetVelocity, float MaxHeightOffset, FVector& FireVelocity,
 	                              float& Gravity, FVector& ImpactPoint);
+
+	/**	Get standard deviation for float data.
+	 *	@param Data	Array containing float data.
+	 *	@returns Standard deviation as a float.
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static float GetStandardDeviation(const TArray<float>& Data);
+
+	/**	Gets a dot product value for determining if the actor is turning right or left.
+	 *	@param CurrentForwardVector Forward vector of the actor for the current frame.
+	 *	@param PreviousForwardVector Forward vector of the actor for the previous frame.
+	 *	@returns Dot product value for determining if actor is turning right or left.
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static float GetLeanDotProduct(const FVector& CurrentForwardVector, const FVector& PreviousForwardVector);
+
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static FVector GetVectorIntersectionPoint(const FVector& V1StartPoint, const FVector& V1EndPoint, const FVector& V2StartPoint, const FVector& V2EndPoint);
+	
 };

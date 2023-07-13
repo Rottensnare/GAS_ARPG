@@ -17,6 +17,26 @@ class UCameraComponent;
 class USpringArmComponent;
 class UGameplayEffect;
 
+
+USTRUCT(BlueprintType)
+struct FFramePackage
+{
+	GENERATED_BODY()
+	
+	UPROPERTY()
+	float Time;
+
+	UPROPERTY()
+	FVector ActorLocation;
+	
+	UPROPERTY()
+	FVector ActorVelocity;
+
+	UPROPERTY()
+	FVector ActorForwardVector;
+	
+};
+
 UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -33,6 +53,7 @@ public:
 	
 protected:
 	virtual void BeginPlay() override;
+	virtual void Tick(float DeltaSeconds) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Combat")
 	TObjectPtr<USkeletalMeshComponent> Weapon;
@@ -114,7 +135,50 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Combat")
 	FVector PredictedPosition = FVector::ZeroVector;
+
+	/**	Prediction */
 	
+	TDoubleLinkedList<FFramePackage> FrameHistory;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prediction")
+	bool bSaveFrameHistory = false;
+	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Prediction")
+	float MaxRecordTime = 2.f;
+
+	void SaveFramePackage();
+	void SaveFramePackage(FFramePackage& OutPackage) const;
+	
+	UFUNCTION(BlueprintCallable)
+	void VisualizeFrameHistory();
+
+	UFUNCTION(BlueprintCallable)
+	void ExtrapolateFrameHistory(const float ExtrapolationTime = 1.f);
+
+	UPROPERTY(EditAnywhere, Category = "Prediction")
+	float CustomTickRate = 10.f;
+
+	FTimerHandle CustomTickHandle; 
+
+	void CustomTick();
+
+	void StartCustomTick();
+	void StopCustomTick();
+
+	void AnalyzeMovementPattern();
+
+	UFUNCTION(BlueprintCallable)
+	bool RunningInCircles(const float Threshold);
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
+	bool bRunningInCircles = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
+	float LeanDotProduct = 0.f;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
+	float CircleRadius = 0.f;
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
@@ -141,4 +205,6 @@ public:
 	virtual int32 GetMinionCount_Implementation() override {return MinionCount;}
 	virtual void SetMinionCount_Implementation(const int32 NewCount) override {MinionCount = NewCount;}
 	virtual FVector GetPredictedPosition_Implementation() override {return PredictedPosition;}
+	virtual bool IsRunningInCircles_Implementation() override {return bRunningInCircles;}
+	
 };

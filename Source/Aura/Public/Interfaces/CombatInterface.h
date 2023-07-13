@@ -86,4 +86,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FVector GetPredictedPosition();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	bool IsRunningInCircles();
 };
