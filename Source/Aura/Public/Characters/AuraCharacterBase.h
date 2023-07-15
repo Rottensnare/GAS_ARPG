@@ -23,16 +23,16 @@ struct FFramePackage
 {
 	GENERATED_BODY()
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	float Time;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FVector ActorLocation;
 	
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FVector ActorVelocity;
 
-	UPROPERTY()
+	UPROPERTY(BlueprintReadOnly)
 	FVector ActorForwardVector;
 	
 };
@@ -155,7 +155,7 @@ protected:
 	UFUNCTION(BlueprintCallable)
 	void ExtrapolateFrameHistory(const float ExtrapolationTime = 1.f);
 
-	UPROPERTY(EditAnywhere, Category = "Prediction")
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Prediction")
 	float CustomTickRate = 10.f;
 
 	FTimerHandle CustomTickHandle; 
@@ -178,6 +178,9 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
 	float CircleRadius = 0.f;
+
+	UFUNCTION(BlueprintCallable)
+	FFramePackage GetFramePackage(const int32 Index) const;
 
 private:
 

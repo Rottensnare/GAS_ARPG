@@ -308,6 +308,21 @@ bool AAuraCharacterBase::RunningInCircles(const float Threshold)
 	return bRunningInCircles;
 }
 
+FFramePackage AAuraCharacterBase::GetFramePackage(const int32 Index) const
+{
+	if(FrameHistory.Num() <= Index) return FFramePackage();
+	int32 I = 0;
+	TDoubleLinkedList<FFramePackage>::TDoubleLinkedListNode* Node = FrameHistory.GetHead();
+	while(I < Index)
+	{
+		Node = Node->GetNextNode();
+		if(Node == nullptr) return FFramePackage();
+		I++;
+	}
+
+	return Node->GetValue();
+}
+
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 {
 	return AbilitySystemComponent;

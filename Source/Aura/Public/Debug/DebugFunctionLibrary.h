@@ -102,21 +102,59 @@ public:
 	                              float& Gravity, FVector& ImpactPoint);
 
 	/**	Get standard deviation for float data.
-	 *	@param Data	Array containing float data.
-	 *	@returns Standard deviation as a float.
+	 *
+	 *	@param Data		Array containing float data.
+	 *	@returns		Standard deviation as a float.
 	 */
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
 	static float GetStandardDeviation(const TArray<float>& Data);
 
 	/**	Gets a dot product value for determining if the actor is turning right or left.
-	 *	@param CurrentForwardVector Forward vector of the actor for the current frame.
-	 *	@param PreviousForwardVector Forward vector of the actor for the previous frame.
-	 *	@returns Dot product value for determining if actor is turning right or left.
+	 *
+	 *	@param CurrentForwardVector		Forward vector of the actor for the current frame.
+	 *	@param PreviousForwardVector	Forward vector of the actor for the previous frame.
+	 *	@returns						Dot product value for determining if actor is turning right or left.
 	 */
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
 	static float GetLeanDotProduct(const FVector& CurrentForwardVector, const FVector& PreviousForwardVector);
 
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
 	static FVector GetVectorIntersectionPoint(const FVector& V1StartPoint, const FVector& V1EndPoint, const FVector& V2StartPoint, const FVector& V2EndPoint);
-	
+
+	/**	Calculates the center and radius of a circle using a point on the circle arc, two tangents, and the length of the arc.
+	 *
+	 *	@param CirclePoint1		A point on the circle arc.
+	 *	@param Tangent1			The tangent vector at CirclePoint1 for the circle.
+	 *	@param Tangent2			A second tangent vector at any position.
+	 *	@param ArcLength		The length of the circle arc between the points that Tangent1 and Tangent2 correspond to.
+	 *	@param CircleCenter		[Out] The calculated center of the circle.
+	 *	@returns				The radius of the circle.
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static float CalculateCircleRadiusAndCenter(const FVector& CirclePoint1, const FVector& Tangent1, const FVector& Tangent2, const float ArcLength, FVector& CircleCenter);
+
+	/**	Calculates the future position on a circle arc based on simulation time and speed.
+	 *
+	 *	@param CurrentLocation  The current location on the circle arc.
+	 *	@param CircleCenter		The center of the circle.
+	 *	@param CircleRadius		The radius of the circle.
+	 *	@param Speed			The speed at which the object is moving along the circle arc.
+	 *	@param PredictionTime   The duration in seconds for which the future position is predicted.
+	 *	@param bClockwise		Determines whether the movement is clockwise (true) or counterclockwise (false).
+	 *	@returns				The predicted future position on the circle arc.
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static FVector CalculatePositionOnCircleArc(const FVector& CurrentLocation, const FVector& CircleCenter, const float CircleRadius, const float Speed, const float PredictionTime, const bool bClockwise);
+
+	/**	Calculates the future position on a circle arc based on simulation time and speed.
+	 *
+	 *	@param CurrentLocation  The current location on the circle arc.
+	 *	@param CircleCenter		The center of the circle.
+	 *	@param Speed			The speed at which the object is moving along the circle arc.
+	 *	@param PredictionTime   The duration in seconds for which the future position is predicted.
+	 *	@param bClockwise		Determines whether the movement is clockwise (true) or counterclockwise (false).
+	 *	@returns				The predicted future position on the circle arc.
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
+	static FVector CalculatePositionOnCircleArc_Ver2(const FVector& CurrentLocation, const FVector& CircleCenter, const float Speed, const float PredictionTime, const bool bClockwise);
 };

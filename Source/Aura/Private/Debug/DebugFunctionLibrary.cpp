@@ -462,4 +462,99 @@ FVector UDebugFunctionLibrary::GetVectorIntersectionPoint(const FVector& V1Start
 	return V1StartPoint + V1 * T1;
 }
 
+float UDebugFunctionLibrary::CalculateCircleRadiusAndCenter(const FVector& CirclePoint1, const FVector& Tangent1,
+	const FVector& Tangent2, const float ArcLength, FVector& CircleCenter)
+{
+	//Cross products of Tangents 1 and 2, meaning it travels through the circle center. I.E. they are perpendicular to the tangents
+	FVector T1_Perp;
+	FVector T2_Perp;
+	
+	// Checks which side of the tangent the circle is
+	if(GetLeanDotProduct(Tangent1, Tangent2) < 0.f)
+	{
+		// Initialize the perpendicular vectors
+		T1_Perp = FVector::CrossProduct(Tangent1, FVector::UpVector);
+		T2_Perp = FVector::CrossProduct(Tangent2, FVector::UpVector);
+	}
+	else
+	{
+		// Same, but opposite direction
+		T1_Perp = -FVector::CrossProduct(Tangent1, FVector::UpVector);
+		T2_Perp = -FVector::CrossProduct(Tangent2, FVector::UpVector);
+	}
+	//Normalize vectors for calculating the dot product
+	T1_Perp.Normalize();
+	T2_Perp.Normalize();
+	const float DotProduct = FVector::DotProduct(T1_Perp, T2_Perp);
+	
+	// Circle radius calculated using r = b / x, where x is the angle for the circle sector, b is the length of the arc and r is the radius.
+	const float CircleRadius = UKismetMathLibrary::SafeDivide(ArcLength, FMath::Acos(DotProduct));
+	CircleCenter = T1_Perp * FVector(CircleRadius) + CirclePoint1;
+	return CircleRadius;
+}
+
+FVector UDebugFunctionLibrary::CalculatePositionOnCircleArc(const FVector& CurrentLocation, const FVector& CircleCenter, const float CircleRadius,
+	const float Speed, const float PredictionTime, const bool bClockwise)
+{
+	// Future position on the circle arc in radians
+	float Radians;
+	// Circle circumference
+	const float Circumference = 2 * PI * CircleRadius;
+	// Calculate the number of laps based on the speed and prediction time.
+	float NumberOfLaps = (Speed * PredictionTime) / Circumference;
+	// Only need a value between [0.f, 1.f)
+	NumberOfLaps -= FMath::Floor(NumberOfLaps);
+
+	// Calculate the normalized vector from the current location to the circle center
+	const FVector NormalizedVector = UKismetMathLibrary::Normal((CurrentLocation - CircleCenter));
+	// Calculate the dot product of the normalized vector with the X-axis and Y-axis
+	const float DotProduct = FVector::DotProduct(NormalizedVector, FVector(1.0, 0.f, 0.f));
+	const float YDotProduct = FVector::DotProduct(NormalizedVector, FVector(0.f, 1.f, 0.f));
+
+	if(bClockwise)
+	{
+		// Clockwise movement
+		Radians = 2*PI*NumberOfLaps;
+		if(YDotProduct > 0.f)
+		{
+			// Add the angle between the normalized vector and the X-axis
+			Radians += FMath::Acos(DotProduct);
+		}
+		else
+		{
+			// Add the supplementary angle to account for the Y-axis direction
+			Radians += (PI + (PI - FMath::Acos(DotProduct)));
+		}
+	}
+	else
+	{
+		// Counterclockwise movement
+		Radians = -2*PI*NumberOfLaps;
+		if(YDotProduct < 0.f)
+		{
+			// Subtract the angle between the normalized vector and the X-axis
+			Radians -= FMath::Acos(DotProduct);
+		}
+		else
+		{
+			// Subtract the supplementary angle to account for the Y-axis direction
+			Radians -= (PI + (PI - FMath::Acos(DotProduct)));
+		}
+	}
+	
+	// Calculate the return vector by rotating the X-axis vector by the calculated angle in radians around the UpVector
+	FVector ReturnVector = FVector(1.f, 0.f, 0.f).RotateAngleAxisRad(Radians, FVector::UpVector);
+
+	// Scale the return vector by the circle radius and add the circle center to get the final position
+	ReturnVector = (ReturnVector * CircleRadius) + CircleCenter;
+	return ReturnVector;
+
+}
+
+FVector UDebugFunctionLibrary::CalculatePositionOnCircleArc_Ver2(const FVector& CurrentLocation, const FVector& CircleCenter,
+	const float Speed, const float PredictionTime, const bool bClockwise)
+{
+	return CalculatePositionOnCircleArc(CurrentLocation, CircleCenter, FVector::Distance(CurrentLocation, CircleCenter), Speed, PredictionTime, bClockwise);
+}
+
 
