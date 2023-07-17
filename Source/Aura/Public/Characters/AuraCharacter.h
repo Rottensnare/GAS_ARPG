@@ -36,5 +36,5 @@ public:
 
 	virtual int32 GetCharacterLevel() override;
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& AssociatedTag) override;
-	
+	virtual FFramePackage GetFramePackage_Implementation(const int32 Index) override;
 };

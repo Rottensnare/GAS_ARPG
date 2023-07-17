@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayTagContainer.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "UObject/Interface.h"
 #include "CombatInterface.generated.h"
 
@@ -88,5 +89,8 @@ public:
 	FVector GetPredictedPosition();
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
-	bool IsRunningInCircles();
+	bool IsRunningInCircles(const float Threshold, const FVector& CircleCenter);
+	
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	FFramePackage GetFramePackage(const int32 Index);
 };

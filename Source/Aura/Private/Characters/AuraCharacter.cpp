@@ -104,3 +104,18 @@ FVector AAuraCharacter::GetCombatSocketLocation_Implementation(const FGameplayTa
 	return GetMesh()->GetSocketLocation(TagsToSockets[AssociatedTag]);
 }
 
+FFramePackage AAuraCharacter::GetFramePackage_Implementation(const int32 Index)
+{
+	if(FrameHistory.Num() <= Index) return FFramePackage();
+	int32 I = 0;
+	TDoubleLinkedList<FFramePackage>::TDoubleLinkedListNode* Node = FrameHistory.GetHead();
+	while(I < Index)
+	{
+		Node = Node->GetNextNode();
+		if(Node == nullptr) return FFramePackage();
+		I++;
+	}
+
+	return Node->GetValue();
+}
+

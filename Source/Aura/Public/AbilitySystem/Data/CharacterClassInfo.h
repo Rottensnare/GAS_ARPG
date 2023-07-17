@@ -9,6 +9,26 @@
 
 class UGameplayEffect;
 
+
+USTRUCT(BlueprintType)
+struct FFramePackage
+{
+	GENERATED_BODY()
+	
+	UPROPERTY(BlueprintReadOnly)
+	float Time;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector ActorLocation;
+	
+	UPROPERTY(BlueprintReadOnly)
+	FVector ActorVelocity;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVector ActorForwardVector;
+	
+};
+
 UENUM(BlueprintType)
 enum class ECharacterClass : uint8
 {

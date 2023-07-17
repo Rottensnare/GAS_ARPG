@@ -6,6 +6,7 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/AuraAbilitySystemComponentBase.h"
 #include "AbilitySystem/AuraAttributeSetBase.h"
+#include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Debug/DebugFunctionLibrary.h"
@@ -48,8 +49,11 @@ void AAuraCharacterBase::BeginPlay()
 void AAuraCharacterBase::Tick(float DeltaSeconds)
 {
 	Super::Tick(DeltaSeconds);
-	
-	
+
+	if(FrameHistory.Num() < 2) return;
+	LeanDotProduct = FVector::DotProduct(
+		FVector::CrossProduct(GetActorForwardVector(), FVector::UpVector),
+		FrameHistory.GetHead()->GetNextNode()->GetValue().ActorForwardVector);
 }
 
 void AAuraCharacterBase::InitAbilityActorInfo()
@@ -164,79 +168,7 @@ void AAuraCharacterBase::VisualizeFrameHistory()
 
 void AAuraCharacterBase::ExtrapolateFrameHistory(const float ExtrapolationTime)
 {
-	/*
-	if(FrameHistory.Num() < 2) return;
-	float AverageChangeInDirection = 0.f;
-	float TotalChangeInDirection = 0.f;
-	float TotalTimeDifference = 0.f;
-
-	auto CurrentNode = FrameHistory.GetHead();
-	while (CurrentNode && CurrentNode->GetNextNode())
-	{
-		const FFramePackage& CurrentFrame = CurrentNode->GetValue();
-		const FFramePackage& NextFrame = CurrentNode->GetNextNode()->GetValue();
-
-		const float TimeDifference = NextFrame.Time - CurrentFrame.Time;
-		TotalTimeDifference += TimeDifference;
-
-		// Calculate the change in direction between the current and next frames
-		const FVector Direction1 = CurrentFrame.ActorVelocity.GetSafeNormal();
-		const FVector Direction2 = NextFrame.ActorVelocity.GetSafeNormal();
-		const float ChangeInDirection = FVector::DotProduct(Direction1, Direction2);
-		TotalChangeInDirection += ChangeInDirection;
-
-		CurrentNode = CurrentNode->GetNextNode();
-	}
 	
-	// Calculate the average change in direction per second
-	if (TotalTimeDifference > 0.f)
-	{
-		AverageChangeInDirection = TotalChangeInDirection / TotalTimeDifference;
-	}
-	else
-	{
-		AverageChangeInDirection = 0.f;
-	}
-	
-	// Extrapolate the position 1 second from now based on the average change in direction
-	const FFramePackage& LastFrame = FrameHistory.GetHead()->GetValue();
-	const FVector& LastLocation = LastFrame.ActorLocation;
-	const FVector& LastVelocity = LastFrame.ActorVelocity;
-
-	// Calculate the extrapolated direction by applying the average change in direction to the last velocity
-	const FVector ExtrapolatedDirection = LastVelocity.GetSafeNormal().RotateAngleAxis(AverageChangeInDirection * ExtrapolationTime, FVector::UpVector);
-
-	// Calculate the extrapolated location based on the last location, velocity, and extrapolated direction
-	const FVector ExtrapolatedLocation = LastLocation + (ExtrapolatedDirection * LastVelocity.Size() * ExtrapolationTime);
-
-	UKismetSystemLibrary::DrawDebugBox(
-			this,
-			ExtrapolatedLocation,
-			FVector(10.f),
-			FLinearColor::Yellow);
-
-	
-	const FVector CurrentVelocity = FrameHistory.GetHead()->GetValue().ActorVelocity;
-	const FVector PreviousVelocity = FrameHistory.GetHead()->GetNextNode()->GetValue().ActorVelocity;
-	const FVector DeltaVelocity = CurrentVelocity - PreviousVelocity;
-
-	const FVector AverageDeltaVelocity = DeltaVelocity / (1.f / CustomTickRate);
-	const FVector MovementDirection = CurrentVelocity.GetSafeNormal();
-	const FVector FutureDeltaVelocity = AverageDeltaVelocity * ExtrapolationTime;
-	const FVector PredictedLocation = GetActorLocation() + (MovementDirection * GetVelocity().Size() * ExtrapolationTime) + (0.5f * FutureDeltaVelocity * ExtrapolationTime * ExtrapolationTime);
-	
-	UKismetSystemLibrary::DrawDebugBox(
-			this,
-			PredictedLocation,
-			FVector(10.f),
-			FLinearColor::Black);
-
-	FVector D = FrameHistory.GetHead()->GetNextNode()->GetValue().ActorLocation - FrameHistory.GetHead()->GetValue().ActorLocation;
-	FVector V_Avg = (DeltaVelocity) / 2.f;
-	FVector P(-D.Y, D.X, 0.f);
-	float V_Proj = FVector::DotProduct(V_Avg, P);
-	CircleRadius = V_Proj / FVector::DotProduct(D, P);
-	*/
 }
 
 void AAuraCharacterBase::CustomTick()
@@ -257,16 +189,16 @@ void AAuraCharacterBase::StopCustomTick()
 	GetWorldTimerManager().ClearTimer(CustomTickHandle);
 }
 
-bool AAuraCharacterBase::RunningInCircles(const float Threshold)
+bool AAuraCharacterBase::RunningInCircles(const float Threshold, const FVector& CircleCenter)
 {
 	if(FrameHistory.Num() < 5) return false;
 
-	FVector Centroid = FVector::ZeroVector;
+	/*FVector Centroid = FVector::ZeroVector;
 	for (const auto& Frame : FrameHistory)
 	{
 		Centroid += Frame.ActorLocation;
 	}
-	Centroid /= FrameHistory.Num();
+	Centroid /= FrameHistory.Num();*/
 	
 	LeanDotProduct = FVector::DotProduct(FVector::CrossProduct(GetActorForwardVector(), FVector::UpVector), FrameHistory.GetHead()->GetNextNode()->GetValue().ActorForwardVector);
 	/*
@@ -294,34 +226,20 @@ bool AAuraCharacterBase::RunningInCircles(const float Threshold)
 	*/
 
 	
-	TArray<float> DistancesToCentroid;
+	TArray<float> DistancesToCenter;
 	for (const auto& Frame : FrameHistory)
 	{
-		float Distance = FVector::Distance(Frame.ActorLocation, Centroid);
-		DistancesToCentroid.Add(Distance);
+		float Distance = FVector::Distance(Frame.ActorLocation, CircleCenter);
+		DistancesToCenter.Add(Distance);
 	}
 	
-	const float StandardDeviation = UDebugFunctionLibrary::GetStandardDeviation(DistancesToCentroid);
+	const float StandardDeviation = UDebugFunctionLibrary::GetStandardDeviation(DistancesToCenter);
 	//UE_LOG(LogTemp, Display, TEXT("AuraCharacterBase: Standard Deviation: %f"), StandardDeviation)
 
 	bRunningInCircles = StandardDeviation <= Threshold;
 	return bRunningInCircles;
 }
 
-FFramePackage AAuraCharacterBase::GetFramePackage(const int32 Index) const
-{
-	if(FrameHistory.Num() <= Index) return FFramePackage();
-	int32 I = 0;
-	TDoubleLinkedList<FFramePackage>::TDoubleLinkedListNode* Node = FrameHistory.GetHead();
-	while(I < Index)
-	{
-		Node = Node->GetNextNode();
-		if(Node == nullptr) return FFramePackage();
-		I++;
-	}
-
-	return Node->GetValue();
-}
 
 UAbilitySystemComponent* AAuraCharacterBase::GetAbilitySystemComponent() const
 {
@@ -358,6 +276,40 @@ bool AAuraCharacterBase::IsDead_Implementation() const
 AActor* AAuraCharacterBase::GetAvatar_Implementation()
 { 
 	return this;
+}
+
+bool AAuraCharacterBase::IsRunningInCircles_Implementation(const float Threshold, const FVector& CircleCenter)
+{
+	if(FrameHistory.Num() < 5) return false;
+	if(GetVelocity().Size() < 5.f) return false; // False if the character is basically staying still.
+	if(FMath::Abs(LeanDotProduct) < 0.07f) return false; // False if character is turning at a very small rate. 
+	TArray<float> DistancesToCenter;
+	for (const auto& Frame : FrameHistory)
+	{
+		float Distance = FVector::Distance(Frame.ActorLocation, CircleCenter);
+		DistancesToCenter.Add(Distance);
+	}
+	
+	const float StandardDeviation = UDebugFunctionLibrary::GetStandardDeviation(DistancesToCenter);
+	//UE_LOG(LogTemp, Display, TEXT("AuraCharacterBase: Standard Deviation: %f"), StandardDeviation)
+
+	bRunningInCircles = StandardDeviation <= Threshold;
+	return bRunningInCircles;
+}
+
+FFramePackage AAuraCharacterBase::GetFramePackage_Implementation(const int32 Index)
+{
+	if(FrameHistory.Num() <= Index) return FFramePackage();
+	int32 I = 0;
+	TDoubleLinkedList<FFramePackage>::TDoubleLinkedListNode* Node = FrameHistory.GetHead();
+	while(I < Index)
+	{
+		Node = Node->GetNextNode();
+		if(Node == nullptr) return FFramePackage();
+		I++;
+	}
+
+	return Node->GetValue();
 }
 
 void AAuraCharacterBase::MulticastHandleDeath_Implementation()

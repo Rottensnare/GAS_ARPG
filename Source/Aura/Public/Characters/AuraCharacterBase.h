@@ -17,26 +17,6 @@ class UCameraComponent;
 class USpringArmComponent;
 class UGameplayEffect;
 
-
-USTRUCT(BlueprintType)
-struct FFramePackage
-{
-	GENERATED_BODY()
-	
-	UPROPERTY(BlueprintReadOnly)
-	float Time;
-
-	UPROPERTY(BlueprintReadOnly)
-	FVector ActorLocation;
-	
-	UPROPERTY(BlueprintReadOnly)
-	FVector ActorVelocity;
-
-	UPROPERTY(BlueprintReadOnly)
-	FVector ActorForwardVector;
-	
-};
-
 UCLASS(Abstract)
 class AURA_API AAuraCharacterBase : public ACharacter, public IAbilitySystemInterface, public ICombatInterface
 {
@@ -168,7 +148,7 @@ protected:
 	void AnalyzeMovementPattern();
 
 	UFUNCTION(BlueprintCallable)
-	bool RunningInCircles(const float Threshold);
+	bool RunningInCircles(const float Threshold, const FVector& CircleCenter);
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
 	bool bRunningInCircles = false;
@@ -178,9 +158,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
 	float CircleRadius = 0.f;
-
-	UFUNCTION(BlueprintCallable)
-	FFramePackage GetFramePackage(const int32 Index) const;
+	
+	
 
 private:
 
@@ -208,6 +187,6 @@ public:
 	virtual int32 GetMinionCount_Implementation() override {return MinionCount;}
 	virtual void SetMinionCount_Implementation(const int32 NewCount) override {MinionCount = NewCount;}
 	virtual FVector GetPredictedPosition_Implementation() override {return PredictedPosition;}
-	virtual bool IsRunningInCircles_Implementation() override {return bRunningInCircles;}
-	
+	virtual bool IsRunningInCircles_Implementation(const float Threshold, const FVector& CircleCenter) override;
+	virtual FFramePackage GetFramePackage_Implementation(const int32 Index) override;
 };

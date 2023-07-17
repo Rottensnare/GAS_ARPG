@@ -34,13 +34,13 @@ public:
 	 *	Same as DebugWaveFunction but will subtract frequency from time when time > frequency
 	 *	NOTE: Not subtracting 1/Frequency because division is expensive *relatively speaking*
 	 *	
-	 *	@param Time The input value that controls the position along the wave. It can be a value that increments over time.
-	 *	Will be reset to 0.f without affecting the output.
-	 *	@param Amplitude The maximum value of the wave. It determines how high or low the wave peaks.
-	 *	@param Frequency The frequency of the wave. It controls how many peaks and troughs occur over a given time period.
-	 *	@param Phase The phase offset of the wave. It shifts the starting position of the wave.
-	 *	@param Offset The vertical offset of the wave. It adds a constant value to the entire wave.
-	 *	@returns a floating-point value that represents the calculated wave value at a given time point.
+	 *	@param Time			The input value that controls the position along the wave. It can be a value that increments over time.
+	 *						Will be reset to 0.f without affecting the output.
+	 *	@param Amplitude	The maximum value of the wave. It determines how high or low the wave peaks.
+	 *	@param Frequency	The frequency of the wave. It controls how many peaks and troughs occur over a given time period.
+	 *	@param Phase		The phase offset of the wave. It shifts the starting position of the wave.
+	 *	@param Offset		The vertical offset of the wave. It adds a constant value to the entire wave.
+	 *	@returns			a floating-point value that represents the calculated wave value at a given time point.
 	 *	
 	 */
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
@@ -81,7 +81,20 @@ public:
 	const FVector& TargetVelocity, const FVector& ProjectileStartLocation, const float ProjectileSpeed, const float FineTuneValue = 0.75f);
 
 
-
+	/**	Predicts the intersection point for the projectile that it needs in order to hit the target that is moving in a circle.
+	 *	@param TargetPosition Current position of the target.
+	 *	@param CircleCenter The center of the circle that the target is moving around.
+	 *	@param CircleRadius The radius of the circle the target is moving around.
+	 *	@param bClockwise Movement direction around the circle.
+	 *	@param TargetSpeed The speed at which the target is moving around the circle.
+	 *	@param ProjectileStartLocation Location where the projectile is spawned from.
+	 *	@param ProjectileSpeed Initial Speed of the projectile.
+	 *	@param FineTuneValue Value that is used to fix the overshoot problem for this function. As distance to the target increases, the value needs to decrease accordingly.
+	 *	@returns FVector that corresponds to the predicted target location.
+	 */
+	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Ballistics")
+	static FVector PredictProjectileInterceptionPoint_Circle(const FVector& TargetPosition, const FVector& CircleCenter, const float CircleRadius, const bool bClockwise,
+	const float TargetSpeed, const FVector& ProjectileStartLocation, const float ProjectileSpeed, const float FineTuneValue = 0.75f );
 
 
 
@@ -157,4 +170,11 @@ public:
 	 */
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
 	static FVector CalculatePositionOnCircleArc_Ver2(const FVector& CurrentLocation, const FVector& CircleCenter, const float Speed, const float PredictionTime, const bool bClockwise);
+
+	/**	Calls UKismetSystemLibrary::DrawDebugBox with predefined parameters 
+	 *	@param WorldContextObject World Context Object
+	 *	@param Location	Location for the center of the box.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "DebugFunctionLibrary|Debug")
+	static void DebugBoxSimple_Red(const UObject* WorldContextObject, const FVector& Location);
 };

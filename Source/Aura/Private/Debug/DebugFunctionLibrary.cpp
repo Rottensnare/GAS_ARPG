@@ -3,8 +3,6 @@
 
 #include "Debug/DebugFunctionLibrary.h"
 
-#include <manipulations.h>
-
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -74,7 +72,47 @@ FVector UDebugFunctionLibrary::PredictProjectileDirection(const FVector& TargetP
 	return PredictedTargetPosition;
 }
 
+FVector UDebugFunctionLibrary::PredictProjectileInterceptionPoint_Circle(const FVector& TargetPosition,
+	const FVector& CircleCenter, const float CircleRadius, const bool bClockwise, const float TargetSpeed, const FVector& ProjectileStartLocation,
+	const float ProjectileSpeed, const float FineTuneValue)
+{
+	// NOTE: This is not accurate for some situations. Noticed that it is good enough when the radius of the circle is rather small.
+	// NOTE:	If someone else is reading this, please leave a comment on the GitHub page if you know a better, more efficient, more accurate, 
+	// NOTE:	or simpler way of achieving the same or even better results.
+	
+	// NOTE: Hardly any information on how to find the interception point when the target is moving in a circular fashion.
+	// NOTE: Had to use my limited memory and knowledge on geometry/trigonometry and then invent how to do it myself.
+	
+	// Direction to enemy from the circle center the player is running around
+	const FVector DirectionalVector = (ProjectileStartLocation - CircleCenter).GetSafeNormal();
 
+	// Closest and farthest positions on the circle from the enemy. Will be used to calculate min and max travel time for the projectile
+	const FVector ClosestPositionOnCircle = CircleCenter + DirectionalVector * CircleRadius;
+	const FVector FarthestPositionOnCircle = CircleCenter - DirectionalVector * CircleRadius;
+
+	// Calculating min and max projectile travel time
+	const float MinDistanceToTarget = FVector::Distance(ProjectileStartLocation, ClosestPositionOnCircle);
+	const float MinTimeToTarget = MinDistanceToTarget / ProjectileSpeed;
+	const float MaxDistanceToTarget = FVector::Distance(ProjectileStartLocation, FarthestPositionOnCircle);
+	const float MaxTimeToTarget = MaxDistanceToTarget / ProjectileSpeed;
+
+	// Predicting target position for the min and max travel times
+	const FVector TargetLocAtMinTime = CalculatePositionOnCircleArc(TargetPosition, CircleCenter, CircleRadius, TargetSpeed, MinTimeToTarget, bClockwise);
+	const FVector TargetLocAtMaxTime = CalculatePositionOnCircleArc(TargetPosition, CircleCenter, CircleRadius, TargetSpeed, MaxTimeToTarget, bClockwise);
+
+	// Calculating the angle between the 2 previous prediction points
+	const float DotProduct = FVector::DotProduct((TargetLocAtMinTime - CircleCenter).GetSafeNormal(), (TargetLocAtMaxTime - CircleCenter).GetSafeNormal());
+	const float Angle = FMath::Acos(DotProduct);
+
+	// Interpolating between the 0.f and the Max and Min travel times difference. Using the angle as the alpha.
+	// Multiplied by FineTuneValue for trying to account for simplifications in the algorithm.
+	// Fine tune value gotten from a float curve that is based on distance. 
+	const float InterpolatedTime = (FMath::Lerp(0.f, (MaxTimeToTarget - MinTimeToTarget), (Angle / (2*PI)))) * FineTuneValue;
+
+	// Calculate the predicted location fort the interpolated time.
+	const FVector InterpolatedLocation = CalculatePositionOnCircleArc(TargetPosition, CircleCenter, CircleRadius, TargetSpeed, InterpolatedTime+MinTimeToTarget, bClockwise);
+	return InterpolatedLocation;
+}
 
 
 static float GetCubicRoot(float value)
@@ -555,6 +593,18 @@ FVector UDebugFunctionLibrary::CalculatePositionOnCircleArc_Ver2(const FVector& 
 	const float Speed, const float PredictionTime, const bool bClockwise)
 {
 	return CalculatePositionOnCircleArc(CurrentLocation, CircleCenter, FVector::Distance(CurrentLocation, CircleCenter), Speed, PredictionTime, bClockwise);
+}
+
+void UDebugFunctionLibrary::DebugBoxSimple_Red(const UObject* WorldContextObject, const FVector& Location)
+{
+	UKismetSystemLibrary::DrawDebugBox(
+		WorldContextObject,
+		Location,
+		FVector(10.f),
+		FLinearColor::Red,
+		FRotator::ZeroRotator,
+		2.f,
+		2.f);
 }
 
 
