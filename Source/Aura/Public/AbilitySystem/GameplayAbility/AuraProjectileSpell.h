@@ -33,7 +33,7 @@ protected:
 	 *	@param ArcModifier Controls the curve of the projectile arc, where 1.0f is straight towards and 0.f is straight upwards.
 	 */
 	UFUNCTION(BlueprintCallable, Category = "Projectile")
-	void SpawnProjectileWithArc(const FVector& TargetLocation, const FGameplayTag SocketTag, const float ArcModifier = 0.5f);
+	bool SpawnProjectileWithArc(const FVector& TargetLocation, const FGameplayTag SocketTag, const float ArcModifier = 0.5f);
 	
 	/**	Uses pre-calculated LaunchVelocity to spawn a projectile with the said LaunchVelocity.
 	 *	NOTE: Should use UDebugFunctionLibrary::PredictProjectileDirection for projectile direction prediction.

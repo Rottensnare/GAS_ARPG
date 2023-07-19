@@ -504,30 +504,30 @@ float UDebugFunctionLibrary::CalculateCircleRadiusAndCenter(const FVector& Circl
 	const FVector& Tangent2, const float ArcLength, FVector& CircleCenter)
 {
 	//Cross products of Tangents 1 and 2, meaning it travels through the circle center. I.E. they are perpendicular to the tangents
-	FVector T1_Perp;
-	FVector T2_Perp;
+	FVector T1_Cross;
+	FVector T2_Cross;
 	
 	// Checks which side of the tangent the circle is
 	if(GetLeanDotProduct(Tangent1, Tangent2) < 0.f)
 	{
-		// Initialize the perpendicular vectors
-		T1_Perp = FVector::CrossProduct(Tangent1, FVector::UpVector);
-		T2_Perp = FVector::CrossProduct(Tangent2, FVector::UpVector);
+		// Initialize the Perpendicular vectors
+		T1_Cross = FVector::CrossProduct(Tangent1, FVector::UpVector);
+		T2_Cross = FVector::CrossProduct(Tangent2, FVector::UpVector);
 	}
 	else
 	{
 		// Same, but opposite direction
-		T1_Perp = -FVector::CrossProduct(Tangent1, FVector::UpVector);
-		T2_Perp = -FVector::CrossProduct(Tangent2, FVector::UpVector);
+		T1_Cross = -FVector::CrossProduct(Tangent1, FVector::UpVector);
+		T2_Cross = -FVector::CrossProduct(Tangent2, FVector::UpVector);
 	}
 	//Normalize vectors for calculating the dot product
-	T1_Perp.Normalize();
-	T2_Perp.Normalize();
-	const float DotProduct = FVector::DotProduct(T1_Perp, T2_Perp);
+	T1_Cross.Normalize();
+	T2_Cross.Normalize();
+	const float DotProduct = FVector::DotProduct(T1_Cross, T2_Cross);
 	
 	// Circle radius calculated using r = b / x, where x is the angle for the circle sector, b is the length of the arc and r is the radius.
 	const float CircleRadius = UKismetMathLibrary::SafeDivide(ArcLength, FMath::Acos(DotProduct));
-	CircleCenter = T1_Perp * FVector(CircleRadius) + CirclePoint1;
+	CircleCenter = T1_Cross * FVector(CircleRadius) + CirclePoint1;
 	return CircleRadius;
 }
 

@@ -58,7 +58,7 @@ void UAuraProjectileSpell::SpawnProjectile(const FVector& TargetLocation)
 	}
 }
 
-void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation, const FGameplayTag SocketTag, const float ArcModifier)
+bool UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation, const FGameplayTag SocketTag, const float ArcModifier)
 {
 	if(GetAvatarActorFromActorInfo()->HasAuthority())
 	{
@@ -93,7 +93,15 @@ void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation,
 		// Calculate the trajectory for the projectile based on given parameters
 		FVector ProjectileVelocity = FVector::ZeroVector;
 		UGameplayStatics::SuggestProjectileVelocity_CustomArc(Projectile, ProjectileVelocity,SocketLocation, TargetLocation, Projectile->ProjectileMovement->GetGravityZ(), ArcModifier);
+		UE_LOG(LogTemp, Warning, TEXT("Projectile Velocity: %f"), ProjectileVelocity.Size())
 
+		// This is a work around since sometimes the passed in TargetLocation is way further due to failed movement prediction.
+		// Has only returned false when target is moving back and forth or changing movement direction in weird ways.
+		if(ProjectileVelocity.Size() > ProjectileClass.GetDefaultObject()->MaxProjectileSpeed)
+		{
+			Projectile->Destroy();
+			return false;
+		}
 		// Set the calculated values for the projectile
 		SpawnTransform.SetRotation(ProjectileVelocity.ToOrientationQuat());
 		Projectile->ProjectileMovement->InitialSpeed = ProjectileVelocity.Size();
@@ -102,6 +110,8 @@ void UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation,
 		// Finish the spawning process
 		Projectile->FinishSpawning(SpawnTransform);
 	}
+
+	return true;
 }
 
 

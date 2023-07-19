@@ -122,7 +122,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Math")
 	static float GetStandardDeviation(const TArray<float>& Data);
 
-	/**	Gets a dot product value for determining if the actor is turning right or left.
+	/**	Gets a dot product value for determining if the actor is turning right or left. Positive means right/clockwise
 	 *
 	 *	@param CurrentForwardVector		Forward vector of the actor for the current frame.
 	 *	@param PreviousForwardVector	Forward vector of the actor for the previous frame.

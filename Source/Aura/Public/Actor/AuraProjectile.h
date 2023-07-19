@@ -22,6 +22,9 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, meta = (ExposeOnSpawn = true))
 	FGameplayEffectSpecHandle DamageEffectSpecHandle;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Projectile")
+	float MaxProjectileSpeed = 1800.f;
 	
 protected:
 
@@ -33,8 +36,6 @@ protected:
 	
 	UPROPERTY(EditAnywhere)
 	float ProjectileLifeSpan = 10.f;
-
-	
 
 	/**	Effects */
 	
