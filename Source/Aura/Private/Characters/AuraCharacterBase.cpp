@@ -13,6 +13,7 @@
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Managers/CombatManager.h"
 #include "Net/UnrealNetwork.h"
 
 
@@ -44,6 +45,7 @@ void AAuraCharacterBase::BeginPlay()
 	Super::BeginPlay();
 
 	StartCustomTick();
+	
 }
 
 void AAuraCharacterBase::Tick(float DeltaSeconds)
@@ -271,11 +273,13 @@ void AAuraCharacterBase::Die()
 bool AAuraCharacterBase::IsDead_Implementation() const
 {
 	return bDead;
+	
 }
 
 AActor* AAuraCharacterBase::GetAvatar_Implementation()
 { 
 	return this;
+
 }
 
 bool AAuraCharacterBase::IsRunningInCircles_Implementation(const float Threshold, const FVector& CircleCenter)

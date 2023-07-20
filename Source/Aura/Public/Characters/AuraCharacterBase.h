@@ -9,6 +9,7 @@
 #include "AuraCharacterBase.generated.h"
 
 
+class ACombatManager;
 class UNiagaraSystem;
 class UGameplayAbility;
 class UAttributeSet;
@@ -158,8 +159,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
 	float CircleRadius = 0.f;
-	
-	
 
 private:
 

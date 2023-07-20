@@ -30,6 +30,7 @@ void UBTService_FindNearestPlayer::OnBecomeRelevant(UBehaviorTreeComponent& Owne
 	Super::OnBecomeRelevant(OwnerComp, NodeMemory);
 }
 
+// TODO: For performance reason, I could just make this logic only on 1 AI or a combat manager which has a reference to all the enemies spawned.
 void UBTService_FindNearestPlayer::TickNode(UBehaviorTreeComponent& OwnerComp, uint8* NodeMemory, float DeltaSeconds)
 {
 	Super::TickNode(OwnerComp, NodeMemory, DeltaSeconds);

@@ -6,6 +6,7 @@
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Characters/AuraCharacterBase.h"
 #include "Interfaces/EnemyInterface.h"
+#include "Managers/CombatManager.h"
 #include "UI/Widget/OverlayWidgetController.h"
 #include "AuraEnemy.generated.h"
 
@@ -57,13 +58,26 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FOnDeathSignature OnDeathDelegate;
 
+	/**	Combat AI */
+	
+	void CombatManagerRegistration(ACombatManager* InCombatManager);
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat Manager")
+	TObjectPtr<ACombatManager> CombatManager;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat Manager")
+	FSquad CurrentSquad;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Combat Manager")
+	bool bAutoAssignToSquad = true;
+
 protected:
 
 	virtual void BeginPlay() override;
 	virtual void InitAbilityActorInfo() override;
 	virtual void InitDefaultAttributes() const override;
 	virtual void PossessedBy(AController* NewController) override;
-	
+	virtual void BeginDestroy() override;
 	void OnDeath();
 
 	/**	Enemy level */
@@ -80,6 +94,7 @@ protected:
 
 	UPROPERTY(VisibleInstanceOnly, Category = "AI")
 	TObjectPtr<AAuraAIController> AuraAIController;
+
 
 private:
 

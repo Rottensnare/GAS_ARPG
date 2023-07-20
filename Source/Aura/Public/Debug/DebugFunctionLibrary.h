@@ -6,6 +6,7 @@
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "DebugFunctionLibrary.generated.h"
 
+class ACombatManager;
 /**
  * 
  */
@@ -77,7 +78,7 @@ public:
 	 *	@returns FVector that corresponds to the predicted target location.
 	 */
 	UFUNCTION(BlueprintPure, Category = "DebugFunctionLibrary|Ballistics")
-	static FVector PredictProjectileDirection(const FVector& TargetPosition, FVector& OutDirection,
+	static FVector PredictProjectileInterceptionPoint(const FVector& TargetPosition, FVector& OutDirection,
 	const FVector& TargetVelocity, const FVector& ProjectileStartLocation, const float ProjectileSpeed, const float FineTuneValue = 0.75f);
 
 
@@ -177,4 +178,7 @@ public:
 	 */
 	UFUNCTION(BlueprintCallable, Category = "DebugFunctionLibrary|Debug")
 	static void DebugBoxSimple_Red(const UObject* WorldContextObject, const FVector& Location);
+
+	UFUNCTION(BlueprintCallable, Category = "DebugFunctionLibrary|Combat")
+	static ACombatManager* GetCombatManager(const UObject* WorldContextObject);
 };

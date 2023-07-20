@@ -3,6 +3,7 @@
 
 #include "Debug/DebugFunctionLibrary.h"
 
+#include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
@@ -44,9 +45,10 @@ float UDebugFunctionLibrary::CalculateFineTuneValue(float DistanceToTarget, cons
 	return ValueFromDistance->FloatCurve.Eval(NormalizedDistance);
 }
 
-FVector UDebugFunctionLibrary::PredictProjectileDirection(const FVector& TargetPosition, FVector& OutDirection,
+FVector UDebugFunctionLibrary::PredictProjectileInterceptionPoint(const FVector& TargetPosition, FVector& OutDirection,
 	const FVector& TargetVelocity, const FVector& ProjectileStartLocation, const float ProjectileSpeed, const float FineTuneValue)
 {
+	
 	// NOTE: CURRENTLY SOMEWHAT WORKING SOLUTION. OVERSHOOTS THE TARGET BY A FEW PERCENT AND THE FURTHER AWAY THE TARGET IS, THE LARGER THE OVERSHOOT
 	
 	// NOTE: CalculateFineTuneValue to get a somewhat accurate value based on distance to target.
@@ -82,6 +84,7 @@ FVector UDebugFunctionLibrary::PredictProjectileInterceptionPoint_Circle(const F
 	
 	// NOTE: Hardly any information on how to find the interception point when the target is moving in a circular fashion.
 	// NOTE: Had to use my limited memory and knowledge on geometry/trigonometry and then invent how to do it myself.
+
 	
 	// Direction to enemy from the circle center the player is running around
 	const FVector DirectionalVector = (ProjectileStartLocation - CircleCenter).GetSafeNormal();
@@ -605,6 +608,11 @@ void UDebugFunctionLibrary::DebugBoxSimple_Red(const UObject* WorldContextObject
 		FRotator::ZeroRotator,
 		2.f,
 		2.f);
+}
+
+ACombatManager* UDebugFunctionLibrary::GetCombatManager(const UObject* WorldContextObject)
+{
+	return Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject))->GetCombatManager();
 }
 
 

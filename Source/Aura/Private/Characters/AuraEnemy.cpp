@@ -12,6 +12,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Kismet/GameplayStatics.h"
+#include "Managers/CombatManager.h"
 #include "UI/Widget/AuraUserWidget.h"
 
 AAuraEnemy::AAuraEnemy()
@@ -26,6 +28,14 @@ AAuraEnemy::AAuraEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+}
+
+void AAuraEnemy::CombatManagerRegistration(ACombatManager* InCombatManager)
+{
+	if(HasAuthority() == false) return;
+	
+	CombatManager = InCombatManager;
+	CombatManager->RegisterEnemy(this);
 }
 
 void AAuraEnemy::BeginPlay()
@@ -44,7 +54,7 @@ void AAuraEnemy::BeginPlay()
 	if(AS)
 	{
 		AbilitySystemComponent->GetGameplayAttributeValueChangeDelegate(AS->GetHealthAttribute()).AddLambda(
-			[this, AS](const FOnAttributeChangeData& Data)
+			[this](const FOnAttributeChangeData& Data)
 			{
 				OnHealthChanged.Broadcast(Data.NewValue);
 			});
@@ -60,6 +70,7 @@ void AAuraEnemy::BeginPlay()
 		OnHealthChanged.Broadcast(AS->GetHealth());
 		OnMaxHealthChanged.Broadcast(AS->GetMaxHealth());
 	}
+
 	
 }
 
@@ -134,6 +145,11 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	AddCharacterAbilities();
 }
 
+void AAuraEnemy::BeginDestroy()
+{
+	Super::BeginDestroy();
+}
+
 void AAuraEnemy::OnDeath()
 {
 	if(HasAuthority())
@@ -147,6 +163,7 @@ void AAuraEnemy::Die()
 {
 	SetLifeSpan(LifeTime);
 	if(AuraAIController && AuraAIController->GetBlackboardComponent()) AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Dead"), true);
+	if(HasAuthority()) CombatManager->UnRegisterEnemy(this);
 	Super::Die();
 	
 }

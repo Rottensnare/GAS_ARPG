@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "AuraGameModeBase.generated.h"
 
+class ACombatManager;
 class UCharacterClassInfo;
 /**
  * 
@@ -19,4 +20,21 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
+
+	
+
+protected:
+
+	UPROPERTY(EditDefaultsOnly, Category = "Combat")
+	TSubclassOf<ACombatManager> CombatManagerClass;
+	
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
+	ACombatManager* CombatManager;
+
+	virtual void BeginPlay() override;
+	
+public:
+
+	UFUNCTION(BlueprintCallable)
+	ACombatManager* GetCombatManager();
 };
