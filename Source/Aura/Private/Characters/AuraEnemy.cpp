@@ -11,6 +11,8 @@
 #include "BehaviorTree/BehaviorTree.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "Components/WidgetComponent.h"
+#include "Debug/DebugFunctionLibrary.h"
+#include "Game/AuraGameModeBase.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Managers/CombatManager.h"
@@ -28,6 +30,8 @@ AAuraEnemy::AAuraEnemy()
 
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
+
+	
 }
 
 void AAuraEnemy::CombatManagerRegistration(ACombatManager* InCombatManager)
@@ -133,6 +137,7 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	Super::PossessedBy(NewController);
 	
 	if(HasAuthority() == false) return;
+	AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
 	AuraAIController = Cast<AAuraAIController>(NewController);
 	check(AuraAIController)
 	check(BehaviorTree)
@@ -143,6 +148,17 @@ void AAuraEnemy::PossessedBy(AController* NewController)
 	AuraAIController->GetBlackboardComponent()->SetValueAsBool(FName("Ranged"), ECharacterClass::Warrior != CharacterClass);
 
 	AddCharacterAbilities();
+
+	if(AuraGameMode && AuraGameMode->GetCombatManagerReady())
+	{
+		CombatManagerRegistration(UDebugFunctionLibrary::GetCombatManager(this));
+	}
+	else if (AuraGameMode && !AuraGameMode->GetCombatManagerReady())
+	{
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUFunction(this, FName("CombatManagerInit"));
+		GetWorldTimerManager().SetTimerForNextTick(TimerDelegate);
+	}
 }
 
 void AAuraEnemy::BeginDestroy()
@@ -157,6 +173,22 @@ void AAuraEnemy::OnDeath()
 		MinionCount--;
 	}
 	
+}
+
+void AAuraEnemy::CombatManagerInit()
+{
+	
+	if(AuraGameMode->GetCombatManagerReady())
+	{
+		CombatManagerRegistration(UDebugFunctionLibrary::GetCombatManager(this));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("CombatManagerInit called too many times"))
+		FTimerDelegate TimerDelegate;
+		TimerDelegate.BindUFunction(this, FName("CombatManagerInit"));
+		GetWorldTimerManager().SetTimerForNextTick(TimerDelegate);
+	}
 }
 
 void AAuraEnemy::Die()

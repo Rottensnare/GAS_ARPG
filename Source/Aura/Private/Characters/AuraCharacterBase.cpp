@@ -10,6 +10,7 @@
 #include "Aura/Aura.h"
 #include "Components/CapsuleComponent.h"
 #include "Debug/DebugFunctionLibrary.h"
+#include "Game/AuraGameModeBase.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -30,7 +31,8 @@ AAuraCharacterBase::AAuraCharacterBase()
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetCollisionResponseToChannel(ECC_Projectile, ECR_Overlap);
 	GetMesh()->SetGenerateOverlapEvents(true);
-	
+
+	AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
 }
 
 void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const

@@ -54,7 +54,7 @@ struct AuraDamageStatics
 			TagsToCaptureDefs.Emplace(FAuraGameplayTags::Get().Attributes_Resistance_Physical, PhysicalResistanceDef);
 		}
 		const double MilliSeconds = ThisTime * 1000;
-		UE_LOG(LogTemp, Log, TEXT("AuraDamageStatics::Constructor %.2f ms"), MilliSeconds)
+		//UE_LOG(LogTemp, Log, TEXT("AuraDamageStatics::Constructor %.2f ms"), MilliSeconds)
 	}
 };
 
@@ -199,6 +199,6 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		OutExecutionOutput.AddOutputModifier(EvaluatedData);
 	}
 	double MilliSeconds = ExecutionTime * 1000;
-	UE_LOG(LogTemp, Log, TEXT("ExecCalc_Damage Time To Execute: %.2f ms"), MilliSeconds)
+	//UE_LOG(LogTemp, Log, TEXT("ExecCalc_Damage Time To Execute: %.2f ms"), MilliSeconds)
 	
 }

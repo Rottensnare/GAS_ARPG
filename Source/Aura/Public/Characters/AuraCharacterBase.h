@@ -9,6 +9,7 @@
 #include "AuraCharacterBase.generated.h"
 
 
+class AAuraGameModeBase;
 class ACombatManager;
 class UNiagaraSystem;
 class UGameplayAbility;
@@ -47,6 +48,9 @@ protected:
 
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
+
+	UPROPERTY()
+	TObjectPtr<AAuraGameModeBase> AuraGameMode;
 
 	virtual void InitAbilityActorInfo();
 	void ApplyEffectToSelf(TSubclassOf<UGameplayEffect> GameplayEffectClass, float Level) const;

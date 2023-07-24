@@ -31,10 +31,15 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Combat")
 	ACombatManager* CombatManager;
 
+	bool bCombatManagerReady = false;
+
 	virtual void BeginPlay() override;
 	
 public:
 
 	UFUNCTION(BlueprintCallable)
 	ACombatManager* GetCombatManager();
+
+	bool GetCombatManagerReady() const {return bCombatManagerReady;}
+	void SetCombatManagerReady(const bool bReady) {bCombatManagerReady = bReady;}
 };

@@ -51,7 +51,7 @@ public:
 
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	
-	TArray<TWeakObjectPtr<AAuraEnemy>> SpawnedEnemies;
+	TArray<AAuraEnemy*> SpawnedEnemies;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Squads")
 	TArray<FSquad> Squads;

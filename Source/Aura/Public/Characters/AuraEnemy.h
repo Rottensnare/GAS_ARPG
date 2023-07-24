@@ -98,7 +98,8 @@ protected:
 
 private:
 
-	
+	UFUNCTION()
+	void CombatManagerInit();
 
 public:
 

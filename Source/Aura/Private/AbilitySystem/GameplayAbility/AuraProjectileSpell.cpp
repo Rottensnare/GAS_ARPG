@@ -93,7 +93,7 @@ bool UAuraProjectileSpell::SpawnProjectileWithArc(const FVector& TargetLocation,
 		// Calculate the trajectory for the projectile based on given parameters
 		FVector ProjectileVelocity = FVector::ZeroVector;
 		UGameplayStatics::SuggestProjectileVelocity_CustomArc(Projectile, ProjectileVelocity,SocketLocation,TargetLocation, Projectile->ProjectileMovement->GetGravityZ(), ArcModifier);
-		UE_LOG(LogTemp, Warning, TEXT("Projectile Velocity: %f"), ProjectileVelocity.Size())
+		//UE_LOG(LogTemp, Warning, TEXT("Projectile Velocity: %f"), ProjectileVelocity.Size())
 
 		// This is a work around since sometimes the passed in TargetLocation is way further due to failed movement prediction.
 		// Has only returned false when target is moving back and forth or changing movement direction in weird ways.

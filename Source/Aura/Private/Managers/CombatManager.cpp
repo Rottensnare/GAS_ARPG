@@ -6,13 +6,14 @@
 #include "NiagaraCommon.h"
 #include "AI/Controller/AuraAIController.h"
 #include "Characters/AuraEnemy.h"
+#include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
 // Sets default values
 ACombatManager::ACombatManager()
 {
+	// leaving it true for now
 	PrimaryActorTick.bCanEverTick = true;
-	
 }
 
 void ACombatManager::BeginPlay()
@@ -28,13 +29,7 @@ void ACombatManager::PossessedBy(AController* NewController)
 	if(HasAuthority() == false) return;
 	
 	AIController = Cast<AAuraAIController>(NewController);
-	
-	TArray<AActor*> OutActors;
-	UGameplayStatics::GetAllActorsOfClass(this, AAuraEnemy::StaticClass(), OutActors);
-	for(AActor* Enemy : OutActors)
-	{
-		Cast<AAuraEnemy>(Enemy)->CombatManagerRegistration(this);
-	}
+	Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this))->SetCombatManagerReady(true);
 }
 
 // Called every frame
@@ -52,14 +47,15 @@ void ACombatManager::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 void ACombatManager::RegisterEnemy(AAuraEnemy* EnemyToRegister)
 {
-	if(EnemyToRegister != nullptr) SpawnedEnemies.AddUnique(EnemyToRegister);
+	if(!IsValid(EnemyToRegister)) return;
+	if(EnemyToRegister != nullptr) SpawnedEnemies.Emplace(EnemyToRegister);
 	UE_LOG(LogTemp, Warning, TEXT("[%s] was registered to the combat manager"), *EnemyToRegister->GetName())
 }
 
 void ACombatManager::UnRegisterEnemy(AAuraEnemy* EnemyToUnregister)
 {
-	if(EnemyToUnregister == nullptr) return;
+	if(!IsValid(EnemyToUnregister)) return;
 	if(SpawnedEnemies.Contains(EnemyToUnregister)) SpawnedEnemies.Remove(EnemyToUnregister);
-	UE_LOG(LogTemp, Warning, TEXT("[%s] was removed from the combat manager"), *EnemyToUnregister->GetName())
+	if(EnemyToUnregister) UE_LOG(LogTemp, Warning, TEXT("[%s] was removed from the combat manager"), *EnemyToUnregister->GetName())
 }
 

@@ -156,7 +156,7 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 		}
 	}
 	const double Milliseconds = ThisTime * 1000; //NOTE: And These
-	UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
+	//UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
 }
 
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
