@@ -81,7 +81,7 @@ public:
 
  /** Category Cooldowns */
 
- 
+ FGameplayTag Cooldown_Fire_Fireball;
 
  /** Category InputTags */
 

@@ -114,6 +114,11 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Summon"), FString("Tag for summon abilities"));
 	GameplayTags.Abilities_Fire_Fireball = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.Fireball"), FString("Tag for Fireball abilities"));
+
+	/** Category Cooldowns */
+	
+	GameplayTags.Cooldown_Fire_Fireball = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Cooldown.Fire.Fireball"), FString("Tag for Fireball cooldown"));
 	
 	/**	Category Input */
 	
