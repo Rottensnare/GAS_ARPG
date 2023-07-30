@@ -254,6 +254,7 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForEnemyAndLevel(const UObject* Worl
 	if(!XPRewardTable) return 0;
 	// Bug: GetDisplayValueAsText will only provide the correct name when not a packaged build. Need to do string manipulation when a packaged build. Already did this in the blaster project.
 	const FText EnumText = UEnum::GetDisplayValueAsText(EnemyType);
+	//FName DebugName = UEnum::GetValueAsName(EnemyType);
 	const FName EnumName = FName(EnumText.ToString());
 	const FRealCurve* RewardCurve = XPRewardTable->FindCurve(EnumName, "", true);
 	if(!RewardCurve) return 0; //Debug purposes

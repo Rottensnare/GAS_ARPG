@@ -119,3 +119,11 @@ FFramePackage AAuraCharacter::GetFramePackage_Implementation(const int32 Index)
 	return Node->GetValue();
 }
 
+void AAuraCharacter::AddToXP_Implementation(const int32 InXP)
+{
+	AAuraPlayerState* const AuraPlayerState = GetPlayerState<AAuraPlayerState>();
+	check(AuraPlayerState)
+
+	AuraPlayerState->AddToXP(InXP);
+}
+
