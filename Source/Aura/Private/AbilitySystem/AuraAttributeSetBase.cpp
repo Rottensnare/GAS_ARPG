@@ -10,6 +10,7 @@
 #include "GameplayEffectExtension.h"
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
+#include "Aura/AuraLogChannels.h"
 #include "GameFramework/Character.h"
 #include "Interfaces/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -147,12 +148,21 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 					{
 						CombatInterface->Die();
 					}
+					SendXPEvent(Props);
 				}
 				
 				ShowFloatingText(Props,
 					LocalIncomingDamage,
 					UAuraAbilitySystemLibrary::GetEffectModifierBits(Props.EffectContextHandle));
+
+				
 			}
+		}
+		if(Data.EvaluatedData.Attribute == GetIncomingXPAttribute())
+		{
+			const float LocalIncomingXP = GetIncomingXP();
+			SetIncomingXP(0.f);
+			UE_LOG(LogAura, Warning, TEXT("Incoming XP = %f"), LocalIncomingXP)
 		}
 	}
 	const double Milliseconds = ThisTime * 1000; //NOTE: And These
@@ -207,6 +217,20 @@ void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, con
 			APC2->ShowDamageNumber(Damage, Props.TargetCharacter, EffectModBits);
 		}
 	}
+}
+
+void UAuraAttributeSetBase::SendXPEvent(const FEffectProperties& Props) const
+{
+	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter);
+	if(!CombatInterface) return;
+	
+	const int32 TargetLevel = CombatInterface->GetCharacterLevel();
+	const EEnemyType EnemyType = ICombatInterface::Execute_GetEnemyType(Props.TargetCharacter);
+	const int32 XPReward = UAuraAbilitySystemLibrary::GetXPRewardForEnemyAndLevel(Props.TargetCharacter, EnemyType, TargetLevel);
+	FGameplayEventData Payload;
+	Payload.EventTag = FAuraGameplayTags::Get().Attribute_Meta_IncomingXP;
+	Payload.EventMagnitude = XPReward;
+	UAbilitySystemBlueprintLibrary::SendGameplayEventToActor(Props.SourceCharacter, Payload.EventTag, Payload);
 }
 
 #pragma region  Rep Notifies

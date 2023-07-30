@@ -21,7 +21,8 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = "Character Class Defaults")
 	TObjectPtr<UCharacterClassInfo> CharacterClassInfo;
 
-	
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UCurveTable> XPRewardTable;
 
 protected:
 

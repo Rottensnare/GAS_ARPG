@@ -39,6 +39,16 @@ enum class ECharacterClass : uint8
 	Default_Max
 };
 
+UENUM(BlueprintType)
+enum class EEnemyType : uint8
+{
+	DefaultMax,
+	
+	Goblin,
+	Shaman,
+	Demon,
+	Ghoul
+};
 
 USTRUCT(BlueprintType)
 struct FCharacterClassDefaultInfo

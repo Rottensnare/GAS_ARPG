@@ -42,6 +42,9 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Class Defaults")
 	ECharacterClass CharacterClass = ECharacterClass::Default_Max;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	EEnemyType EnemyType;
 	
 	UFUNCTION()
 	void HitReactTagChanged(const FGameplayTag Tag, int32 NewCount);
@@ -57,6 +60,8 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FOnDeathSignature OnDeathDelegate;
+	
+	
 
 	/**	Combat AI */
 	
@@ -112,4 +117,5 @@ public:
 	virtual AActor* GetCombatTarget_Implementation() const override;
 
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& AssociatedTag) override;
+	virtual EEnemyType GetEnemyType_Implementation() override;
 };

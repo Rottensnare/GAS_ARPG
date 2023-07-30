@@ -169,6 +169,9 @@ private:
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultAbilities;
 	
+	UPROPERTY(EditAnywhere, Category = "Abilities")
+	TArray<TSubclassOf<UGameplayAbility>> DefaultPassiveAbilities;
+	
 public:	
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;

@@ -93,4 +93,7 @@ public:
 	
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	FFramePackage GetFramePackage(const int32 Index);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	EEnemyType GetEnemyType();
 };

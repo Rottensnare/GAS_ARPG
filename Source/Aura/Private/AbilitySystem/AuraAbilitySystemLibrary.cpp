@@ -4,7 +4,10 @@
 #include "AbilitySystem/AuraAbilitySystemLibrary.h"
 
 #include "AuraAbilityTypes.h"
+#include "GameplayDebuggerTypes.h"
+#include "ToolContextInterfaces.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
+#include "Aura/AuraLogChannels.h"
 #include "Game/AuraGameModeBase.h"
 #include "Interfaces/CombatInterface.h"
 #include "Kismet/GameplayStatics.h"
@@ -232,6 +235,31 @@ bool UAuraAbilitySystemLibrary::IsFriend(AActor* FirstActor, AActor* SecondActor
 	}
 
 	return false;
+}
+
+int32 UAuraAbilitySystemLibrary::GetXPRewardForEnemyAndLevel(const UObject* WorldContextObject,
+	const EEnemyType EnemyType, const int32 InLevel)
+{
+	if(InLevel <= 0 || EnemyType == EEnemyType::DefaultMax) return 0;
+
+	const UWorld* World = GEngine->GetWorldFromContextObject(WorldContextObject, EGetWorldErrorMode::LogAndReturnNull);
+	
+	if(World && World->GetNetMode() == ENetMode::NM_Client)
+	{
+		UE_LOG(LogAura, Error, TEXT("Client tried to call GetXPRewardForEnemyAndLevel, when only the server should."))
+		return 0;
+	}
+	
+	const UCurveTable* XPRewardTable = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject))->XPRewardTable;
+	if(!XPRewardTable) return 0;
+	// Bug: GetDisplayValueAsText will only provide the correct name when not a packaged build. Need to do string manipulation when a packaged build. Already did this in the blaster project.
+	const FText EnumText = UEnum::GetDisplayValueAsText(EnemyType);
+	const FName EnumName = FName(EnumText.ToString());
+	const FRealCurve* RewardCurve = XPRewardTable->FindCurve(EnumName, "", true);
+	if(!RewardCurve) return 0; //Debug purposes
+	const int32 XPReward = static_cast<int32>(RewardCurve->Eval(InLevel));
+	
+	return XPReward;
 }
 
 

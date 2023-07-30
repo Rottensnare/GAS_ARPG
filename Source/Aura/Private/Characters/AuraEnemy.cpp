@@ -224,3 +224,8 @@ FVector AAuraEnemy::GetCombatSocketLocation_Implementation(const FGameplayTag& A
 
 	return GetMesh()->GetSocketLocation(TagsToSockets[AssociatedTag]);
 }
+
+EEnemyType AAuraEnemy::GetEnemyType_Implementation()
+{
+	return EnemyType;
+}

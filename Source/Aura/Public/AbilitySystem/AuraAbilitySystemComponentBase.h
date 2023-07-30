@@ -30,6 +30,7 @@ public:
 	FAbilitiesGiven AbilitiesGivenDelegate;
 	
 	void AddCharacterAbilities(const TArray<TSubclassOf<UGameplayAbility>>& DefaultAbilities);
+	void AddCharacterPassiveAbilities(const TArray<TSubclassOf<UGameplayAbility>>& DefaultPassiveAbilities);
 	bool bStartupAbilitiesGiven = false;
 
 	void ForEachAbility(const FForEachAbility& Delegate);

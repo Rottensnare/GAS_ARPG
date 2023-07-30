@@ -35,7 +35,8 @@ public:
  FGameplayTag Attribute_Secondary_CriticalHitResistance;
  FGameplayTag Attribute_Secondary_HealthRegeneration;
  FGameplayTag Attribute_Secondary_ManaRegeneration;
- 
+
+ FGameplayTag Attribute_Meta_IncomingXP;
 
  /** Category Damage types */
  

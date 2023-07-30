@@ -23,6 +23,16 @@ void UAuraAbilitySystemComponentBase::AddCharacterAbilities(
 	AbilitiesGivenDelegate.Broadcast(this);
 }
 
+void UAuraAbilitySystemComponentBase::AddCharacterPassiveAbilities(
+	const TArray<TSubclassOf<UGameplayAbility>>& DefaultPassiveAbilities)
+{
+	for(const auto AbilityClass : DefaultPassiveAbilities)
+	{
+		FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityClass, 1);
+		GiveAbilityAndActivateOnce(AbilitySpec);
+	}
+}
+
 void UAuraAbilitySystemComponentBase::ForEachAbility(const FForEachAbility& Delegate)
 {
 	FScopedAbilityListLock ActiveScopeLock(*this);

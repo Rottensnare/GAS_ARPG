@@ -65,6 +65,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable, Category = "GAS|Messages")
 	FAbilityInfoSignature AbilityInfoDelegate;
+	
+	UPROPERTY(BlueprintAssignable, Category = "GAS|XP")
+	FOnAttributeChangedSignature OnXPPercentChangedDelegate;
 
 protected:
 	
@@ -78,6 +81,8 @@ protected:
 	TObjectPtr<UAbilityInfo> AbilityInfoData;
 
 	void OnInitializeStartupAbilities(UAuraAbilitySystemComponentBase* InAuraASC) const;
+
+	void OnXPChanged(const int32 NewXP) const;
 };
 
 //TODO: Put this in a blueprint function library

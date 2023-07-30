@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameplayEffectTypes.h"
+#include "Data/CharacterClassInfo.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "AuraAbilitySystemLibrary.generated.h"
 
@@ -13,6 +14,7 @@ class UAbilitySystemComponent;
 enum class ECharacterClass : uint8;
 class UAttributeMenuWidgetController;
 class UOverlayWidgetController;
+
 
 /**
  * 
@@ -62,6 +64,9 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|Utility")
 	static bool IsFriend(AActor* FirstActor, AActor* SecondActor);
+
+	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|Utility")
+	static int32 GetXPRewardForEnemyAndLevel(const UObject* WorldContextObject, const EEnemyType EnemyType, const int32 InLevel);
 
 	
 };
