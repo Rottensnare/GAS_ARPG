@@ -92,25 +92,24 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if(AuraGameMode == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode is not valid."))
+		UE_LOG(LogTemp, Error, TEXT("%hs:	AuraGameMode is not valid."), __FUNCTION__)
 		return;
 	}
 
 	if(AuraGameMode->CharacterClassInfo == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode->CharacterClassInfo is not set."))
+		UE_LOG(LogTemp, Error, TEXT("%hs:	AuraGameMode->CharacterClassInfo is not set."), __FUNCTION__)
 		return;
 	}
 
 	if(ASC == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	ASC is not set."))
+		UE_LOG(LogTemp, Error, TEXT("%hs:	ASC is not set."), __FUNCTION__)
 		return;
 	}
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(ASC->GetAvatarActor());
-	if(CombatInterface == nullptr)
+	if(ASC->GetAvatarActor()->Implements<UCombatInterface>() == false)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	CombatInterface is not set."))
+		UE_LOG(LogTemp, Error, TEXT("%hs: Avatar actor does not implement ICombatInterface."), __FUNCTION__)
 		return;
 	}
 	UCharacterClassInfo* CharacterClassInfo = AuraGameMode->CharacterClassInfo;
@@ -124,7 +123,7 @@ void UAuraAbilitySystemLibrary::GiveStartupAbilities(const UObject* WorldContext
 	{
 		for(auto& AbilityClass : ClassDefaultInfo.ClassAbilities)
 		{
-			FGameplayAbilitySpec GameplayAbilitySpec = FGameplayAbilitySpec(AbilityClass, CombatInterface->GetCharacterLevel());
+			FGameplayAbilitySpec GameplayAbilitySpec = FGameplayAbilitySpec(AbilityClass, ICombatInterface::Execute_GetCharacterLevel(ASC->GetAvatarActor()));
 			ASC->GiveAbility(GameplayAbilitySpec);
 		}
 	}
@@ -246,7 +245,7 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForEnemyAndLevel(const UObject* Worl
 	
 	if(World && World->GetNetMode() == ENetMode::NM_Client)
 	{
-		UE_LOG(LogAura, Error, TEXT("Client tried to call GetXPRewardForEnemyAndLevel, when only the server should."))
+		UE_LOG(LogAura, Error, TEXT("Client tried to call %hs, when only the server should."), __FUNCTION__)
 		return 0;
 	}
 	

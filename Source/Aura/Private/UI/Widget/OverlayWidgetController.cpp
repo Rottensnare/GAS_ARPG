@@ -91,6 +91,11 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 
 	AAuraPlayerState* AuraPlayerState = CastChecked<AAuraPlayerState>(PlayerState);
 	AuraPlayerState->OnXPChangedDelegate.AddUObject(this, &UOverlayWidgetController::OnXPChanged);
+
+	AuraPlayerState->OnLevelChangedDelegate.AddLambda([this](const int32 InLevel)
+	{
+		OnPlayerLevelChangedDelegate.Broadcast(InLevel);
+	});
 	
 }
 

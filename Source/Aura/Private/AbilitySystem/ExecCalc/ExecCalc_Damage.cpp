@@ -90,13 +90,21 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		AActor* SourceAvatar = SourceASC ? SourceASC->GetAvatarActor() : nullptr;
 		AActor* TargetAvatar = TargetASC ? TargetASC->GetAvatarActor() : nullptr;
 
-		ICombatInterface* SourceCombatInterface = Cast<ICombatInterface>(SourceAvatar);
-		ICombatInterface* TargetCombatInterface = Cast<ICombatInterface>(TargetAvatar);
-
-		if(SourceCombatInterface == nullptr || TargetCombatInterface == nullptr)
+		if(!SourceAvatar || !TargetAvatar)
 		{
-			UE_LOG(LogTemp, Error, TEXT("ExecCalc_Damage:	SourceCombatInterface or TargetCombatInterface is nullptr"))
+			UE_LOG(LogTemp, Error, TEXT("%hs:	SourceAvatar or TargetAvatar is nullptr"), __FUNCTION__)
 			return;
+		}
+		
+		int32 SourceLevel = 1;
+		int32 TargetLevel = 1;
+		if(SourceAvatar->Implements<UCombatInterface>())
+		{
+			SourceLevel = ICombatInterface::Execute_GetCharacterLevel(SourceAvatar);
+		}
+		if(TargetAvatar->Implements<UCombatInterface>())
+		{
+			TargetLevel = ICombatInterface::Execute_GetCharacterLevel(TargetAvatar);
 		}
 
 		const FGameplayEffectSpec& Spec = ExecutionParams.GetOwningSpec();
@@ -149,7 +157,7 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 		const UCharacterClassInfo* CharacterClassInfo = UAuraAbilitySystemLibrary::GetCharacterClassInfo(SourceAvatar);
 		if(CharacterClassInfo == nullptr)
 		{
-			UE_LOG(LogTemp, Error, TEXT("ExecCalc_Damage:	CharacterClassInfo is nullptr"))
+			UE_LOG(LogTemp, Error, TEXT("%hs:	CharacterClassInfo is nullptr"), __FUNCTION__)
 			return;
 		}
 	
@@ -159,13 +167,13 @@ void UExecCalc_Damage::Execute_Implementation(const FGameplayEffectCustomExecuti
 	
 		if(ArmorPenCurve == nullptr || EffectiveArmorCurve == nullptr || CritResistCurve == nullptr)
 		{
-			UE_LOG(LogTemp, Error, TEXT("ExecCalc_Damage:	ArmorPenCurve or EffectiveArmorCurve or CritResistCurve is nullptr"))
+			UE_LOG(LogTemp, Error, TEXT("%hs:	ArmorPenCurve or EffectiveArmorCurve or CritResistCurve is nullptr"), __FUNCTION__)
 			return;
 		}
 	
-		const float ArmorPenCoefficient = ArmorPenCurve->Eval(SourceCombatInterface->GetCharacterLevel());
-		const float EffectArmorCoefficient = EffectiveArmorCurve->Eval(TargetCombatInterface->GetCharacterLevel());
-		const float CritResistCoefficient = CritResistCurve->Eval(TargetCombatInterface->GetCharacterLevel());
+		const float ArmorPenCoefficient = ArmorPenCurve->Eval(SourceLevel);
+		const float EffectArmorCoefficient = EffectiveArmorCurve->Eval(TargetLevel);
+		const float CritResistCoefficient = CritResistCurve->Eval(TargetLevel);
 
 		const float EffectiveArmor = FMath::Max<float>((TargetArmor * (100 - SourceArmorPen * ArmorPenCoefficient) / 100.f), 0.f);
 		Damage *= (100 - EffectiveArmor * EffectArmorCoefficient) / 100.f;

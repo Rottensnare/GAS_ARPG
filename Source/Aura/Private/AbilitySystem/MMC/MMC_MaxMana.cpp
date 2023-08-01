@@ -30,10 +30,9 @@ float UMMC_MaxMana::CalculateBaseMagnitude_Implementation(const FGameplayEffectS
 	Intelligence = FMath::Max<float>(Intelligence, 0.f);
 	
 	// ReSharper disable once CppTooWideScope
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	if(CombatInterface)
+	if(Spec.GetContext().GetSourceObject() && Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
 	{
-		const int32 CharacterLevel = CombatInterface->GetCharacterLevel();
+		const int32 CharacterLevel = ICombatInterface::Execute_GetCharacterLevel(Spec.GetContext().GetSourceObject());
 		return 100.f + 3.f * Intelligence + 10.f * CharacterLevel;
 	}
 

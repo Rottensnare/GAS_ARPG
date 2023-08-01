@@ -164,8 +164,27 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 			const float LocalIncomingXP = GetIncomingXP();
 			SetIncomingXP(0.f);
 			UE_LOG(LogAura, Warning, TEXT("Incoming XP = %f"), LocalIncomingXP)
-			
-			IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+			if(Props.SourceCharacter->Implements<UCombatInterface>() && Props.SourceCharacter->Implements<UPlayerInterface>())
+			{
+				const int32 CurrentLevel = ICombatInterface::Execute_GetCharacterLevel(Props.SourceCharacter);
+				const int32 CurrentXP = IPlayerInterface::Execute_GetXP(Props.SourceCharacter);
+				const int32 NewLevel = IPlayerInterface::Execute_FindLevelForXP(Props.SourceCharacter, CurrentXP + LocalIncomingXP);
+				const int32 NumOfLevelUps = NewLevel - CurrentLevel;
+				if(NumOfLevelUps > 0)
+				{
+					//TODO: Handle multiple Level Ups
+					const int32 AttributePointsReward = IPlayerInterface::Execute_GetAttributePointsReward(Props.SourceCharacter, CurrentLevel + 1);
+					const int32 SpellPointsReward = IPlayerInterface::Execute_GetSpellPointsReward(Props.SourceCharacter, CurrentLevel + 1);
+
+					IPlayerInterface::Execute_AddToPlayerLevel(Props.SourceCharacter, NumOfLevelUps);
+					IPlayerInterface::Execute_AddToAttributePoints(Props.SourceCharacter, AttributePointsReward);
+					IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
+					
+					IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
+					
+				}
+				IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
+			}
 		}
 	}
 	const double Milliseconds = ThisTime * 1000; //NOTE: And These
@@ -224,10 +243,9 @@ void UAuraAttributeSetBase::ShowFloatingText(const FEffectProperties& Props, con
 
 void UAuraAttributeSetBase::SendXPEvent(const FEffectProperties& Props) const
 {
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Props.TargetCharacter);
-	if(!CombatInterface) return;
+	if(!Props.TargetCharacter->Implements<UCombatInterface>()) return;
 	
-	const int32 TargetLevel = CombatInterface->GetCharacterLevel();
+	const int32 TargetLevel = ICombatInterface::Execute_GetCharacterLevel(Props.TargetCharacter);
 	const EEnemyType EnemyType = ICombatInterface::Execute_GetEnemyType(Props.TargetCharacter);
 	const int32 XPReward = UAuraAbilitySystemLibrary::GetXPRewardForEnemyAndLevel(Props.TargetCharacter, EnemyType, TargetLevel);
 	FGameplayEventData Payload;

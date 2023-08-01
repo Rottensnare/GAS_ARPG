@@ -31,10 +31,9 @@ float UMMC_MaxHealth::CalculateBaseMagnitude_Implementation(const FGameplayEffec
 	Vigor = FMath::Max<float>(Vigor, 0.f);
 
 	// ReSharper disable once CppTooWideScope
-	ICombatInterface* CombatInterface = Cast<ICombatInterface>(Spec.GetContext().GetSourceObject());
-	if(CombatInterface)
+	if(Spec.GetContext().GetSourceObject() && Spec.GetContext().GetSourceObject()->Implements<UCombatInterface>())
 	{
-		const int32 CharacterLevel = CombatInterface->GetCharacterLevel();
+		const int32 CharacterLevel = ICombatInterface::Execute_GetCharacterLevel(Spec.GetContext().GetSourceObject());
 		return 20.f + 2.5f * Vigor + 5.f * CharacterLevel;
 	}
 

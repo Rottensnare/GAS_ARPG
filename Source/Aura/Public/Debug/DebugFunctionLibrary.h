@@ -181,4 +181,14 @@ public:
 
 	UFUNCTION(BlueprintCallable, Category = "DebugFunctionLibrary|Combat")
 	static ACombatManager* GetCombatManager(const UObject* WorldContextObject);
+
+	// NOTE: For whatever reason, I couldn't find e or golden ration in Blueprints even though they are valuable constants.
+	
+	/** Returns the value of e, as in Euler number */
+	UFUNCTION(BlueprintPure, meta=(DisplayName = "Get e", CompactNodeTitle = "e"), Category="DebugFunctionLibrary|Math")
+	static float Get_e();
+	
+	/** Returns the value of the golden ration */
+	UFUNCTION(BlueprintPure, meta=(DisplayName = "Get Golden Ratio", CompactNodeTitle = "Golden Ration"), Category="DebugFunctionLibrary|Math")
+	static float Get_Golden_Ration();
 };

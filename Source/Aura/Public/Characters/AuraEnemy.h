@@ -110,7 +110,7 @@ public:
 
 	/**	Category Virtual Overrides */
 
-	virtual int32 GetCharacterLevel() override {return Level;};
+	virtual int32 GetCharacterLevel_Implementation() override {return Level;};
 	virtual void Die() override;
 
 	virtual void SetCombatTarget_Implementation(AActor* InCombatTarget) override;

@@ -7,6 +7,7 @@
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
 
+
 float UDebugFunctionLibrary::DebugWaveFunction(const float Time, const float Amplitude, const float Frequency, const float Phase, const float Offset)
 {
 	const float Angle = 2 * PI * Frequency * Time + Phase;
@@ -613,6 +614,16 @@ void UDebugFunctionLibrary::DebugBoxSimple_Red(const UObject* WorldContextObject
 ACombatManager* UDebugFunctionLibrary::GetCombatManager(const UObject* WorldContextObject)
 {
 	return Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject))->GetCombatManager();
+}
+
+float UDebugFunctionLibrary::Get_e()
+{
+	return UE_EULERS_NUMBER;
+}
+
+float UDebugFunctionLibrary::Get_Golden_Ration()
+{
+	return UE_GOLDEN_RATIO;
 }
 
 

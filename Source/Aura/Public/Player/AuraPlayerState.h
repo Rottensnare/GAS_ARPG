@@ -33,6 +33,8 @@ public:
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
+	
+	void AddToLevel(const int32 InLevel);
 
 protected:
 
@@ -50,8 +52,6 @@ private:
 
 	UFUNCTION()
 	void OnRep_Level(int32 OldLevel);
-
-	void AddToLevel(const int32 InLevel);
 
 	void SetLevel(const int32 InLevel);
 	
