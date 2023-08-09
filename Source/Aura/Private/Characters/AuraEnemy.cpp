@@ -87,9 +87,12 @@ void AAuraEnemy::HighlightActor()
 	check(GetMesh())
 	
 	bHighlighted = true;
+	GetMesh()->CustomDepthStencilValue = 255;
+	Weapon->CustomDepthStencilValue = 255;
 	GetMesh()->SetRenderCustomDepth(true);
+	
 	Weapon->SetRenderCustomDepth(true);
-
+	
 	
 }
 
@@ -104,6 +107,31 @@ void AAuraEnemy::UnHighlightActor()
 	bHighlighted = false;
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
+}
+
+void AAuraEnemy::DebugHighlightActor(const int32 StencilValue)
+{
+	if(GetMesh() && bDebugHighlighted == false)
+	{
+		bDebugHighlighted = true;
+		GetMesh()->CustomDepthStencilValue = StencilValue;
+		GetMesh()->SetRenderCustomDepth(true);
+	}
+	else
+	{
+		//Un highlight
+		DebugUnHighlightActor();
+	}
+}
+
+void AAuraEnemy::DebugUnHighlightActor()
+{
+	if(GetMesh() && bDebugHighlighted)
+	{
+		bDebugHighlighted = false;
+		GetMesh()->CustomDepthStencilValue = 255; //RED IS DEFAULT
+		GetMesh()->SetRenderCustomDepth(false);
+	}
 }
 
 void AAuraEnemy::HitReactTagChanged(const FGameplayTag Tag, int32 NewCount)

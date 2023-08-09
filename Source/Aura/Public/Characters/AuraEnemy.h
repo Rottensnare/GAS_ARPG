@@ -32,8 +32,13 @@ public:
 	virtual void HighlightActor() override;
 	virtual void UnHighlightActor() override;
 
+	virtual void DebugHighlightActor(const int32 StencilValue) override;
+	virtual void DebugUnHighlightActor() override;
+	
 	UPROPERTY(BlueprintReadOnly)
 	bool bHighlighted{false};
+
+	bool bDebugHighlighted = false;
 
 	UPROPERTY(BlueprintAssignable)
 	FOnAttributeChangedSignature OnHealthChanged;

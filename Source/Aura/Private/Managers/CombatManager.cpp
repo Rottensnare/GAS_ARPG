@@ -16,6 +16,7 @@ ACombatManager::ACombatManager()
 	// leaving it true for now
 	PrimaryActorTick.bCanEverTick = true;
 	PrimaryActorTick.TickInterval = 2.f;
+	FCombatant::CurrentID = 0;
 }
 
 void ACombatManager::BeginPlay()
@@ -48,6 +49,7 @@ FCombatant ACombatManager::FindCombatant(const AAuraEnemy* InEnemy)
 			return Combatant;
 		}
 	}
+	
 
 	const FCombatant NullCombatant = FCombatant();
 	
