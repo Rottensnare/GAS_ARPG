@@ -45,7 +45,8 @@ public class WombatManager : ModuleRules
 				"SlateCore",
 				"UMG", 
 				"EditorScriptingUtilities", 
-				"Aura"
+				"Aura", 
+				"AppFramework"
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

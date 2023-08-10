@@ -20,6 +20,8 @@ public:
 	/** Constructs this widget with InArgs */
 	void Construct(const FArguments& InArgs);
 
+	virtual ~SWombatWindowMenu() override;
+
 	FReply OnTestButtonClicked();
 	void OnTestCheckboxStateChanged(ECheckBoxState NewState);
 	ECheckBoxState IsTestBoxChecked() const;
@@ -29,4 +31,14 @@ protected:
 	bool bIsTestBoxChecked = false;
 
 	TSharedPtr<SScrollBox> ScrollBox;
+
+	TSharedPtr<SButton> LastButtonPressed;
+
+	TArray<TSharedPtr<SButton>> EnemyButtons;
+
+	void OnColorButtonCommitted(FLinearColor InColor);
+
+private:
+
+	TArray<AActor*> EnemyActors;
 };
