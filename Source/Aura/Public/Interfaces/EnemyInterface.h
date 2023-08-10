@@ -27,6 +27,6 @@ public:
 	
 	virtual void HighlightActor() = 0;
 	virtual void UnHighlightActor() = 0;
-	virtual void DebugHighlightActor(const int32 StencilValue) = 0;
-	virtual void DebugUnHighlightActor() = 0;
+	virtual void DebugHighlightActor(const int32 StencilValue);
+	virtual void DebugUnHighlightActor();
 };

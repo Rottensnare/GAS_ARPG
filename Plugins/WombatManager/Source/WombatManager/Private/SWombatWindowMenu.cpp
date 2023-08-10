@@ -48,7 +48,7 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 					{
 						for(AActor* Enemy : EnemyActors)
 						{
-							Cast<IEnemyInterface>(Enemy)->DebugUnHighlightActor();
+							if(Enemy) Cast<IEnemyInterface>(Enemy)->DebugUnHighlightActor();
 						}
 						EnemyActors.Empty();
 						
@@ -74,6 +74,11 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 								.ButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("Docking.SidebarButton.Opened"))
 								.OnClicked_Lambda([this, EnemyActor, NewButton, i]()
 								{
+									if(EnemyActors[i-1] == nullptr)
+									{
+										EnemyButtons[i-1]->SetVisibility(EVisibility::Collapsed);
+										return FReply::Handled();
+									}
 									if(EnemyButtons[i-1].Get()->GetTag() != FName("Used"))
 									{
 										EnemyButtons[i-1]->SetButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("PrimaryButton"));
