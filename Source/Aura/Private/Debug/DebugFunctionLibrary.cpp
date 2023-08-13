@@ -626,4 +626,43 @@ float UDebugFunctionLibrary::Get_Golden_Ration()
 	return UE_GOLDEN_RATIO;
 }
 
+//TODO: Work in Progress
+TMap<AActor*, int32> UDebugFunctionLibrary::Dbscan(const TArray<AActor*> Actors, const float Eps, const int32 MinPoints)
+{
+	TMap<AActor*, int32> ClusterResults;
+	int32 ClusterLabel = 0;
+
+	for(AActor* Actor : Actors)
+	{
+		if(ClusterResults.Contains(Actor)) continue;
+
+		TArray<AActor*> NeighbourActors = FindNeighbours(Actor, Actors, Eps);
+		if(NeighbourActors.Num() < MinPoints)
+		{
+			ClusterResults.Add(Actor, -1);
+		}
+		else
+		{
+			ClusterLabel++;
+			
+		}
+	}
+
+	return ClusterResults;
+}
+//TODO: Work in Progress
+TArray<AActor*> UDebugFunctionLibrary::FindNeighbours(const AActor* Actor, const TArray<AActor*>& AllActors, const float Eps)
+{
+	TArray<AActor*> Neighbours;
+	for(AActor* OtherActor : AllActors)
+	{
+		if(FVector::Dist(Actor->GetActorLocation(), OtherActor->GetActorLocation()) <= Eps)
+		{
+			Neighbours.Add(OtherActor);
+		}
+	}
+
+	return Neighbours;
+}
+
 

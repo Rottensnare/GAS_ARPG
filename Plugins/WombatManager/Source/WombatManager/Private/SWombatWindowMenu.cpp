@@ -14,7 +14,6 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SWombatWindowMenu::Construct(const FArguments& InArgs)
 {
 	bCanSupportFocus = true;
-	//EnemyButtons.SetNumUninitialized(50); //Do something else. Hard coding almost always bad.
 	FSlateFontInfo TitleTextFont = FCoreStyle::Get().GetFontStyle(FName("EmbossedText"));
 	TitleTextFont.Size = 32;
 	ChildSlot
@@ -43,21 +42,25 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 				{
 					//Get all Aura Enemy actors in the level, print out the number to log,
 					//Add a button to the scroll box in the wombat manager menu using the enemy's name for the button text.
-					//TODO: Clicking button will highlight the enemy in the viewport, clicking again will unhighlight
+					//Highlight the enemy of the corresponding button.
 					if(GEngine)
 					{
 						for(AActor* Enemy : EnemyActors)
 						{
-							if(Enemy) Cast<IEnemyInterface>(Enemy)->DebugUnHighlightActor();
+							//Shouldn't ever cause a crash
+							check(Enemy)
+							Cast<IEnemyInterface>(Enemy)->DebugUnHighlightActor();
 						}
 						EnemyActors.Empty();
-						
+
+						//Get all enemies in the current level. Current you need to press the button every time you switch between PIE and Editor.
+						//Currently the list of enemies is not updated automatically when an enemy is spawned or destroyed.
 						if(const FWorldContext* WorldContext = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport))
 						{
 							UGameplayStatics::GetAllActorsOfClass(WorldContext->World(), AAuraEnemy::StaticClass(), EnemyActors);
 						}
 						
-						UE_LOG(LogTemp, Warning, TEXT("Number of Enemies: %d"), EnemyActors.Num())
+						//UE_LOG(LogTemp, Warning, TEXT("Number of Enemies: %d"), EnemyActors.Num())
 						ScrollBox.Get()->ClearChildren();
 						EnemyButtons.Empty();
 						int32 i = 0;
@@ -68,30 +71,36 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 							ScrollBox->AddSlot()
 							.Padding(5.f)
 							[
-								//SAssignNew( EnemyButtons[i], SButton)
 								 SAssignNew(NewButton, SButton)
 								.Text(FText::FromString(FString::Printf(TEXT("%d. %s"), i, *EnemyActor->GetName())))
 								.ButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("Docking.SidebarButton.Opened"))
-								.OnClicked_Lambda([this, EnemyActor, NewButton, i]()
+								.OnClicked_Lambda([this, EnemyActor, NewButton, i]() //Lambda inside a Lambda? We need to go deeper
 								{
 									if(EnemyActors[i-1] == nullptr)
 									{
+										//Never called, need to find an alternative solution
 										EnemyButtons[i-1]->SetVisibility(EVisibility::Collapsed);
 										return FReply::Handled();
 									}
+									
+									//When button has NOT been pressed = Enemy is NOT being highlighted
 									if(EnemyButtons[i-1].Get()->GetTag() != FName("Used"))
 									{
+										//Change the button style to indicate that the enemy it represents is now being highlighted and mark the button as "Used"
 										EnemyButtons[i-1]->SetButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("PrimaryButton"));
 										EnemyButtons[i-1].Get()->SetTag(FName("Used"));
 									}
-									else
+									else //If button has been pressed = Enemy is currently being highlighted
 									{
+										//Change the button style to indicate that the enemy it represents is not being highlighted and mark the button as not used
 										EnemyButtons[i-1]->SetButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("Docking.SidebarButton.Opened"));
 										EnemyButtons[i-1].Get()->SetTag(NAME_None);
 									}
 									
 									if(EnemyActor->Implements<UEnemyInterface>())
 									{
+										//DebugHighlightActor takes the highlight color, checks if enemy is being currently highlighted, if not, highlight the enemy, if highlighted then call DebugUnHighlightActor
+										//See PP_Highlight for what value corresponds to what color.
 										Cast<IEnemyInterface>(EnemyActor)->DebugHighlightActor(252);
 									}
 									return FReply::Handled();
@@ -118,28 +127,6 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 			[
 				SAssignNew(ScrollBox, SScrollBox)
 			]
-			//+SHorizontalBox::Slot()
-			//.AutoWidth()
-			//[
-				/*SAssignNew(LastButtonPressed, SButton)
-				.Text(FText::FromString(TEXT("Color Picker")))
-				.OnClicked_Lambda([this]()
-				{
-					FColorPickerArgs PickerArgs;
-					PickerArgs.bOnlyRefreshOnMouseUp = true;
-					PickerArgs.ParentWidget = AsShared();
-					
-					PickerArgs.bUseAlpha = false;
-					PickerArgs.bOnlyRefreshOnOk = false;
-					PickerArgs.OnColorCommitted = FOnLinearColorValueChanged::CreateSP(this, &SWombatWindowMenu::OnColorButtonCommitted);
-					
-					OpenColorPicker(PickerArgs);
-					return FReply::Handled();
-				})
-				*/
-			//]
-			
-			//+SScrollBox::Slot()[SNew(SButton).Text(FText::FromString(TEXT("Button")))]
 		]
 		
 		+SVerticalBox::Slot()

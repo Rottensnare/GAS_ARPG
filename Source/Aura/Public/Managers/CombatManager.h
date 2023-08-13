@@ -57,6 +57,9 @@ struct FCombatant
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	bool bInASquad = false;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int32 SquadID = -1;
+
 	static bool IsNullCombatant(const FCombatant& InCombatant)
 	{
 		return	InCombatant.CombatantID == -1 ||
@@ -84,6 +87,11 @@ struct FSquad
 {
 	GENERATED_BODY()
 
+	FSquad()
+	{
+		SquadID = -1;
+	}
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 SquadID;
 
@@ -92,9 +100,23 @@ struct FSquad
 
 	TArray<FCombatant> Members;
 
-	
+	bool IsPartOfSquad(const FCombatant& InCombatant)
+	{
+		for(const FCombatant& Combatant : Members)
+		{
+			if(InCombatant == Combatant) return true;
+		}
+		return false;
+	}
+
+	bool operator==(const FSquad InSquad) const
+	{
+		if(InSquad.SquadID == SquadID) return true;
+		return false;
+	}
 };
 
+inline FSquad DefaultSquad;
 
 //NOTE: You might wonder why this is a pawn when it will not have a body? Simple answer, Behavior tree, complicated answer, I have no idea what I'm doing.
 UCLASS()
@@ -111,8 +133,10 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void PossessedBy(AController* NewController) override;
 
-	void InitialDivideIntoSquads(const TArray<bool>& Visited, const FVector& Cluster, float Eps, int32 MinPoints);
-	TArray<FSquad> FindNeighbors();
+	void InitialDivideIntoSquads(const float Eps = 500.f, const int32 MinPts = 3);
+	TArray<FCombatant> FindNeighbours(const FCombatant& InCombatant, const float Eps = 500.f);
+
+	FSquad& FindSquadWithID(const int32 InID);
 
 	FCombatant FindCombatant(const AAuraEnemy* InEnemy);
 	bool RemoveCombatant(const FCombatant& InCombatant);
@@ -137,6 +161,25 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void UnRegisterEnemy(AAuraEnemy* EnemyToUnregister);
 	
-	
-	
 };
+
+
+inline FSquad& ACombatManager::FindSquadWithID(const int32 InID)
+{
+	for(FSquad& Squad : Squads)
+	{
+		if(Squad.SquadID == InID) return Squad;
+	}
+	return DefaultSquad;
+}
+
+template<typename Type, typename Array>
+bool RemoveFromArray(Type& Object, Array& ObjectArray)
+{
+	const int32 NumRemoved = ObjectArray.RemoveAll([&Object](const Type& InObject)
+   {
+	   return InObject.Enemy == Object.Enemy;
+   });
+
+	return NumRemoved > 0;
+}

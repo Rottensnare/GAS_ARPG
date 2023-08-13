@@ -192,6 +192,8 @@ public:
 	UFUNCTION(BlueprintPure, meta=(DisplayName = "Get Golden Ratio", CompactNodeTitle = "Golden Ration"), Category="DebugFunctionLibrary|Math")
 	static float Get_Golden_Ration();
 
-	static void DBSCAN(const TArray<FVector> Points, float Eps, int32 MinPoints, TArray<FVector>& Clusters);
+	//TODO: Work in Progress
+	static TMap<AActor*, int32> Dbscan(const TArray<AActor*> Actors, const float Eps, const int32 MinPoints);
+	static TArray<AActor*> FindNeighbours(const AActor* Actor, const TArray<AActor*>& AllActors, const float Eps);
 	
 };

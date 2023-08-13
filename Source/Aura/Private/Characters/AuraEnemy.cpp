@@ -85,6 +85,7 @@ void AAuraEnemy::HighlightActor()
 	//NOTE: Might not want to have a check, rather put these in an if statement.
 	check(Weapon)
 	check(GetMesh())
+	if(bDebugHighlighted) return;
 	
 	bHighlighted = true;
 	GetMesh()->CustomDepthStencilValue = 255;
@@ -103,7 +104,8 @@ void AAuraEnemy::UnHighlightActor()
 	//NOTE: Might not want to have a check, rather put these in an if statement.
 	check(Weapon)
 	check(GetMesh())
-	
+
+	if(bDebugHighlighted) return;
 	bHighlighted = false;
 	GetMesh()->SetRenderCustomDepth(false);
 	Weapon->SetRenderCustomDepth(false);
