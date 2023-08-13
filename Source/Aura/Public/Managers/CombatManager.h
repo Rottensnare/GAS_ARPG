@@ -163,7 +163,6 @@ public:
 	
 };
 
-
 inline FSquad& ACombatManager::FindSquadWithID(const int32 InID)
 {
 	for(FSquad& Squad : Squads)

@@ -111,12 +111,22 @@ void AAuraEnemy::UnHighlightActor()
 	Weapon->SetRenderCustomDepth(false);
 }
 
-void AAuraEnemy::DebugHighlightActor(const int32 StencilValue)
+void AAuraEnemy::DebugHighlightActor(TOptional<int32> OptionalStencilValue)
 {
+	int32 LocalStencilValue = 248;
+	if(OptionalStencilValue.IsSet())
+	{
+		LocalStencilValue = OptionalStencilValue.GetValue();
+	}
+	else
+	{
+		LocalStencilValue = DebugStencilValue;
+	}
+	
 	if(GetMesh() && bDebugHighlighted == false)
 	{
 		bDebugHighlighted = true;
-		GetMesh()->CustomDepthStencilValue = StencilValue;
+		GetMesh()->CustomDepthStencilValue = LocalStencilValue;
 		GetMesh()->SetRenderCustomDepth(true);
 	}
 	else

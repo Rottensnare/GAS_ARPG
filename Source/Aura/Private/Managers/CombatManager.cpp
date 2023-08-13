@@ -57,9 +57,11 @@ void ACombatManager::InitialDivideIntoSquads(const float Eps, const int32 MinPts
 				{
 					Combatant.bInASquad = true;
 					Combatant.SquadID = Neighbour.SquadID;
-					FindSquadWithID(Neighbour.SquadID).Members.Add(Combatant);
+					Combatant.Enemy->DebugStencilValue = 248 + Combatant.SquadID;
+					FSquad& Squad = FindSquadWithID(Neighbour.SquadID);
+					if(Squad.SquadID != -1) Squad.Members.Add(Combatant);
 					//Neighbours.Remove(Neighbour);
-					RemoveFromArray(Neighbour, Neighbours);
+					RemoveFromArray(Neighbour, Neighbours); //Custom templated function. Tread carefully since I am not that good with templates
 				}
 			}
 			if(Neighbours.Num() >= MinPts)
@@ -71,10 +73,12 @@ void ACombatManager::InitialDivideIntoSquads(const float Eps, const int32 MinPts
 					{
 						Enemy.bInASquad = true;
 						Enemy.SquadID = SquadNum;
+						Enemy.Enemy->DebugStencilValue = 248 + SquadNum;
 					}
 				}
 				Combatant.bInASquad = true;
 				Combatant.SquadID = SquadNum;
+				Combatant.Enemy->DebugStencilValue = 248 + SquadNum;
 				
 				FSquad NewSquad = FSquad();
 				NewSquad.SquadID = SquadNum;

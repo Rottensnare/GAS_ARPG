@@ -5,12 +5,14 @@
 #include "SlateOptMacros.h"
 #include "Brushes/SlateBoxBrush.h"
 #include "Characters/AuraEnemy.h"
+#include "Game/AuraGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 #include "Widgets/Layout/SScrollBox.h"
 #include "Widgets/Colors/SColorPicker.h"
 
 BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 
+//BUG: WILL CRASH THE EDITOR IF YOU SWITCH BETWEEN LEVELS AND PRESS THE BUTTONS. NEED TO CLOSE AND REOPEN WHEN SWITCHING BETWEEN LEVELS!
 void SWombatWindowMenu::Construct(const FArguments& InArgs)
 {
 	bCanSupportFocus = true;
@@ -47,9 +49,10 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 					{
 						for(AActor* Enemy : EnemyActors)
 						{
-							//Shouldn't ever cause a crash
-							check(Enemy)
-							Cast<IEnemyInterface>(Enemy)->DebugUnHighlightActor();
+							if(Enemy && Enemy->Implements<UEnemyInterface>())
+							{
+								Cast<IEnemyInterface>(Enemy)->DebugUnHighlightActor();
+							}
 						}
 						EnemyActors.Empty();
 
@@ -116,6 +119,55 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 			]
 			+SHorizontalBox::Slot()
 			.AutoWidth()
+			[
+				SNew(SButton)
+				.Text(FText::FromString(TEXT("Get Squads")))
+				.OnClicked_Lambda([this]()
+				{
+					ScrollBox.Get()->ClearChildren();
+					SquadButtons.Empty();
+					CombatManager = nullptr;
+					
+					if(const FWorldContext* WorldContext = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport))
+					{
+						if(AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContext->World())))
+						{
+							CombatManager = MakeShareable(AuraGameMode->GetCombatManager());
+						}
+					}
+					if(CombatManager.IsValid() == false) return FReply::Handled();
+
+					
+					int32 i = 0;
+					for(const FSquad& Squad : CombatManager->Squads)
+					{
+						++i;
+						TSharedPtr<SButton> NewButton;
+						ScrollBox->AddSlot()
+						.Padding(5.f)
+						[
+							SAssignNew(NewButton, SButton)
+							.Text(FText::FromString(FString::Printf(TEXT("Squad %d"), Squad.SquadID)))
+							.ButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("Docking.SidebarButton.Opened"))
+							.OnClicked_Lambda([&Squad]()
+							{
+								for(const FCombatant& Combatant : Squad.Members)
+								{
+									if(!FCombatant::IsNullCombatant(Combatant))
+									{
+										Combatant.Enemy->DebugHighlightActor();
+									}
+								}
+									
+								return FReply::Handled();
+							})
+						];
+						SquadButtons.Add(NewButton);
+					}
+					
+					return FReply::Handled();
+				})
+			]
 		]
 
 		+SVerticalBox::Slot()
@@ -140,6 +192,11 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 
 SWombatWindowMenu::~SWombatWindowMenu()
 {
+	ScrollBox.Get()->ClearChildren();
+	EnemyButtons.Empty();
+	SquadButtons.Empty();
+	CombatManager = nullptr;
+	
 	for(AActor* Enemy : EnemyActors)
 	{
 		//Shouldn't fail ever

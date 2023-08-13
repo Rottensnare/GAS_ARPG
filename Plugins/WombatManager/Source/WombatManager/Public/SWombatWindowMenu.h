@@ -6,6 +6,7 @@
 #include "Widgets/SCompoundWidget.h"
 #include "Widgets/Layout/SScrollBox.h"
 
+class ACombatManager;
 /**
  * 
  */
@@ -35,10 +36,13 @@ protected:
 	TSharedPtr<SButton> LastButtonPressed;
 
 	TArray<TSharedPtr<SButton>> EnemyButtons;
+	
+	TArray<TSharedPtr<SButton>> SquadButtons;
 
 	void OnColorButtonCommitted(FLinearColor InColor);
 
 private:
 
 	TArray<AActor*> EnemyActors;
+	TSharedPtr<ACombatManager> CombatManager;
 };
