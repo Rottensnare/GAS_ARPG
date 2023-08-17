@@ -189,7 +189,7 @@ public:
 	static float Get_e();
 	
 	/** Returns the value of the golden ration */
-	UFUNCTION(BlueprintPure, meta=(DisplayName = "Get Golden Ratio", CompactNodeTitle = "Golden Ration"), Category="DebugFunctionLibrary|Math")
+	UFUNCTION(BlueprintPure, meta=(DisplayName = "Get Golden Ratio", CompactNodeTitle = "Golden Ratio"), Category="DebugFunctionLibrary|Math")
 	static float Get_Golden_Ration();
 
 	//TODO: Work in Progress

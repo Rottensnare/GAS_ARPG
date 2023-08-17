@@ -27,6 +27,10 @@ public:
 	void OnTestCheckboxStateChanged(ECheckBoxState NewState);
 	ECheckBoxState IsTestBoxChecked() const;
 
+	void OnLevelChanged(const bool bYes);
+	FDelegateHandle OnLevelChangedDelegateHandle;
+
+	void OnEditorModeChanged(FEditorModeID  NewEditorMode);
 
 protected:
 	bool bIsTestBoxChecked = false;
@@ -44,5 +48,5 @@ protected:
 private:
 
 	TArray<AActor*> EnemyActors;
-	TSharedPtr<ACombatManager> CombatManager;
+	TObjectPtr<ACombatManager> CombatManager;
 };

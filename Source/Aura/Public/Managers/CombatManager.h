@@ -109,7 +109,7 @@ struct FSquad
 		return false;
 	}
 
-	bool operator==(const FSquad InSquad) const
+	bool operator==(const FSquad& InSquad) const
 	{
 		if(InSquad.SquadID == SquadID) return true;
 		return false;

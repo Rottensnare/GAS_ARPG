@@ -2,6 +2,8 @@
 
 
 #include "SWombatWindowMenu.h"
+
+#include "EditorUtilitySubsystem.h"
 #include "SlateOptMacros.h"
 #include "Brushes/SlateBoxBrush.h"
 #include "Characters/AuraEnemy.h"
@@ -15,6 +17,9 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 //BUG: WILL CRASH THE EDITOR IF YOU SWITCH BETWEEN LEVELS AND PRESS THE BUTTONS. NEED TO CLOSE AND REOPEN WHEN SWITCHING BETWEEN LEVELS!
 void SWombatWindowMenu::Construct(const FArguments& InArgs)
 {
+	//TODO: Remove Lambdas and use normal delegates.
+	//TODO: Maybe rework FCombatant and FSquad to classes.
+	FEditorDelegates::PostPIEStarted.AddSP(this, &SWombatWindowMenu::OnLevelChanged);
 	bCanSupportFocus = true;
 	FSlateFontInfo TitleTextFont = FCoreStyle::Get().GetFontStyle(FName("EmbossedText"));
 	TitleTextFont.Size = 32;
@@ -49,7 +54,7 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 					{
 						for(AActor* Enemy : EnemyActors)
 						{
-							if(Enemy && Enemy->Implements<UEnemyInterface>())
+							if(IsValid(Enemy) && Enemy->Implements<UEnemyInterface>())
 							{
 								Cast<IEnemyInterface>(Enemy)->DebugUnHighlightActor();
 							}
@@ -79,13 +84,6 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 								.ButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("Docking.SidebarButton.Opened"))
 								.OnClicked_Lambda([this, EnemyActor, NewButton, i]() //Lambda inside a Lambda? We need to go deeper
 								{
-									if(EnemyActors[i-1] == nullptr)
-									{
-										//Never called, need to find an alternative solution
-										EnemyButtons[i-1]->SetVisibility(EVisibility::Collapsed);
-										return FReply::Handled();
-									}
-									
 									//When button has NOT been pressed = Enemy is NOT being highlighted
 									if(EnemyButtons[i-1].Get()->GetTag() != FName("Used"))
 									{
@@ -102,7 +100,8 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 									
 									if(EnemyActor->Implements<UEnemyInterface>())
 									{
-										//DebugHighlightActor takes the highlight color, checks if enemy is being currently highlighted, if not, highlight the enemy, if highlighted then call DebugUnHighlightActor
+										//DebugHighlightActor takes the highlight color, checks if enemy is being currently highlighted,
+										//if not, highlight the enemy, if highlighted then call DebugUnHighlightActor
 										//See PP_Highlight for what value corresponds to what color.
 										Cast<IEnemyInterface>(EnemyActor)->DebugHighlightActor(252);
 									}
@@ -126,20 +125,29 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 				{
 					ScrollBox.Get()->ClearChildren();
 					SquadButtons.Empty();
-					CombatManager = nullptr;
+					//CombatManager = nullptr;
 					
 					if(const FWorldContext* WorldContext = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport))
 					{
+						if(!WorldContext->World()->IsGameWorld())
+						{
+							return FReply::Handled();
+						}
+						
 						if(AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContext->World())))
 						{
-							CombatManager = MakeShareable(AuraGameMode->GetCombatManager());
+							if(!IsValid(CombatManager))
+							{
+								CombatManager = AuraGameMode->GetCombatManager();
+							}
 						}
 					}
-					if(CombatManager.IsValid() == false) return FReply::Handled();
+					if(CombatManager.Get() == nullptr) return FReply::Handled();
 
 					
 					int32 i = 0;
-					for(const FSquad& Squad : CombatManager->Squads)
+					if(ScrollBox == nullptr || CombatManager->Squads.IsEmpty()) return FReply::Handled();
+					for(const FSquad Squad : CombatManager->Squads)
 					{
 						++i;
 						TSharedPtr<SButton> NewButton;
@@ -149,8 +157,13 @@ void SWombatWindowMenu::Construct(const FArguments& InArgs)
 							SAssignNew(NewButton, SButton)
 							.Text(FText::FromString(FString::Printf(TEXT("Squad %d"), Squad.SquadID)))
 							.ButtonStyle(&FAppStyle::Get().GetWidgetStyle<FButtonStyle>("Docking.SidebarButton.Opened"))
-							.OnClicked_Lambda([&Squad]()
+							.OnClicked_Lambda([Squad]()
 							{
+								if(const FWorldContext* WorldContext = GEngine->GetWorldContextFromGameViewport(GEngine->GameViewport))
+								{
+									if(!WorldContext->World()->IsGameWorld()) return FReply::Handled();
+								}
+								
 								for(const FCombatant& Combatant : Squad.Members)
 								{
 									if(!FCombatant::IsNullCombatant(Combatant))
@@ -218,6 +231,19 @@ void SWombatWindowMenu::OnTestCheckboxStateChanged(ECheckBoxState NewState)
 ECheckBoxState SWombatWindowMenu::IsTestBoxChecked() const
 {
 	return bIsTestBoxChecked ? ECheckBoxState::Checked : ECheckBoxState::Unchecked;
+}
+
+void SWombatWindowMenu::OnLevelChanged(const bool bYes)
+{
+	//const FArguments Args;
+	//Construct(Args);
+	UE_LOG(LogTemp, Warning, TEXT("PIE Started: %d"), bYes)
+	
+}
+
+void SWombatWindowMenu::OnEditorModeChanged(FEditorModeID NewEditorMode)
+{
+	UE_LOG(LogTemp, Warning, TEXT("New Editor Mode: %s"), *NewEditorMode.ToString());
 }
 
 void SWombatWindowMenu::OnColorButtonCommitted(FLinearColor InColor)

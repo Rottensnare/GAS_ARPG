@@ -27,6 +27,7 @@ public:
 	
 	virtual void HighlightActor() = 0;
 	virtual void UnHighlightActor() = 0;
+	//Used TOptional because why not?
 	virtual void DebugHighlightActor(TOptional<int32> OptionalStencilValue = TOptional<int32>());
 	virtual void DebugUnHighlightActor();
 };
