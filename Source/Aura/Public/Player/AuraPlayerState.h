@@ -30,6 +30,8 @@ public:
 
 	FOnPlayerStatChanged OnXPChangedDelegate;
 	FOnPlayerStatChanged OnLevelChangedDelegate;
+	FOnPlayerStatChanged OnAttributePointsChangedDelegate;
+	FOnPlayerStatChanged OnSpellPointsChangedDelegate;
 	
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 	TObjectPtr<ULevelUpInfo> LevelUpInfo;
@@ -44,7 +46,7 @@ protected:
 	UPROPERTY()
 	TObjectPtr<UAttributeSet> AttributeSet;
 
-
+	
 private:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, ReplicatedUsing = OnRep_Level, meta = (AllowPrivateAccess = "true"))
@@ -61,6 +63,17 @@ private:
 	UFUNCTION()
 	void OnRep_XP(int32 OldXP);
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_AttributePoints, meta = (AllowPrivateAccess = "true"))
+	int32 AttributePoints = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing = OnRep_SpellPoints, meta = (AllowPrivateAccess = "true"))
+	int32 SpellPoints = 0;
+
+	UFUNCTION()
+	void OnRep_AttributePoints(int32 OldAttributePoints);
+	UFUNCTION()
+	void OnRep_SpellPoints(int32 OldSpellPoints);
+
 public:
 
 	virtual UAbilitySystemComponent* GetAbilitySystemComponent() const override;
@@ -68,6 +81,10 @@ public:
 
 	FORCEINLINE int32 GetCharacterLevel() const {return Level;}
 	FORCEINLINE int32 GetXP() const {return XP;}
+	FORCEINLINE int32 GetAttributePoints() const {return AttributePoints;}
+	FORCEINLINE void AddToAttributePoints(const int32 InPoints) {AttributePoints += InPoints; OnAttributePointsChangedDelegate.Broadcast(AttributePoints);}
+	FORCEINLINE int32 GetSpellPoints() const {return SpellPoints;}
+	FORCEINLINE void AddToSpellPoints(const int32 InPoints) {SpellPoints += InPoints; OnSpellPointsChangedDelegate.Broadcast(SpellPoints);}
 	
 	void AddToXP(const int32 InXP);
 	void SetXP(const int32 InXP);

@@ -181,7 +181,8 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 					IPlayerInterface::Execute_AddToSpellPoints(Props.SourceCharacter, SpellPointsReward);
 					
 					IPlayerInterface::Execute_LevelUp(Props.SourceCharacter);
-					
+					bTopOffHealth = true;
+					bTopOffMana = true;
 				}
 				IPlayerInterface::Execute_AddToXP(Props.SourceCharacter, LocalIncomingXP);
 			}
@@ -189,6 +190,29 @@ void UAuraAttributeSetBase::PostGameplayEffectExecute(const FGameplayEffectModCa
 	}
 	const double Milliseconds = ThisTime * 1000; //NOTE: And These
 	//UE_LOG(LogTemp, Log, TEXT("PostGameplayEffectExecute %.2f ms"), Milliseconds)
+}
+
+void UAuraAttributeSetBase::PostAttributeChange(const FGameplayAttribute& Attribute, float OldValue, float NewValue)
+{
+	Super::PostAttributeChange(Attribute, OldValue, NewValue);
+
+	//Set health and mana to max when leveling up
+	if(bTopOffHealth)
+	{
+		if(Attribute == GetMaxHealthAttribute())
+		{
+			SetHealth(GetMaxHealth());
+			bTopOffHealth = false;
+		}
+	}
+	if(bTopOffMana)
+	{
+		if(Attribute == GetMaxManaAttribute())
+		{
+			SetMana(GetMaxMana());
+			bTopOffMana = false;
+		}
+	}
 }
 
 void UAuraAttributeSetBase::SetEffectProperties(const FGameplayEffectModCallbackData& Data, FEffectProperties& Props) const
