@@ -124,4 +124,5 @@ public:
 
 	virtual FVector GetCombatSocketLocation_Implementation(const FGameplayTag& AssociatedTag) override;
 	virtual EEnemyType GetEnemyType_Implementation() override;
+	virtual void SetWeaponVisibility_Implementation(const bool bVisible) override;
 };

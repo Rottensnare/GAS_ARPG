@@ -97,4 +97,7 @@ public:
 
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	EEnemyType GetEnemyType();
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetWeaponVisibility(const bool bVisible);
 };

@@ -59,4 +59,5 @@ public:
 	virtual void AddToSpellPoints_Implementation(const int32 InSpellPoints) override;
 	virtual int32 GetAttributePoints_Implementation() const override;
 	virtual int32 GetSpellPoints_Implementation() const override;
+	virtual void SetWeaponVisibility_Implementation(const bool bVisible) override;
 };

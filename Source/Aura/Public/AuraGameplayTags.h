@@ -79,11 +79,13 @@ public:
  FGameplayTag Abilities_Summon;
  
  FGameplayTag Abilities_Fire_Fireball;
+ FGameplayTag Abilities_Physical_SpearThrow;
 
  /** Category Cooldowns */
 
  FGameplayTag Cooldown_Fire_Fireball;
-
+ FGameplayTag Cooldown_Physical_SpearThrow;
+ 
  /** Category InputTags */
 
  FGameplayTag InputTag_LMB;

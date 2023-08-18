@@ -269,3 +269,8 @@ EEnemyType AAuraEnemy::GetEnemyType_Implementation()
 {
 	return EnemyType;
 }
+
+void AAuraEnemy::SetWeaponVisibility_Implementation(const bool bVisible)
+{
+	Weapon->SetVisibility(bVisible);
+}

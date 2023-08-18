@@ -224,3 +224,8 @@ int32 AAuraCharacter::GetSpellPoints_Implementation() const
 	return  AuraPlayerState->GetSpellPoints();
 }
 
+void AAuraCharacter::SetWeaponVisibility_Implementation(const bool bVisible)
+{
+	Weapon->SetVisibility(bVisible);
+}
+
