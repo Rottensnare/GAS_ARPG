@@ -81,6 +81,13 @@ public:
  FGameplayTag Abilities_Fire_Fireball;
  FGameplayTag Abilities_Physical_SpearThrow;
 
+/** Category Ability Characteristics */
+ 
+ FGameplayTag Abilities_Range_Melee;
+ FGameplayTag Abilities_Range_Short;
+ FGameplayTag Abilities_Range_Medium;
+ FGameplayTag Abilities_Range_Long;
+
  /** Category Cooldowns */
 
  FGameplayTag Cooldown_Fire_Fireball;

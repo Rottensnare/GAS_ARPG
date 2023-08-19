@@ -91,6 +91,7 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("CombatSocket.RightHand"), FString("Right Hand Attack Montage"));
 	GameplayTags.CombatSocket_Tail = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("CombatSocket.Tail"), FString("Tail Attack Montage"));
+	
 	/**	Category Montages */
 	
 	GameplayTags.Effects_HitReact = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -119,12 +120,26 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Summon"), FString("Tag for summon abilities"));
 	GameplayTags.Abilities_Fire_Fireball = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.Fireball"), FString("Tag for Fireball abilities"));
+	GameplayTags.Abilities_Physical_SpearThrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Physical.SpearThrow"), FString("Tag for SpearThrow abilities"));
 
+	/** Category Ability Characteristics */
+
+	GameplayTags.Abilities_Range_Melee = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Range.Melee"), FString("Tag for melee range ability characteristic"));
+	GameplayTags.Abilities_Range_Short = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Range.Short"), FString("Tag for short range ability characteristic"));
+	GameplayTags.Abilities_Range_Medium = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Range.Medium"), FString("Tag for medium range ability characteristic"));
+	GameplayTags.Abilities_Range_Long = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Range.Long"), FString("Tag for long range ability characteristic"));
+	
 	/** Category Cooldowns */
 	
 	GameplayTags.Cooldown_Fire_Fireball = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Cooldown.Fire.Fireball"), FString("Tag for Fireball cooldown"));
-	
+	GameplayTags.Cooldown_Physical_SpearThrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Cooldown.Physical.SpearThrow"), FString("Tag for SpearThrow cooldown"));
 	/**	Category Input */
 	
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(

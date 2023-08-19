@@ -6,6 +6,7 @@
 #include "AuraAbilityTypes.h"
 #include "GameplayDebuggerTypes.h"
 #include "ToolContextInterfaces.h"
+#include "AbilitySystem/AuraAbilitySystemComponentBase.h"
 #include "AbilitySystem/Data/CharacterClassInfo.h"
 #include "Aura/AuraLogChannels.h"
 #include "Game/AuraGameModeBase.h"
@@ -260,6 +261,17 @@ int32 UAuraAbilitySystemLibrary::GetXPRewardForEnemyAndLevel(const UObject* Worl
 	const int32 XPReward = static_cast<int32>(RewardCurve->Eval(InLevel));
 	
 	return XPReward;
+}
+
+bool UAuraAbilitySystemLibrary::TryActivateAbilityByTags(UAbilitySystemComponent* ASC,
+	const FGameplayTagContainer& GameplayTagContainer, const bool bAllowRemoteActivation)
+{
+	if(UAuraAbilitySystemComponentBase* AuraASC = Cast<UAuraAbilitySystemComponentBase>(ASC))
+	{
+		return AuraASC->TryActivateAbilityByTag(GameplayTagContainer, bAllowRemoteActivation);
+	}
+
+	return false;
 }
 
 

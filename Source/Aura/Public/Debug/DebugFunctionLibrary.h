@@ -195,5 +195,20 @@ public:
 	//TODO: Work in Progress
 	static TMap<AActor*, int32> Dbscan(const TArray<AActor*> Actors, const float Eps, const int32 MinPoints);
 	static TArray<AActor*> FindNeighbours(const AActor* Actor, const TArray<AActor*>& AllActors, const float Eps);
-	
+
+
+	//Category: Templates
+	template<typename ElementType>
+	static void ShuffleArray(TArray<ElementType>& ArrayToShuffle); //UKismetArrayLibrary::Array_Shuffle only seems to work for int32 type
 };
+
+template <typename ElementType>
+void UDebugFunctionLibrary::ShuffleArray(TArray<ElementType>& ArrayToShuffle)
+{
+	const int32 NumShuffles = ArrayToShuffle.Num() - 1;
+	for(int32 i = 0; i < NumShuffles; ++i)
+	{
+		int32 SwapIndex = FMath::RandRange(i, NumShuffles);
+		ArrayToShuffle.Swap(i, SwapIndex);
+	}
+}

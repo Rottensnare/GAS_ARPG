@@ -45,6 +45,9 @@ public:
 	
 	UFUNCTION(Server, Reliable)
 	void ServerUpgradeAttribute(const FGameplayTag& AttributeTag);
+
+	//Tries to activate a random gameplay ability
+	bool TryActivateAbilityByTag(const FGameplayTagContainer& GameplayTagContainer, const bool bAllowRemoteActivation);
 	
 protected:
 

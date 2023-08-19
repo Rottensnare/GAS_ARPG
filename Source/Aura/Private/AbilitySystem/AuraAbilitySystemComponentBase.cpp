@@ -7,6 +7,7 @@
 #include "AuraGameplayTags.h"
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
 #include "Aura/AuraLogChannels.h"
+#include "Debug/DebugFunctionLibrary.h"
 #include "Interfaces/PlayerInterface.h"
 
 void UAuraAbilitySystemComponentBase::AddCharacterAbilities(
@@ -122,6 +123,25 @@ void UAuraAbilitySystemComponentBase::ServerUpgradeAttribute_Implementation(cons
 	{
 		IPlayerInterface::Execute_AddToAttributePoints(GetAvatarActor(), -1);
 	}
+}
+
+bool UAuraAbilitySystemComponentBase::TryActivateAbilityByTag(const FGameplayTagContainer& GameplayTagContainer,
+	const bool bAllowRemoteActivation)
+{
+	TArray<FGameplayAbilitySpec*> AbilitiesToActivate;
+	GetActivatableGameplayAbilitySpecsByAllMatchingTags(GameplayTagContainer, AbilitiesToActivate);
+	UDebugFunctionLibrary::ShuffleArray(AbilitiesToActivate);
+
+	//Try activating abilities in order from the shuffled array of ability specs
+	for (const FGameplayAbilitySpec* GameplayAbilitySpec : AbilitiesToActivate)
+	{
+		if(TryActivateAbility(GameplayAbilitySpec->Handle, bAllowRemoteActivation))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void UAuraAbilitySystemComponentBase::OnRep_ActivateAbilities()

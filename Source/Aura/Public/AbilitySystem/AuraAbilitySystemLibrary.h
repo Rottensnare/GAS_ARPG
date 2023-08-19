@@ -68,5 +68,7 @@ public:
 	UFUNCTION(BlueprintPure, Category = "AuraAbilitySystemLibrary|Utility")
 	static int32 GetXPRewardForEnemyAndLevel(const UObject* WorldContextObject, const EEnemyType EnemyType, const int32 InLevel);
 
-	
+	//Tries to activate 1 random ability based on passed in GameplayTagContainer
+	UFUNCTION(BlueprintCallable, Category = "AuraAbilitySystemLibrary|GameplayAbilities")
+	static bool TryActivateAbilityByTags(UAbilitySystemComponent* ASC, const FGameplayTagContainer& GameplayTagContainer, const bool bAllowRemoteActivation);
 };
