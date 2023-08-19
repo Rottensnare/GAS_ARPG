@@ -32,7 +32,7 @@ UOverlayWidgetController* UAuraAbilitySystemLibrary::GetOverlayWidgetController(
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("UAuraAbilitySystemLibrary:	Unable to get UOverlayWidgetController."))
+	UE_LOG(LogTemp, Warning, TEXT("%hs:	Unable to get UOverlayWidgetController."), __FUNCTION__)
 	
 	return nullptr;
 }
@@ -54,7 +54,7 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("UAuraAbilitySystemLibrary:	Unable to get UAttributeMenuWidgetController."))
+	UE_LOG(LogTemp, Warning, TEXT("%hs:	Unable to get UAttributeMenuWidgetController."), __FUNCTION__)
 	
 	return nullptr;
 }
@@ -62,7 +62,7 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
 void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const ECharacterClass CharacterClass, float Level, const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
 	
-	AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
+	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if(AuraGameMode == nullptr)
 	{
 		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode is not valid."))

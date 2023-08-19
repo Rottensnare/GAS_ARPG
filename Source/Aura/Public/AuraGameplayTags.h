@@ -80,6 +80,7 @@ public:
  
  FGameplayTag Abilities_Fire_Fireball;
  FGameplayTag Abilities_Physical_SpearThrow;
+ FGameplayTag Abilities_Passive_Sprint;
 
 /** Category Ability Characteristics */
  
@@ -92,6 +93,7 @@ public:
 
  FGameplayTag Cooldown_Fire_Fireball;
  FGameplayTag Cooldown_Physical_SpearThrow;
+ FGameplayTag Cooldown_Passive_Sprint;
  
  /** Category InputTags */
 

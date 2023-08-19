@@ -11,6 +11,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Debug/DebugFunctionLibrary.h"
 #include "Game/AuraGameModeBase.h"
+#include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PawnMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetMathLibrary.h"
@@ -33,6 +34,7 @@ AAuraCharacterBase::AAuraCharacterBase()
 	GetMesh()->SetGenerateOverlapEvents(true);
 
 	AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(this));
+	DefaultMovementSpeed = GetCharacterMovement()->MaxWalkSpeed;
 }
 
 void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
@@ -40,6 +42,28 @@ void AAuraCharacterBase::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& O
 	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 
 	DOREPLIFETIME(AAuraCharacterBase, MinionCount);
+}
+
+void AAuraCharacterBase::IncreaseMovementSpeed(const float NewSpeed, const float Duration, const float SpeedMultiplier)
+{
+	GetWorldTimerManager().ClearTimer(MovementSpeedTimerHandle);
+	
+	if(FMath::IsNearlyZero(NewSpeed))
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DefaultMovementSpeed * SpeedMultiplier;
+	}
+	else
+	{
+		GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+	}
+	
+	FTimerDelegate MovementSpeedTimerDelegate;
+	MovementSpeedTimerDelegate.BindLambda([this]()
+	{
+		GetCharacterMovement()->MaxWalkSpeed = DefaultMovementSpeed;
+	});
+	
+	GetWorldTimerManager().SetTimer(MovementSpeedTimerHandle, MovementSpeedTimerDelegate, Duration, false);
 }
 
 void AAuraCharacterBase::BeginPlay()

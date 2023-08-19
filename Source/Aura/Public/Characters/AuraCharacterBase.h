@@ -32,6 +32,9 @@ public:
 	TArray<FTaggedMontage> AttackMontages;
 
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
+
+	UFUNCTION(BlueprintCallable)
+	void IncreaseMovementSpeed(const float NewSpeed, const float Duration, const float SpeedMultiplier = 1.f);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -164,6 +167,10 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Prediction")
 	float CircleRadius = 0.f;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Movement")
+	float DefaultMovementSpeed = 400.f;
+
+
 private:
 
 	UPROPERTY(EditAnywhere, Category = "Abilities")
@@ -171,6 +178,9 @@ private:
 	
 	UPROPERTY(EditAnywhere, Category = "Abilities")
 	TArray<TSubclassOf<UGameplayAbility>> DefaultPassiveAbilities;
+
+	FTimerHandle MovementSpeedTimerHandle;
+	
 	
 public:	
 

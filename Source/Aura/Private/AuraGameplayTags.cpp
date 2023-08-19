@@ -122,7 +122,8 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Fire.Fireball"), FString("Tag for Fireball abilities"));
 	GameplayTags.Abilities_Physical_SpearThrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Physical.SpearThrow"), FString("Tag for SpearThrow abilities"));
-
+	GameplayTags.Abilities_Passive_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Passive.Sprint"), FString("Tag for sprint abilities"));
 	/** Category Ability Characteristics */
 
 	GameplayTags.Abilities_Range_Melee = UGameplayTagsManager::Get().AddNativeGameplayTag(
@@ -140,6 +141,9 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 	FName("Cooldown.Fire.Fireball"), FString("Tag for Fireball cooldown"));
 	GameplayTags.Cooldown_Physical_SpearThrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
 	FName("Cooldown.Physical.SpearThrow"), FString("Tag for SpearThrow cooldown"));
+	GameplayTags.Cooldown_Passive_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(
+	FName("Cooldown.Passive.Sprint"), FString("Tag for Sprint cooldown"));
+	
 	/**	Category Input */
 	
 	GameplayTags.InputTag_LMB = UGameplayTagsManager::Get().AddNativeGameplayTag(

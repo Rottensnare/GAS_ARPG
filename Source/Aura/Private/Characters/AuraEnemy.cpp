@@ -31,7 +31,7 @@ AAuraEnemy::AAuraEnemy()
 	HealthBar = CreateDefaultSubobject<UWidgetComponent>("HealthBar");
 	HealthBar->SetupAttachment(GetRootComponent());
 
-	
+	DefaultMovementSpeed = BaseWalkSpeed;
 }
 
 void AAuraEnemy::CombatManagerRegistration(ACombatManager* InCombatManager)
