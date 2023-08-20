@@ -19,6 +19,7 @@ class AURA_API UTargetDataUnderMouse : public UAbilityTask
 
 
 public:
+	
 
 	UPROPERTY(BlueprintAssignable)
 	FMouseTargetDataSignature ValidData;
