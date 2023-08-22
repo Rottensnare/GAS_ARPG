@@ -45,7 +45,7 @@ public:
 	
 private:
 
-	TObjectPtr<ACharacter> ActorToTurn;
+	TObjectPtr<AActor> ActorToTurn;
 	float RotationRate;
 	FVector TargetLocation;
 	TObjectPtr<AActor> TargetActor;

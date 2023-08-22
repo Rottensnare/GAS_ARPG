@@ -79,9 +79,6 @@ void UAbilityTask_TurnTowards::TickTask(float DeltaTime)
 		EndTask();
 		return;
 	}
-
-	// We don't want to turn too much
-	RotationRate = FMath::Min(FMath::Abs(RotationChange.GetNormalized().Yaw), RotationRate*DeltaTime);
 	
 	// Apply the rotation change
 	if(RotationChange.GetNormalized().Yaw <= 0.f)
