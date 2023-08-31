@@ -26,7 +26,7 @@ UAbilityTask_TurnTowards* UAbilityTask_TurnTowards::CreateAbilityTask_TurnToward
 	NewObj->RotationRate = RotationRate;
 	NewObj->TargetLocation = TargetLocation;
 	NewObj->TargetActor = InTargetActor;
-	UDebugFunctionLibrary::DebugBoxSimple_Red(ActorToTurn, TargetLocation);
+
 	return  NewObj;
 }
 
@@ -89,6 +89,4 @@ void UAbilityTask_TurnTowards::TickTask(float DeltaTime)
 	{
 		ActorToTurn->AddActorLocalRotation(FRotator(0.f, RotationRate, 0.f) * DeltaTime);
 	}
-	
-	
 }
