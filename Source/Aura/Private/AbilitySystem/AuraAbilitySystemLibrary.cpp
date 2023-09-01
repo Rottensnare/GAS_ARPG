@@ -59,19 +59,40 @@ UAttributeMenuWidgetController* UAuraAbilitySystemLibrary::GetAttributeMenuWidge
 	return nullptr;
 }
 
+USpellMenuWidgetController* UAuraAbilitySystemLibrary::GetSpellMenuWidgetController(const UObject* WorldContextObject)
+{
+	if(APlayerController* PC = UGameplayStatics::GetPlayerController(WorldContextObject, 0))
+	{
+		if(AAuraHUD* AuraHUD = Cast<AAuraHUD>(PC->GetHUD()))
+		{
+			AAuraPlayerState* PlayerState = PC->GetPlayerState<AAuraPlayerState>();
+			check(PlayerState)
+			UAbilitySystemComponent* AbilitySystemComponent =  PlayerState->GetAbilitySystemComponent();
+			UAttributeSet* AttributeSet = PlayerState->GetAttributeSet();
+			const FWidgetControllerParams ControllerParams(PC, PlayerState, AbilitySystemComponent, AttributeSet);
+			
+			return AuraHUD->GetSpellMenuWidgetController(ControllerParams);
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("%hs:	Unable to get USpellMenuWidgetController."), __FUNCTION__)
+	
+	return nullptr;
+}
+
 void UAuraAbilitySystemLibrary::InitializeDefaultAttributes(const ECharacterClass CharacterClass, float Level, const UObject* WorldContextObject, UAbilitySystemComponent* ASC)
 {
 	
 	const AAuraGameModeBase* AuraGameMode = Cast<AAuraGameModeBase>(UGameplayStatics::GetGameMode(WorldContextObject));
 	if(AuraGameMode == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode is not valid."))
+		UE_LOG(LogTemp, Error, TEXT("%hs:	AuraGameMode is not valid."), __FUNCTION__)
 		return;
 	}
 
 	if(AuraGameMode->CharacterClassInfo == nullptr)
 	{
-		UE_LOG(LogTemp, Error, TEXT("UAuraAbilitySystemLibrary:	AuraGameMode->CharacterClassInfo is not set."))
+		UE_LOG(LogTemp, Error, TEXT("%hs:	AuraGameMode->CharacterClassInfo is not set."), __FUNCTION__)
 		return;
 	}
 	

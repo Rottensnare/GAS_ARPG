@@ -23,7 +23,7 @@ void UAuraAbilitySystemComponentBase::AddCharacterAbilities(
 		}
 	}
 	bStartupAbilitiesGiven = true; 
-	AbilitiesGivenDelegate.Broadcast(this);
+	AbilitiesGivenDelegate.Broadcast();
 }
 
 void UAuraAbilitySystemComponentBase::AddCharacterPassiveAbilities(
@@ -151,7 +151,7 @@ void UAuraAbilitySystemComponentBase::OnRep_ActivateAbilities()
 	if(!bStartupAbilitiesGiven)
 	{
 		bStartupAbilitiesGiven = true;
-		AbilitiesGivenDelegate.Broadcast(this);
+		AbilitiesGivenDelegate.Broadcast();
 	}
 	
 }
