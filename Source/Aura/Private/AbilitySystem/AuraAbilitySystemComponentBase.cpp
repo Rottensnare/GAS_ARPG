@@ -19,6 +19,7 @@ void UAuraAbilitySystemComponentBase::AddCharacterAbilities(
 		if(const UAuraGameplayAbility* AuraGameplayAbility = Cast<UAuraGameplayAbility>(AbilitySpec.Ability))
 		{
 			AbilitySpec.DynamicAbilityTags.AddTag(AuraGameplayAbility->StartupInputTag);
+			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Equipped);
 			GiveAbility(AbilitySpec);
 		}
 	}
@@ -142,6 +143,19 @@ bool UAuraAbilitySystemComponentBase::TryActivateAbilityByTag(const FGameplayTag
 	}
 
 	return false;
+}
+
+FGameplayTag UAuraAbilitySystemComponentBase::GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec)
+{
+	for(FGameplayTag StatusTag : AbilitySpec.DynamicAbilityTags)
+	{
+		if(StatusTag.MatchesTag(FGameplayTag::RequestGameplayTag(FName("Abilities.Status"))))
+		{
+			return StatusTag;
+		}
+	}
+
+	return FGameplayTag::EmptyTag;
 }
 
 void UAuraAbilitySystemComponentBase::OnRep_ActivateAbilities()

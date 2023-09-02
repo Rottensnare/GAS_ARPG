@@ -82,6 +82,15 @@ public:
  FGameplayTag Abilities_Physical_SpearThrow;
  FGameplayTag Abilities_Passive_Sprint;
 
+ FGameplayTag Abilities_Status_Locked;
+ FGameplayTag Abilities_Status_Eligible;
+ FGameplayTag Abilities_Status_Unlocked;
+ FGameplayTag Abilities_Status_Equipped;
+
+ FGameplayTag Abilities_Type_Offensive;
+ FGameplayTag Abilities_Type_Passive;
+ FGameplayTag Abilities_Type_None;
+
 /** Category Ability Characteristics */
  
  FGameplayTag Abilities_Range_Melee;

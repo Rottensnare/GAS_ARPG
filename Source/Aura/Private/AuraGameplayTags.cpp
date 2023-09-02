@@ -124,6 +124,23 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Physical.SpearThrow"), FString("Tag for SpearThrow abilities"));
 	GameplayTags.Abilities_Passive_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Passive.Sprint"), FString("Tag for sprint abilities"));
+
+	GameplayTags.Abilities_Status_Locked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Locked"), FString("Tag for Ability Status Locked"));
+	GameplayTags.Abilities_Status_Unlocked = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Unlocked"), FString("Tag for Ability Status Unlocked"));
+	GameplayTags.Abilities_Status_Eligible = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Eligible"), FString("Tag for Ability Status Eligible"));
+	GameplayTags.Abilities_Status_Equipped = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Status.Equipped"), FString("Tag for Ability Status Equipped"));
+
+	GameplayTags.Abilities_Type_Offensive = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Type.Offensive"), FString("Tag for Ability Type Offensive"));
+	GameplayTags.Abilities_Type_Passive = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Type.Passive"), FString("Tag for Ability Type Passive"));
+	GameplayTags.Abilities_Type_None = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Type.None"), FString("Tag for Ability Type None"));
+	
 	/** Category Ability Characteristics */
 
 	GameplayTags.Abilities_Range_Melee = UGameplayTagsManager::Get().AddNativeGameplayTag(

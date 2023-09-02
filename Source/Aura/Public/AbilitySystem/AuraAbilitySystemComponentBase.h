@@ -48,6 +48,8 @@ public:
 
 	//Tries to activate a random gameplay ability
 	bool TryActivateAbilityByTag(const FGameplayTagContainer& GameplayTagContainer, const bool bAllowRemoteActivation);
+
+	static FGameplayTag GetStatusFromSpec(const FGameplayAbilitySpec& AbilitySpec);
 	
 protected:
 
