@@ -79,8 +79,10 @@ public:
  FGameplayTag Abilities_Summon;
  
  FGameplayTag Abilities_Fire_Fireball;
+ FGameplayTag Abilities_Lightning_Electrocute;
  FGameplayTag Abilities_Physical_SpearThrow;
  FGameplayTag Abilities_Passive_Sprint;
+ 
 
  FGameplayTag Abilities_Status_Locked;
  FGameplayTag Abilities_Status_Eligible;

@@ -120,6 +120,8 @@ void FAuraGameplayTags::InitializeNativeGameplayTags()
 		FName("Abilities.Summon"), FString("Tag for summon abilities"));
 	GameplayTags.Abilities_Fire_Fireball = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Fire.Fireball"), FString("Tag for Fireball abilities"));
+	GameplayTags.Abilities_Lightning_Electrocute = UGameplayTagsManager::Get().AddNativeGameplayTag(
+		FName("Abilities.Lightning.Electrocute"), FString("Tag for Electrocute abilities"));
 	GameplayTags.Abilities_Physical_SpearThrow = UGameplayTagsManager::Get().AddNativeGameplayTag(
 		FName("Abilities.Physical.SpearThrow"), FString("Tag for SpearThrow abilities"));
 	GameplayTags.Abilities_Passive_Sprint = UGameplayTagsManager::Get().AddNativeGameplayTag(

@@ -5,6 +5,8 @@
 
 #include "AbilitySystemBlueprintLibrary.h"
 #include "AuraGameplayTags.h"
+#include "AbilitySystem/AuraAbilitySystemLibrary.h"
+#include "AbilitySystem/Data/AbilityInfo.h"
 #include "AbilitySystem/GameplayAbility/AuraGameplayAbility.h"
 #include "Aura/AuraLogChannels.h"
 #include "Debug/DebugFunctionLibrary.h"
@@ -158,6 +160,45 @@ FGameplayTag UAuraAbilitySystemComponentBase::GetStatusFromSpec(const FGameplayA
 	return FGameplayTag::EmptyTag;
 }
 
+void UAuraAbilitySystemComponentBase::UpdateAbilityStatuses(const int32 Level)
+{
+	
+	for(const FAuraAbilityInfo& AbilityInfo : UAuraAbilitySystemLibrary::GetAbilityInfo(this)->AbilityInformation)
+	{
+		if(AbilityInfo.LevelRequirement > Level) continue;
+		if(AbilityInfo.AbilityTag.IsValid() == false) continue;
+		
+		if(GetSpecFromAbilityTag(AbilityInfo.AbilityTag) == nullptr)
+		{
+			FGameplayAbilitySpec AbilitySpec = FGameplayAbilitySpec(AbilityInfo.GameplayAbilityClass, 1);
+			AbilitySpec.DynamicAbilityTags.AddTag(FAuraGameplayTags::Get().Abilities_Status_Eligible);
+			GiveAbility(AbilitySpec);
+			MarkAbilitySpecDirty(AbilitySpec);
+			ClientUpdateAbilityStatus(AbilityInfo.AbilityTag, FAuraGameplayTags::Get().Abilities_Status_Eligible);
+		}
+	}
+}
+
+FGameplayAbilitySpec* UAuraAbilitySystemComponentBase::GetSpecFromAbilityTag(const FGameplayTag& AbilityTag)
+{
+	FScopedAbilityListLock ActiveScopeLock(*this);
+	for(FGameplayAbilitySpec& AbilitySpec : GetActivatableAbilities())
+	{
+		//TODO: Instead of this, just do this work at compile time.
+		//NOTE: Only doing it this way since the instructor is doing it this way. This seems to waste performance
+		
+		for(FGameplayTag Tag : AbilitySpec.Ability.Get()->AbilityTags)
+		{
+			if(Tag.MatchesTag(AbilityTag))
+			{
+				return &AbilitySpec;
+			}
+		}
+	}
+
+	return nullptr;
+}
+
 void UAuraAbilitySystemComponentBase::OnRep_ActivateAbilities()
 {
 	Super::OnRep_ActivateAbilities();
@@ -168,6 +209,12 @@ void UAuraAbilitySystemComponentBase::OnRep_ActivateAbilities()
 		AbilitiesGivenDelegate.Broadcast();
 	}
 	
+}
+
+void UAuraAbilitySystemComponentBase::ClientUpdateAbilityStatus_Implementation(const FGameplayTag& AbilityTag,
+	const FGameplayTag& StatusTag)
+{
+	AbilityStatusChangedDelegate.Broadcast(AbilityTag, StatusTag);
 }
 
 void UAuraAbilitySystemComponentBase::ClientEffectApplied_Implementation(UAbilitySystemComponent* AbilitySystemComponent,

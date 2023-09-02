@@ -6,6 +6,7 @@
 #include "GameFramework/GameModeBase.h"
 #include "AuraGameModeBase.generated.h"
 
+class UAbilityInfo;
 class ACombatManager;
 class UCharacterClassInfo;
 /**
@@ -23,6 +24,9 @@ public:
 
 	UPROPERTY(EditDefaultsOnly)
 	TObjectPtr<UCurveTable> XPRewardTable;
+
+	UPROPERTY(EditDefaultsOnly)
+	TObjectPtr<UAbilityInfo> AbilityInfo;
 
 protected:
 
