@@ -83,7 +83,7 @@ void UOverlayWidgetController::BindCallbacksToDependencies()
 		}
 		else
 		{
-			AuraASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastInitialValues);
+			AuraASC->AbilitiesGivenDelegate.AddUObject(this, &UOverlayWidgetController::BroadcastAbilityInfo);
 		}
 	}
 
