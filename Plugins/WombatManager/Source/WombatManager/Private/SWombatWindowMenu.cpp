@@ -18,7 +18,7 @@ BEGIN_SLATE_FUNCTION_BUILD_OPTIMIZATION
 void SWombatWindowMenu::Construct(const FArguments& InArgs)
 {
 	//TODO: Remove Lambdas and use normal delegates.
-	//TODO: Maybe rework FCombatant and FSquad to classes.
+	//TODO: Rework FCombatant and FSquad to classes.
 	FEditorDelegates::PostPIEStarted.AddSP(this, &SWombatWindowMenu::OnLevelChanged);
 	bCanSupportFocus = true;
 	FSlateFontInfo TitleTextFont = FCoreStyle::Get().GetFontStyle(FName("EmbossedText"));

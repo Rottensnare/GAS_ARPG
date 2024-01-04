@@ -70,8 +70,6 @@ FVector UDebugFunctionLibrary::PredictProjectileInterceptionPoint(const FVector&
 	// Calculate the direction vector for the projectile to intercept the target
 	OutDirection = (PredictedTargetPosition - ProjectileStartLocation).GetSafeNormal();
 	
-	//UKismetSystemLibrary::DrawDebugBox(WorldContextObject, PredictedTargetPosition, FVector(10.f), FLinearColor::Red, FRotator::ZeroRotator, 2.f);
-
 	return PredictedTargetPosition;
 }
 
