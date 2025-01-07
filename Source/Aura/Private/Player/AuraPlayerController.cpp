@@ -198,7 +198,7 @@ void AAuraPlayerController::CursorTrace()
 	if(CursorHitResult.bBlockingHit == false) return;
 
 	LastActor = CurrentActor;
-	CurrentActor = Cast<IEnemyInterface>(CursorHitResult.GetActor());
+	CurrentActor = CursorHitResult.GetActor();
 
 	//	Not hovering over highlightable actors
 	if(LastActor == nullptr && CurrentActor == nullptr) return; 

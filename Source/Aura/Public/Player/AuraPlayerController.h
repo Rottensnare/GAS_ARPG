@@ -66,8 +66,9 @@ private:
 
 	FHitResult CursorHitResult;
 	void CursorTrace();
-	IEnemyInterface* LastActor;
-	IEnemyInterface* CurrentActor;
+	
+	TScriptInterface<IEnemyInterface> LastActor;
+	TScriptInterface<IEnemyInterface> CurrentActor;
 	
 
 	UPROPERTY()
