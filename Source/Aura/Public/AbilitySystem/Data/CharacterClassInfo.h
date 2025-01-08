@@ -26,7 +26,15 @@ struct FFramePackage
 
 	UPROPERTY(BlueprintReadOnly)
 	FVector ActorForwardVector;
-	
+
+
+	FFramePackage()
+	{
+		Time = 0.f;
+		ActorLocation = FVector::ZeroVector;
+		ActorVelocity = FVector::ZeroVector;
+		ActorForwardVector = FVector::ZeroVector;
+	}
 };
 
 UENUM(BlueprintType)
